@@ -1,0 +1,22 @@
+{
+  "name":"HoliDuino",
+  "description":"DK holiday arduino mashup",
+  "version":"1.0.0",
+  "author":"Todd Larsen <todd.larsen@designkitchen.com>",
+  "dependencies": {
+    "coffee-script":"1.1.x",
+    "express":"2.4.x",
+    "colors":"",
+    "stitch":"",
+    "stylus":"",
+    "knox":"",
+    "connect":"1.7.x",
+    "supervisor":"0.1.x",
+    "serialport":"",
+    "arduino":"",
+    "ntwitter":"",
+    "socket.io":"",
+    "kue":"",
+    "underscore":""
+  }
+}
