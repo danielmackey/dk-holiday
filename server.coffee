@@ -1,7 +1,7 @@
 express = require 'express'
 SerialPort = require('serialport').SerialPort
 arduino = require 'arduino'
-board = arduino.connect('/dev/tty.usbmodemfa131')
+board = arduino.connect('/dev/tty.usbmodemfa141')
 stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
@@ -106,13 +106,13 @@ app.configure () ->
     res.sendfile "#{__dirname}/public/index.html"
 
   app.get '/on', (req, res) ->
-    #clearInterval interval  # clear interval when led blinking
+    clearInterval interval  # clear interval when led blinking
     board.digitalWrite ledPin, ledState = arduino.HIGH # set the LED on 
     res.send "on"
     console.log 'LED is on'
 
   app.get '/off', (req,res) ->
-    #clearInterval interval  # clear interval when led blinking
+    clearInterval interval  # clear interval when led blinking
     board.digitalWrite ledPin, ledState = arduino.LOW # set the LED off
     res.send "off"
     console.log 'LED is off'
@@ -120,11 +120,17 @@ app.configure () ->
   app.get '/blink', (req, res) ->
     res.send "Led is blinking"
     # set interval
-    #interval = setInterval () ->
+    interval = setInterval () ->
       # get ledState state
       #board.digitalWrite(ledPin, (ledState = ledState === arduino.LOW && arduino.HIGH || arduino.LOW) )
-      #console.log("LedState "+ (ledState === 0 ? 'OFF' : 'ON') )
-      #, 500  # every 500 millisecond
+      if ledState == arduino.LOW
+        ledState = arduino.HIGH
+        board.digitalWrite ledPin, arduino.HIGH
+      else
+        ledState = arduino.LOW
+        board.digitalWrite ledPin, arduino.LOW
+      console.log "LedState "+ (ledState == 0 ? 'OFF' : 'ON') 
+    , 500  # every 500 millisecond
 
 # Start the App server
 app.listen port
