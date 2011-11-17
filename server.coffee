@@ -128,5 +128,5 @@ kue.redis.createClient = () ->
 # Start the Queue server
 kue.app.enable "jsonp callback"
 kue.app.set 'title', 'DK Holiday'
-#kue.app.listen "#{port + 1}"
-console.log "App server started on port: #{port}, Queue server started on port: #{port + 1}"
+app.use kue.app
+console.log "Server started on port: #{port}"
