@@ -6,7 +6,7 @@ twitter = require 'ntwitter'
 app = express.createServer()
 kue = require 'kue'
 jobs = kue.createQueue()
-port = 1110
+port = 37895
 io = require('socket.io').listen app
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
 
