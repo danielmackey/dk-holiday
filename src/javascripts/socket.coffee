@@ -7,14 +7,14 @@ module.exports = class Socket
 
   openSockets: ->
     @tweets = $("ul.tweets")
-    socket = io.connect 'http://localhost:1110'
-    socket.on 'arduino', (job) =>
+    client = io.connect 'http://localhost:1110/client'
+    client.on 'new event', (job) =>
       @tweets.find('li:last-child').remove()
       @tweets.prepend '<li data-tweet="'+job.data.title+'"><a href="http://twitter.com/'+job.data.handle+'">@'+job.data.handle+'</a> just made it <b>'+job.data.hashtag+'</b> in the DK Holiday Room.</li>'
 
   eventsLog: (pagination) =>
       ajaxOptions =
-        url:'http://localhost:1111/jobs/complete/'+pagination+'/asc'
+        url:'http://localhost:1111/jobs/complete/'+pagination+'/desc'
         dataType:'jsonp'
         data:{}
         crossDomain:true

@@ -16,6 +16,7 @@
     "arduino":"0.2.3",
     "ntwitter":"0.2.9-2",
     "socket.io":"0.8.7",
+    "socket.io-client":"0.8.7",
     "kue":"0.3.2",
     "underscore":"1.2.2"
   }

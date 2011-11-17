@@ -1,7 +1,4 @@
 express = require 'express'
-SerialPort = require('serialport').SerialPort
-arduino = require 'arduino'
-board = arduino.connect('/dev/tty.usbmodemfa131')
 stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
@@ -13,14 +10,8 @@ port = 1110
 io = require('socket.io').listen app
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
 
-# Arduino config
-ledState = arduino.LOW
-ledPin = 13
-interval = ""
-
 # Configure stylus to compile and serve all .styl files
 cssOptions =
-  debug:true
   src:"#{__dirname}/src"
   dest:"#{__dirname}/public"
   compile:compile
@@ -49,43 +40,61 @@ twitterOptions =
 twit = new twitter twitterOptions
 
 #
-# ##Offer a websocket connection
+# ##Client Websocket
 #
 #   - On client connection, open a Twitter user stream
 #   - Broadcast tweets @user #withHashTags
 #   - Create arduino jobs from hashtag triggers
 #
-io.sockets.on 'connection', (socket) ->
-  twit.stream 'statuses/filter', track:['@justinbieber'], (stream) ->
+client = io.of('/client').on 'connection', (client_socket) ->
+  twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
     stream.on 'data', (data) ->
-      hashtags = data.entities.hashtags
+      if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
+        hashtags = data.entities.hashtags
 
-      # Only capture tweets with a hashtag
-      unless hashtags.length < 1
-        # Assemble job data from tweet data
-        hashtags.forEach (hashtag, i) ->
-          jobData =
-            title:data.text
-            handle:data.user.screen_name
-            avatar:data.user.profile_image_url
-            hashtag:hashtag.text
+        # Only capture tweets with a hashtag
+        unless hashtags.length is 0
+          # Assemble job data from tweet data
+          hashtags.forEach (hashtag, i) ->
+            jobData =
+              title:data.text
+              handle:data.user.screen_name
+              avatar:data.user.profile_image_url
+              hashtag:hashtag.text
 
-          # Create a new arduino job with 3 attempts for each hashtag trigger
-          jobs.create('arduino', jobData).attempts(3).save()
-
-    #setTimeout stream.destroy, 3000 # Destroy the stream after 3 seconds to control Biebermania
+            # Create a new arduino job with 3 attempts for each hashtag trigger
+            jobs.create('arduino action', jobData).attempts(3).save()
 
   #
-  # ##Process arduino jobs
+  # ##Arduino Socket
   #
-  #   - Send message to activate arduino
-  #   - Broadcast arduino event to live feed
-  #   - Broadcast update directive to update the client event history
+  #   - Listen for connections namspaced to /arduino
+  #   - On connection, kick off job queue
   #
-  jobs.process 'arduino', (job, done) ->
-    # Send message to arduino board
-    socket.emit 'arduino', job
-    done()
+  arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
+
+    #
+    # Emit a message to show a connect/disconnected state of arduino
+    #
+
+    #
+    # ##Job Processor
+    #
+    #   - Process all 'arduino action' jobs
+    #   - Send message to activate arduino
+    #
+    jobs.process 'arduino action', (job, done) ->
+      arduino_socket.emit 'action assignment', job
+      done()
+
+    #
+    # ##Arduino Confirmation
+    #
+    #   - Listen for completed actions
+    #   - Update the clients with new events
+    #
+    arduino_socket.on 'action complete', (job) ->
+      client_socket.emit 'new event', job
 
 
 #
@@ -100,31 +109,7 @@ app.configure () ->
   app.use express.static "#{__dirname}/public"
   app.get '/application.js', package.createServer()
   app.get '/', (req, res) ->
-    #initialize the digital pin as an output.
-    board.pinMode ledPin, arduino.OUTPUT
-    board.pinMode ledPin, ledState
     res.sendfile "#{__dirname}/public/index.html"
-
-  app.get '/on', (req, res) ->
-    #clearInterval interval  # clear interval when led blinking
-    board.digitalWrite ledPin, ledState = arduino.HIGH # set the LED on 
-    res.send "on"
-    console.log 'LED is on'
-
-  app.get '/off', (req,res) ->
-    #clearInterval interval  # clear interval when led blinking
-    board.digitalWrite ledPin, ledState = arduino.LOW # set the LED off
-    res.send "off"
-    console.log 'LED is off'
-
-  app.get '/blink', (req, res) ->
-    res.send "Led is blinking"
-    # set interval
-    #interval = setInterval () ->
-      # get ledState state
-      #board.digitalWrite(ledPin, (ledState = ledState === arduino.LOW && arduino.HIGH || arduino.LOW) )
-      #console.log("LedState "+ (ledState === 0 ? 'OFF' : 'ON') )
-      #, 500  # every 500 millisecond
 
 # Start the App server
 app.listen port
