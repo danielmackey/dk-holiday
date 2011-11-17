@@ -40,7 +40,7 @@ twitterOptions =
 twit = new twitter twitterOptions
 
 #
-# ##Client Websocket
+# ##Client Socket
 #
 #   - On client connection, open a Twitter user stream
 #   - Broadcast tweets @user #withHashTags
@@ -74,8 +74,7 @@ client = io.of('/client').on 'connection', (client_socket) ->
   arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
 
     #
-    # Emit a message to show a connect/disconnected state of arduino
-    #
+    client_socket.emit 'arduino connected'
 
     #
     # ##Job Processor
@@ -92,10 +91,13 @@ client = io.of('/client').on 'connection', (client_socket) ->
     #
     #   - Listen for completed actions
     #   - Update the clients with new events
+    #   - Announce when out of commission
     #
     arduino_socket.on 'action complete', (job) ->
       client_socket.emit 'new event', job
 
+    arduino_socket.on 'disconnect', () ->
+      client_socket.emit 'arduino disconnected'
 
 #
 # ##Configure the App server
