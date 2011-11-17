@@ -119,7 +119,7 @@ app.configure () ->
 app.listen port
 
 kue.redis.createClient = () ->
-  process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
+  #process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
   redisUrl = url.parse(process.env.REDISTOGO_URL)
   client = redis.createClient(redisUrl.port, redisUrl.hostname)
   if redisUrl.auth then client.auth(redisUrl.auth.split(":")[1])
