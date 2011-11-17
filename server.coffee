@@ -3,10 +3,12 @@ stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
 twitter = require 'ntwitter'
+url = require 'url'
 app = express.createServer()
 kue = require 'kue'
+redis = require 'kue/node_modules/redis'
 jobs = kue.createQueue()
-port = 37895
+port = process.env.PORT || 1110
 io = require('socket.io').listen app
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
 
@@ -115,6 +117,13 @@ app.configure () ->
 
 # Start the App server
 app.listen port
+
+kue.redis.createClient = () ->
+  process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
+  redisUrl = url.parse(process.env.REDISTOGO_URL)
+  client = redis.createClient(redisUrl.port, redisUrl.hostname)
+  if redisUrl.auth then client.auth(redisUrl.auth.split(":")[1])
+  return client
 
 # Start the Queue server
 kue.app.enable "jsonp callback"
