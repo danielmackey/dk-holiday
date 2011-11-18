@@ -11,6 +11,7 @@ jobs = kue.createQueue()
 port = process.env.PORT || 1110
 io = require('socket.io').listen app
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
+buffer = require "#{__dirname}/lib/buffer"
 
 # Configure stylus to compile and serve all .styl files
 cssOptions =
@@ -75,7 +76,6 @@ client = io.of('/client').on 'connection', (client_socket) ->
   #
   arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
 
-    #
     client_socket.emit 'arduino connected'
 
     #
@@ -85,8 +85,7 @@ client = io.of('/client').on 'connection', (client_socket) ->
     #   - Send message to activate arduino
     #
     jobs.process 'arduino action', (job, done) ->
-      arduino_socket.emit 'action assignment', job
-      done()
+      buffer.run job, arduino_socket, done
 
     #
     # ##Arduino Confirmation
@@ -118,6 +117,7 @@ app.configure () ->
 # Start the App server
 app.listen port
 
+# Configure Redis
 kue.redis.createClient = () ->
   process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
   redisUrl = url.parse(process.env.REDISTOGO_URL)
