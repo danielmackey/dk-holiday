@@ -23,7 +23,7 @@ module.exports = class Socket
 
   eventsLog: (pagination) =>
       ajaxOptions =
-        url:'http://localhost:1110/jobs/complete/'+pagination+'/asc'
+        url:'http://dk-holiday.herokuapp.com/jobs/complete/'+pagination+'/asc'
         dataType:'jsonp'
         data:{}
         crossDomain:true
