@@ -11,7 +11,6 @@ jobs = kue.createQueue()
 port = process.env.PORT || 1110
 io = require('socket.io').listen app
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
-buffer = require "#{__dirname}/lib/buffer"
 
 # Configure stylus to compile and serve all .styl files
 cssOptions =
@@ -39,6 +38,27 @@ twitterOptions =
   access_token_secret:'cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI'
 
 
+buffer = (n) ->
+  nth = n
+  rnd = Math.floor(Math.random() * nth) + 1
+  if rnd is nth then return true
+  else return false
+
+
+tags = [
+  'snow'
+  'lights'
+  'train'
+  'discoball'
+]
+
+# Set buffer thresholds for each trigger for desired frequency
+thresholds =
+  "snow":1
+  "lights":2
+  "train":3
+  "discoball":1
+
 # Create a new twitter stream
 twit = new twitter twitterOptions
 
@@ -59,11 +79,12 @@ client = io.of('/client').on 'connection', (client_socket) ->
         unless hashtags.length is 0
           # Assemble job data from tweet data
           hashtags.forEach (hashtag, i) ->
+            hashtag = hashtag.text
             jobData =
               title:data.text
               handle:data.user.screen_name
               avatar:data.user.profile_image_url
-              hashtag:hashtag.text
+              hashtag:hashtag
 
             # Create a new arduino job with 3 attempts for each hashtag trigger
             jobs.create('arduino action', jobData).attempts(3).save()
@@ -82,10 +103,16 @@ client = io.of('/client').on 'connection', (client_socket) ->
     # ##Job Processor
     #
     #   - Process all 'arduino action' jobs
-    #   - Send message to activate arduino
+    #   - Send message to activate arduino every nth time
+    #   - Add a tally mark all other times
     #
     jobs.process 'arduino action', (job, done) ->
-      buffer.run job, arduino_socket, done
+      buffer_count = thresholds[job.data.hashtag]
+      done()
+      if buffer(buffer_count)
+        arduino_socket.emit 'action assignment', job
+      else
+        client_socket.emit 'tally mark', job
 
     #
     # ##Arduino Confirmation
