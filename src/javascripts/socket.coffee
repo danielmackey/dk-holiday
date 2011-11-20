@@ -7,7 +7,7 @@ module.exports = class Socket
 
   openSockets: ->
     @tweets = $("ul.tweets")
-    client = io.connect 'http://localhost:1110/client'
+    client = io.connect 'http://dk-holiday.herokuapp.com/client'
     client.on 'new event', (job) =>
       @tweets.find('li:last-child').remove()
       @tweets.prepend '<li data-tweet="'+job.data.title+'"><a href="http://twitter.com/'+job.data.handle+'">@'+job.data.handle+'</a> just made it <b>'+job.data.hashtag+'</b> in the DK Holiday Room.</li>'
@@ -23,7 +23,7 @@ module.exports = class Socket
 
   eventsLog: (pagination) =>
       ajaxOptions =
-        url:'http://localhost:1110/jobs/complete/'+pagination+'/asc'
+        url:'http://dk-holiday.herokuapp.com/jobs/complete/'+pagination+'/asc'
         dataType:'jsonp'
         data:{}
         crossDomain:true
