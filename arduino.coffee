@@ -15,7 +15,7 @@ ledState = arduino.LOW
 #board.pinMode ledPin, arduino.OUTPUT
 #board.pinMode ledPin, ledState
 
-socket = io.connect 'http://dk-holiday.herokuapp.com/arduino'
+socket = io.connect 'http://localhost:1110/arduino'
 socket.on 'action assignment', (job) ->
   switch job.data.hashtag
     when "snow"

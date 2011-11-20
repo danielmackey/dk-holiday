@@ -72,59 +72,46 @@ thresholds =
 twit = new twitter twitterOptions
 
 #
-# ##Client Socket
+# ## Twitter stream
 #
-#   - On client connection, open a Twitter user stream
-#   - Broadcast tweets @user #withHashTags
-#   - Create arduino jobs from hashtag triggers
+#   - Create jobs for each #tag @designkitchen
 #
-client = io.of('/client').on 'connection', (client_socket) ->
-  twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
-    stream.on 'data', (data) ->
-      if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
-        hashtags = data.entities.hashtags
+twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
+  stream.on 'data', (data) ->
+    if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
+      hashtags = data.entities.hashtags
 
-        # Only capture tweets with a hashtag
-        unless hashtags.length is 0
-          # Assemble job data from tweet data
-          hashtags.forEach (hashtag, i) ->
-            hashtag = hashtag.text
-            jobData =
-              title:data.text
-              handle:data.user.screen_name
-              avatar:data.user.profile_image_url
-              hashtag:hashtag
+      # Only capture tweets with a hashtag
+      unless hashtags.length is 0
+        # Assemble job data from tweet data
+        hashtags.forEach (hashtag, i) ->
+          hashtag = hashtag.text
+          jobData =
+            title:data.text
+            handle:data.user.screen_name
+            avatar:data.user.profile_image_url
+            hashtag:hashtag
 
-            # Create a new arduino job with 3 attempts for each hashtag trigger
-            jobs.create('arduino action', jobData).attempts(3).save()
+          # Create a new arduino job with 3 attempts for each hashtag trigger
+          jobs.create(hashtag, jobData).attempts(3).save()
+
+
+
+#
+# ##Arduino Socket
+#
+#   - Listen for connections namspaced to /arduino
+#   - On connection, kick off job queue
+#
+arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
 
   #
-  # ##Arduino Socket
+  # ##Client Socket
   #
-  #   - Listen for connections namspaced to /arduino
-  #   - On connection, kick off job queue
   #
-  arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
-
-    client_socket.emit 'arduino connected'
-
+  client = io.of('/client').on 'connection', (client_socket) ->
     #
-    # ##Job Processor
-    #
-    #   - Process all 'arduino action' jobs
-    #   - Send message to activate arduino every nth time
-    #   - Add a tally mark all other times
-    #
-    jobs.process 'arduino action', (job, done) ->
-      buffer_count = thresholds[job.data.hashtag]
-      done()
-      if buffer(buffer_count)
-        arduino_socket.emit 'action assignment', job
-      else
-        client_socket.emit 'tally mark', job
-
-    #
-    # ##Arduino Confirmation
+    # ## Socket communication
     #
     #   - Listen for completed actions
     #   - Update the clients with new events
@@ -135,6 +122,36 @@ client = io.of('/client').on 'connection', (client_socket) ->
 
     arduino_socket.on 'disconnect', () ->
       client_socket.emit 'arduino disconnected'
+
+    client_socket.emit 'arduino connected'
+
+    #
+    # ##Job Processor
+    #
+    #   - Process all 'arduino action' jobs
+    #   - Send message to activate arduino every nth time
+    #   - Add a tally mark all other times
+    #
+    process = (job, done) ->
+      buffer_count = thresholds[job.data.hashtag]
+      done()
+      if buffer(buffer_count)
+        arduino_socket.emit 'action assignment', job
+      else
+        client_socket.emit 'tally mark', job
+
+    jobs.process 'snow', (job, done) ->
+      process job, done
+
+    jobs.process 'lights', (job, done) ->
+      process job, done
+
+    jobs.process 'train', (job, done) ->
+      process job, done
+
+    jobs.process 'discoball', (job, done) ->
+      process job, done
+
 
 #
 # ##Configure the App server
