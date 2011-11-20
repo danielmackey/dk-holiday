@@ -7,6 +7,15 @@ url = require 'url'
 app = express.createServer()
 kue = require 'kue'
 redis = require 'kue/node_modules/redis'
+
+# Configure Redis
+kue.redis.createClient = () ->
+  process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
+  redisUrl = url.parse(process.env.REDISTOGO_URL)
+  client = redis.createClient(redisUrl.port, redisUrl.hostname)
+  if redisUrl.auth then client.auth(redisUrl.auth.split(":")[1])
+  return client
+
 jobs = kue.createQueue()
 port = process.env.PORT || 1110
 io = require('socket.io').listen app
@@ -143,14 +152,6 @@ app.configure () ->
 
 # Start the App server
 app.listen port
-
-# Configure Redis
-kue.redis.createClient = () ->
-  process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
-  redisUrl = url.parse(process.env.REDISTOGO_URL)
-  client = redis.createClient(redisUrl.port, redisUrl.hostname)
-  if redisUrl.auth then client.auth(redisUrl.auth.split(":")[1])
-  return client
 
 # Start the Queue server
 kue.app.enable "jsonp callback"
