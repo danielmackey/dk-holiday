@@ -1,11 +1,13 @@
 express = require 'express'
 stylus = require 'stylus'
+colors = require 'colors'
 connect = require 'connect'
 stitch = require 'stitch'
 twitter = require 'ntwitter'
 url = require 'url'
 app = express.createServer()
 kue = require 'kue'
+winston = require 'winston'
 redis = require 'kue/node_modules/redis'
 
 # Configure Redis
@@ -34,6 +36,8 @@ compile = (str, path) ->
     .import "#{__dirname}/src/stylesheets"
     .set 'filename', path
     .set 'compress', true
+
+
 
 #
 # Configure twitter
@@ -77,23 +81,30 @@ twit = new twitter twitterOptions
 #   - Create jobs for each #tag @designkitchen
 #
 twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
+  console.log "#{'Twitter stream opened - tracking:'.green} #{'@designkitchen, @holiduino'.cyan.underline}"
   stream.on 'data', (data) ->
     if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
       hashtags = data.entities.hashtags
 
       # Only capture tweets with a hashtag
-      unless hashtags.length is 0
-        # Assemble job data from tweet data
+      if hashtags.length is 0
+        console.log "#{'Tweet received - discarded:'.yellow} tweet contained no #tags"
+      else
+        console.log "#{'Tweet received - saved:'.green} tweet ready for #tag analysis"
         hashtags.forEach (hashtag, i) ->
           hashtag = hashtag.text
-          jobData =
-            title:data.text
-            handle:data.user.screen_name
-            avatar:data.user.profile_image_url
-            hashtag:hashtag
-
           # Create a new arduino job with 3 attempts for each hashtag trigger
-          jobs.create(hashtag, jobData).attempts(3).save()
+          if tags.indexOf(hashtag) is -1
+            console.log "#{'Tweet analyzed - irrelevant:'.yellow} #{'#tag is unrelated'.cyan}"
+          else
+            console.log "#{'Tweet analyzed - processed:'.green} #{'#tag saved and job created'.cyan}"
+            jobData =
+              title:data.text
+              handle:data.user.screen_name
+              avatar:data.user.profile_image_url
+              hashtag:hashtag
+
+            jobs.create(hashtag, jobData).attempts(3).save()
 
 
 
@@ -104,12 +115,14 @@ twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
 #   - On connection, kick off job queue
 #
 arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
+  console.log 'Arduino is connected'.green
 
   #
   # ##Client Socket
   #
   #
   client = io.of('/client').on 'connection', (client_socket) ->
+    console.log "#{'Client connected:'.green} #{'camera is engaged'.cyan}"
     #
     # ## Socket communication
     #
