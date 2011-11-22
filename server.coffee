@@ -124,7 +124,6 @@ twit.stream 'user', track:users, (stream) ->
         logger.info 'Tweet received', 'hashtags':hashtags.length
         hashtags.forEach (hashtag, i) ->
           hashtag = hashtag.text
-          # Create a new arduino job with 3 attempts for each hashtag trigger
           if tags.indexOf(hashtag) is -1
             logger.warn 'Tweet discarded', 'relevant':false
           else
@@ -135,6 +134,7 @@ twit.stream 'user', track:users, (stream) ->
               avatar:data.user.profile_image_url
               hashtag:hashtag
 
+            # Create a new arduino job with 3 attempts for each hashtag trigger
             jobs.create(hashtag, jobData).attempts(3).save()
 
 
