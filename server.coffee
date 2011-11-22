@@ -9,8 +9,15 @@ app = express.createServer()
 kue = require 'kue'
 winston = require 'winston'
 redis = require 'kue/node_modules/redis'
+port = process.env.PORT || 1110
+io = require('socket.io').listen app
+io.set 'log level', 1
 
-# Configure Redis
+
+
+#
+## Queue config
+#
 kue.redis.createClient = () ->
   process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
   redisUrl = url.parse(process.env.REDISTOGO_URL)
@@ -19,9 +26,14 @@ kue.redis.createClient = () ->
   return client
 
 jobs = kue.createQueue()
-port = process.env.PORT || 1110
-io = require('socket.io').listen app
-io.set 'log level', 1
+kue.app.enable "jsonp callback"
+kue.app.set 'title', 'DK Holiday'
+
+
+
+#
+## Asset config
+#
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
 
 # Configure stylus to compile and serve all .styl files
@@ -29,7 +41,6 @@ cssOptions =
   src:"#{__dirname}/src"
   dest:"#{__dirname}/public"
   compile:compile
-
 
 # Define a custom compiler for stylus
 compile = (str, path) ->
@@ -39,8 +50,9 @@ compile = (str, path) ->
     .set 'compress', true
 
 
+
 #
-# Configure custom logging
+## Logging config
 #
 logLevels =
   levels:
@@ -52,34 +64,27 @@ logLevels =
     warn: 'yellow'
     error: 'red'
 
-
 `var logger = new (winston.Logger)({
   transports:[
-    new (winston.transports.Console)()
+    new (winston.transports.Console)({
+      colorize:true
+    })
   ],
-  levels:logLevels.levels
+  levels:logLevels.levels,
+  colors:logLevels.colors
 });
-
 winston.addColors(logLevels.colors);`
 
+
+
 #
-# Configure twitter
-#
-# TODO: Get production keys with @designkitchen account
+## Twitter config TODO: Get production keys with @designkitchen account
 #
 twitterOptions =
   consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
   consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
   access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
   access_token_secret:'cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI'
-
-
-buffer = (n) ->
-  nth = n
-  rnd = Math.floor(Math.random() * nth) + 1
-  if rnd is nth then return true
-  else return false
-
 
 tags = [
   'snow'
@@ -89,6 +94,26 @@ tags = [
   'fan'
 ]
 
+users = [
+  'designkitchen'
+  'holiduino'
+]
+
+# Create a new twitter stream
+twit = new twitter twitterOptions
+
+
+
+#
+## Buffer config
+#
+buffer = (n) ->
+  nth = n
+  rnd = Math.floor(Math.random() * nth) + 1
+  if rnd is nth then return true
+  else return false
+
+
 # Set buffer thresholds for each trigger for desired frequency
 thresholds =
   "snow":1
@@ -97,13 +122,6 @@ thresholds =
   "discoball":1
   "fan":1
 
-# Create a new twitter stream
-twit = new twitter twitterOptions
-
-users = [
-  'designkitchen'
-  'holiduino'
-]
 
 
 #
@@ -167,6 +185,7 @@ arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
     arduino_socket.on 'disconnect', () ->
       client_socket.emit 'arduino disconnected'
 
+    #arduino_socket.on 'connect', () ->
     client_socket.emit 'arduino connected'
 
     #
@@ -215,8 +234,4 @@ app.configure () ->
 
 # Start the App server
 app.listen port
-
-# Start the Queue server
-kue.app.enable "jsonp callback"
-kue.app.set 'title', 'DK Holiday'
 app.use kue.app
