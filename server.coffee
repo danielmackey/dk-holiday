@@ -21,6 +21,7 @@ kue.redis.createClient = () ->
 jobs = kue.createQueue()
 port = process.env.PORT || 1110
 io = require('socket.io').listen app
+io.set 'log level', 1
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
 
 # Configure stylus to compile and serve all .styl files
@@ -38,6 +39,28 @@ compile = (str, path) ->
     .set 'compress', true
 
 
+#
+# Configure custom logging
+#
+logLevels =
+  levels:
+    info: 0
+    warn: 1
+    error:2
+  colors:
+    info: 'green'
+    warn: 'yellow'
+    error: 'red'
+
+
+`var logger = new (winston.Logger)({
+  transports:[
+    new (winston.transports.Console)()
+  ],
+  levels:logLevels.levels
+});
+
+winston.addColors(logLevels.colors);`
 
 #
 # Configure twitter
@@ -63,41 +86,49 @@ tags = [
   'lights'
   'train'
   'discoball'
+  'fan'
 ]
 
 # Set buffer thresholds for each trigger for desired frequency
 thresholds =
   "snow":1
-  "lights":2
+  "lights":1
   "train":3
   "discoball":1
+  "fan":1
 
 # Create a new twitter stream
 twit = new twitter twitterOptions
+
+users = [
+  'designkitchen'
+  'holiduino'
+]
+
 
 #
 # ## Twitter stream
 #
 #   - Create jobs for each #tag @designkitchen
 #
-twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
-  console.log "#{'Twitter stream opened - tracking:'.green} #{'@designkitchen, @holiduino'.cyan.underline}"
+twit.stream 'user', track:users, (stream) ->
+  logger.info 'Twitter stream opened', 'following':users
   stream.on 'data', (data) ->
     if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
       hashtags = data.entities.hashtags
 
       # Only capture tweets with a hashtag
       if hashtags.length is 0
-        console.log "#{'Tweet received - discarded:'.yellow} tweet contained no #tags"
+        logger.warn 'Tweet discarded', 'hashtags':hashtags.length
       else
-        console.log "#{'Tweet received - saved:'.green} tweet ready for #tag analysis"
+        logger.info 'Tweet received', 'hashtags':hashtags.length
         hashtags.forEach (hashtag, i) ->
           hashtag = hashtag.text
           # Create a new arduino job with 3 attempts for each hashtag trigger
           if tags.indexOf(hashtag) is -1
-            console.log "#{'Tweet analyzed - irrelevant:'.yellow} #{'#tag is unrelated'.cyan}"
+            logger.warn 'Tweet discarded', 'relevant':false
           else
-            console.log "#{'Tweet analyzed - processed:'.green} #{'#tag saved and job created'.cyan}"
+            logger.info 'Tweet saved', 'hashtag':hashtag, 'jobsCreated':1
             jobData =
               title:data.text
               handle:data.user.screen_name
@@ -115,14 +146,14 @@ twit.stream 'user', track:['designkitchen','holiduino'], (stream) ->
 #   - On connection, kick off job queue
 #
 arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
-  console.log 'Arduino is connected'.green
+  logger.info 'Arduino connected', 'ready':true
 
   #
   # ##Client Socket
   #
   #
   client = io.of('/client').on 'connection', (client_socket) ->
-    console.log "#{'Client connected:'.green} #{'camera is engaged'.cyan}"
+    logger.info 'Client connected', 'audience':true
     #
     # ## Socket communication
     #
@@ -147,11 +178,13 @@ arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
     #
     process = (job, done) ->
       buffer_count = thresholds[job.data.hashtag]
-      done()
       if buffer(buffer_count)
         arduino_socket.emit 'action assignment', job
+        logger.info 'Arduino call', 'action':job.data.hashtag, 'by':job.data.handle
       else
         client_socket.emit 'tally mark', job
+        logger.info 'Tally for arduino call', 'action':job.data.hashtag, 'by':job.data.handle
+      done()
 
     jobs.process 'snow', (job, done) ->
       process job, done
@@ -187,4 +220,3 @@ app.listen port
 kue.app.enable "jsonp callback"
 kue.app.set 'title', 'DK Holiday'
 app.use kue.app
-console.log "Server started on port: #{port}"
