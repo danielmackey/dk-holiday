@@ -64,23 +64,32 @@ compile = (str, path) ->
 logLevels =
   levels:
     info:0
-    warn:1
-    error:2
+    junk:1
+    alert:2
+    tally:3
+    arduino:4
+    connect:5
+    disconnect:6
+    hold:7
+    save:8
   colors:
-    info:'green'
-    warn:'yellow'
-    error:'red'
+    info:'blue'
+    junk:'yellow'
+    alert:'red'
+    tally:'cyan'
+    arduino:'green'
+    connect:'green'
+    disconnect:'red'
+    hold:'cyan'
+    save:'green'
 
-`var logger = new (winston.Logger)({
-  transports:[
-    new (winston.transports.Console)({
-      colorize:true
-    })
-  ],
-  levels:logLevels.levels,
+logOptions =
+  transports:[new (winston.transports.Console)( colorize:true )]
+  levels:logLevels.levels
   colors:logLevels.colors
-});
-winston.addColors(logLevels.colors);`
+
+logger = new (winston.Logger)(logOptions)
+winston.addColors logLevels.colors
 
 
 
@@ -150,15 +159,15 @@ twit.stream 'user', track:users, (stream) ->
       hashtags = data.entities.hashtags
 
       if hashtags.length is 0
-        logger.warn 'Tweet discarded', 'hashtags':hashtags.length
+        logger.junk 'Tweet has no hashtags'
       else
-        logger.info 'Tweet received', 'hashtags':hashtags.length
+        logger.hold "Tweet has #{hashtags.length} hashtag"
         hashtags.forEach (hashtag, i) ->
           hashtag = hashtag.text
           if tags.indexOf(hashtag) is -1
-            logger.warn 'Tweet discarded', 'relevant':false
+            logger.junk "##{hashtag} is irrelevant"
           else
-            logger.info 'Tweet saved', 'hashtag':hashtag, 'jobsCreated':1
+            logger.save "##{hashtag} job"
             jobData =
               title:data.text
               handle:data.user.screen_name
@@ -178,10 +187,10 @@ twit.stream 'user', track:users, (stream) ->
 #   - Requires both channels to be connected for jobs to process
 #
 arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
-  logger.info 'Arduino connected', 'ready':true
+  logger.connect 'Arduino'
 
   client = io.of('/client').on 'connection', (client_socket) ->
-    logger.info 'Client connected', 'audience':true
+    logger.connect 'Client'
     client_socket.emit 'arduino connected'
 
     arduino_socket.on 'action complete', (job) ->
@@ -189,9 +198,8 @@ arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
       client_socket.emit 'new event', job
 
     arduino_socket.on 'disconnect', () ->
-      logger.info 'Arduino disconnected', 'ready':false
+      logger.disconnect 'Arduino'
       client_socket.emit 'arduino disconnected'
-
 
     #
     # ##Processing
@@ -204,10 +212,10 @@ arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
       buffer_count = thresholds[job.data.hashtag]
       if buffer(buffer_count)
         arduino_socket.emit 'action assignment', job
-        logger.info 'Arduino call', 'action':job.data.hashtag, 'by':job.data.handle
+        logger.arduino "##{job.data.hashtag} by @#{job.data.handle}"
       else
         client_socket.emit 'tally mark', job
-        logger.info 'Tally for arduino call', 'action':job.data.hashtag, 'by':job.data.handle
+        logger.tally "#{job.data.hashtag} by #{job.data.handle}"
       done()
 
     jobs.process 'snow', (job, done) ->

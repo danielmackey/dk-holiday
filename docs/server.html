@@ -56,16 +56,13 @@
     <span class="nx">warn</span><span class="o">:</span><span class="s1">&#39;yellow&#39;</span>
     <span class="nx">error</span><span class="o">:</span><span class="s1">&#39;red&#39;</span>
 
-<span class="o">`</span><span class="nx">var</span> <span class="nv">logger = </span><span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)({</span>
-  <span class="nx">transports</span><span class="o">:</span><span class="p">[</span>
-    <span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">transports</span><span class="p">.</span><span class="nx">Console</span><span class="p">)({</span>
-      <span class="nx">colorize</span><span class="o">:</span><span class="kc">true</span>
-    <span class="p">})</span>
-  <span class="p">],</span>
-  <span class="nx">levels</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">levels</span><span class="p">,</span>
+<span class="nv">logOptions =</span>
+  <span class="nx">transports</span><span class="o">:</span><span class="p">[</span><span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">transports</span><span class="p">.</span><span class="nx">Console</span><span class="p">)(</span> <span class="nx">colorize</span><span class="o">:</span><span class="kc">true</span> <span class="p">)]</span>
+  <span class="nx">levels</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">levels</span>
   <span class="nx">colors</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span>
-<span class="p">});</span>
-<span class="nx">winston</span><span class="p">.</span><span class="nx">addColors</span><span class="p">(</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span><span class="p">);</span><span class="o">`</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>Twitter config</h3>
+
+<span class="nv">logger = </span><span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)(</span><span class="nx">logOptions</span><span class="p">)</span>
+<span class="nx">winston</span><span class="p">.</span><span class="nx">addColors</span> <span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>Twitter config</h3>
 
 <p>TODO: Get production keys with @designkitchen account</p>
 
