@@ -10,6 +10,8 @@
     "stitch":"0.3.2",
     "stylus":"0.19.2",
     "knox":"0.0.9",
+    "notes":"0.0.1",
+    "docco":"0.3.0",
     "connect":"1.7.3",
     "supervisor":"0.2.0",
     "serialport":"0.3.x",

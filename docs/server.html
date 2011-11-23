@@ -1,0 +1,202 @@
+<!DOCTYPE html>  <html> <head>   <title>server.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="blink.html">                 blink.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               server.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">express = </span><span class="nx">require</span> <span class="s1">&#39;express&#39;</span>
+<span class="nv">stylus = </span><span class="nx">require</span> <span class="s1">&#39;stylus&#39;</span>
+<span class="nv">colors = </span><span class="nx">require</span> <span class="s1">&#39;colors&#39;</span>
+<span class="nv">connect = </span><span class="nx">require</span> <span class="s1">&#39;connect&#39;</span>
+<span class="nv">stitch = </span><span class="nx">require</span> <span class="s1">&#39;stitch&#39;</span>
+<span class="nv">twitter = </span><span class="nx">require</span> <span class="s1">&#39;ntwitter&#39;</span>
+<span class="nv">url = </span><span class="nx">require</span> <span class="s1">&#39;url&#39;</span>
+<span class="nv">app = </span><span class="nx">express</span><span class="p">.</span><span class="nx">createServer</span><span class="p">()</span>
+<span class="nv">kue = </span><span class="nx">require</span> <span class="s1">&#39;kue&#39;</span>
+<span class="nv">winston = </span><span class="nx">require</span> <span class="s1">&#39;winston&#39;</span>
+<span class="nv">redis = </span><span class="nx">require</span> <span class="s1">&#39;kue/node_modules/redis&#39;</span>
+<span class="nv">port = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">1110</span>
+<span class="nv">io = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;socket.io&#39;</span><span class="p">).</span><span class="nx">listen</span> <span class="nx">app</span>
+<span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;log level&#39;</span><span class="p">,</span> <span class="mi">1</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Queue config</h3>
+
+<ul>
+<li>Use redisToGo on Heroku</li>
+<li>Enable CORS with the job queue db for clientside stats</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">kue.redis.createClient = </span><span class="nf">() -&gt;</span>
+  <span class="nv">process.env.REDISTOGO_URL = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">REDISTOGO_URL</span> <span class="o">||</span> <span class="s2">&quot;redis://localhost:6379&quot;</span>
+  <span class="nv">redisUrl = </span><span class="nx">url</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">REDISTOGO_URL</span><span class="p">)</span>
+  <span class="nv">client = </span><span class="nx">redis</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span><span class="nx">redisUrl</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nx">redisUrl</span><span class="p">.</span><span class="nx">hostname</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nx">redisUrl</span><span class="p">.</span><span class="nx">auth</span> <span class="k">then</span> <span class="nx">client</span><span class="p">.</span><span class="nx">auth</span><span class="p">(</span><span class="nx">redisUrl</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="k">return</span> <span class="nx">client</span>
+
+<span class="nv">jobs = </span><span class="nx">kue</span><span class="p">.</span><span class="nx">createQueue</span><span class="p">()</span>
+<span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">enable</span> <span class="s2">&quot;jsonp callback&quot;</span>
+<span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;DK Holiday&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Asset config</h3>
+
+<ul>
+<li>Use stitch to package and serve clientside CoffeeScript modules</li>
+<li>Use stylus to precompile CSS</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">package = </span><span class="nx">stitch</span><span class="p">.</span><span class="nx">createPackage</span> <span class="nx">paths</span><span class="o">:</span><span class="p">[</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/src/javascripts&#39;</span><span class="p">],</span> <span class="nx">dependencies</span><span class="o">:</span><span class="p">[]</span>
+
+<span class="nv">cssOptions =</span>
+  <span class="nx">src</span><span class="o">:</span><span class="s2">&quot;#{__dirname}/src&quot;</span>
+  <span class="nx">dest</span><span class="o">:</span><span class="s2">&quot;#{__dirname}/public&quot;</span>
+  <span class="nx">compile</span><span class="o">:</span><span class="nx">compile</span>
+
+<span class="nv">compile = </span><span class="nf">(str, path) -&gt;</span>
+  <span class="nx">stylus</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">import</span> <span class="s2">&quot;#{__dirname}/src/stylesheets&quot;</span>
+    <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="nx">path</span>
+    <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Logging config</h3>
+
+<ul>
+<li>Use winston on the console with custom log levels and coloring</li>
+<li>Optionally log to a file transport</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">logLevels =</span>
+  <span class="nv">levels:</span>
+    <span class="nx">info</span><span class="o">:</span><span class="mi">0</span>
+    <span class="nx">warn</span><span class="o">:</span><span class="mi">1</span>
+    <span class="nx">error</span><span class="o">:</span><span class="mi">2</span>
+  <span class="nv">colors:</span>
+    <span class="nx">info</span><span class="o">:</span><span class="s1">&#39;green&#39;</span>
+    <span class="nx">warn</span><span class="o">:</span><span class="s1">&#39;yellow&#39;</span>
+    <span class="nx">error</span><span class="o">:</span><span class="s1">&#39;red&#39;</span>
+
+<span class="o">`</span><span class="nx">var</span> <span class="nv">logger = </span><span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)({</span>
+  <span class="nx">transports</span><span class="o">:</span><span class="p">[</span>
+    <span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">transports</span><span class="p">.</span><span class="nx">Console</span><span class="p">)({</span>
+      <span class="nx">colorize</span><span class="o">:</span><span class="kc">true</span>
+    <span class="p">})</span>
+  <span class="p">],</span>
+  <span class="nx">levels</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">levels</span><span class="p">,</span>
+  <span class="nx">colors</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span>
+<span class="p">});</span>
+<span class="nx">winston</span><span class="p">.</span><span class="nx">addColors</span><span class="p">(</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span><span class="p">);</span><span class="o">`</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>Twitter config</h3>
+
+<p>TODO: Get production keys with @designkitchen account</p>
+
+<ul>
+<li>Pluck tweets with hashtags that exist in the tags array</li>
+<li>Follow @designkitchen for production and @holiduino during development</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">twitterOptions =</span>
+  <span class="nx">consumer_key</span><span class="o">:</span><span class="s1">&#39;hy0r9Q5TqWZjbGHGPfwPjg&#39;</span>
+  <span class="nx">consumer_secret</span><span class="o">:</span><span class="s1">&#39;EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w&#39;</span>
+  <span class="nx">access_token_key</span><span class="o">:</span><span class="s1">&#39;384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq&#39;</span>
+  <span class="nx">access_token_secret</span><span class="o">:</span><span class="s1">&#39;cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI&#39;</span>
+
+<span class="nv">tags = </span><span class="p">[</span>
+  <span class="s1">&#39;snow&#39;</span>
+  <span class="s1">&#39;lights&#39;</span>
+  <span class="s1">&#39;train&#39;</span>
+  <span class="s1">&#39;discoball&#39;</span>
+  <span class="s1">&#39;fan&#39;</span>
+<span class="p">]</span>
+
+<span class="nv">users = </span><span class="p">[</span>
+  <span class="s1">&#39;designkitchen&#39;</span>
+  <span class="s1">&#39;holiduino&#39;</span>
+<span class="p">]</span>
+
+<span class="nv">twit = </span><span class="k">new</span> <span class="nx">twitter</span> <span class="nx">twitterOptions</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>Buffer config</h3>
+
+<ul>
+<li>Set tipping points in the thresholds object</li>
+<li>Each tipping point determines the individual frequency of events</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">buffer = </span><span class="nf">(n) -&gt;</span>
+  <span class="nv">nth = </span><span class="nx">n</span>
+  <span class="nv">rnd = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">nth</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">if</span> <span class="nx">rnd</span> <span class="o">is</span> <span class="nx">nth</span> <span class="k">then</span> <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">else</span> <span class="k">return</span> <span class="kc">false</span>
+
+<span class="nv">thresholds =</span>
+  <span class="s2">&quot;snow&quot;</span><span class="o">:</span><span class="mi">1</span>
+  <span class="s2">&quot;lights&quot;</span><span class="o">:</span><span class="mi">1</span>
+  <span class="s2">&quot;train&quot;</span><span class="o">:</span><span class="mi">3</span>
+  <span class="s2">&quot;discoball&quot;</span><span class="o">:</span><span class="mi">1</span>
+  <span class="s2">&quot;fan&quot;</span><span class="o">:</span><span class="mi">1</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h2>Streaming</h2>
+
+<ul>
+<li>Grab tweets @designkitchen</li>
+<li>Filter for hashtags. Only tweets with hashtags are caught</li>
+<li>Filter for relevancy. Only tweets with hashtags in the tags array are saved</li>
+<li>Create a job for each relevant hashtag</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">twit</span><span class="p">.</span><span class="nx">stream</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nx">track</span><span class="o">:</span><span class="nx">users</span><span class="p">,</span> <span class="nf">(stream) -&gt;</span>
+  <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Twitter stream opened&#39;</span><span class="p">,</span> <span class="s1">&#39;following&#39;</span><span class="o">:</span><span class="nx">users</span>
+  <span class="nx">stream</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
+    <span class="k">if</span> <span class="nx">data</span><span class="p">.</span><span class="nx">friends</span> <span class="o">is</span> <span class="kc">undefined</span> <span class="c1"># The first stream message is an array of friend IDs, ignore it</span>
+      <span class="nv">hashtags = </span><span class="nx">data</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">hashtags</span>
+
+      <span class="k">if</span> <span class="nx">hashtags</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+        <span class="nx">logger</span><span class="p">.</span><span class="nx">warn</span> <span class="s1">&#39;Tweet discarded&#39;</span><span class="p">,</span> <span class="s1">&#39;hashtags&#39;</span><span class="o">:</span><span class="nx">hashtags</span><span class="p">.</span><span class="nx">length</span>
+      <span class="k">else</span>
+        <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Tweet received&#39;</span><span class="p">,</span> <span class="s1">&#39;hashtags&#39;</span><span class="o">:</span><span class="nx">hashtags</span><span class="p">.</span><span class="nx">length</span>
+        <span class="nx">hashtags</span><span class="p">.</span><span class="nx">forEach</span> <span class="nf">(hashtag, i) -&gt;</span>
+          <span class="nv">hashtag = </span><span class="nx">hashtag</span><span class="p">.</span><span class="nx">text</span>
+          <span class="k">if</span> <span class="nx">tags</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">hashtag</span><span class="p">)</span> <span class="o">is</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="nx">logger</span><span class="p">.</span><span class="nx">warn</span> <span class="s1">&#39;Tweet discarded&#39;</span><span class="p">,</span> <span class="s1">&#39;relevant&#39;</span><span class="o">:</span><span class="kc">false</span>
+          <span class="k">else</span>
+            <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Tweet saved&#39;</span><span class="p">,</span> <span class="s1">&#39;hashtag&#39;</span><span class="o">:</span><span class="nx">hashtag</span><span class="p">,</span> <span class="s1">&#39;jobsCreated&#39;</span><span class="o">:</span><span class="mi">1</span>
+            <span class="nv">jobData =</span>
+              <span class="nx">title</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">text</span>
+              <span class="nx">handle</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">screen_name</span>
+              <span class="nx">avatar</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">profile_image_url</span>
+              <span class="nx">hashtag</span><span class="o">:</span><span class="nx">hashtag</span>
+
+            <span class="nx">jobs</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">hashtag</span><span class="p">,</span> <span class="nx">jobData</span><span class="p">).</span><span class="nx">attempts</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="nx">save</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2>Messaging</h2>
+
+<ul>
+<li>2 websocket channels: 1 for browser clients and 1 for arduino</li>
+<li>Announce connections and disconnections</li>
+<li>Announce completed actions</li>
+<li>Requires both channels to be connected for jobs to process</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">arduino = </span><span class="nx">io</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">&#39;/arduino&#39;</span><span class="p">).</span><span class="kc">on</span> <span class="s1">&#39;connection&#39;</span><span class="p">,</span> <span class="nf">(arduino_socket) -&gt;</span>
+  <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Arduino connected&#39;</span><span class="p">,</span> <span class="s1">&#39;ready&#39;</span><span class="o">:</span><span class="kc">true</span>
+
+  <span class="nv">client = </span><span class="nx">io</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">).</span><span class="kc">on</span> <span class="s1">&#39;connection&#39;</span><span class="p">,</span> <span class="nf">(client_socket) -&gt;</span>
+    <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Client connected&#39;</span><span class="p">,</span> <span class="s1">&#39;audience&#39;</span><span class="o">:</span><span class="kc">true</span>
+    <span class="nx">client_socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;arduino connected&#39;</span>
+
+    <span class="nx">arduino_socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;action complete&#39;</span><span class="p">,</span> <span class="nf">(job) -&gt;</span>
+      <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Arduino action complete&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="o">:</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span>
+      <span class="nx">client_socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;new event&#39;</span><span class="p">,</span> <span class="nx">job</span>
+
+    <span class="nx">arduino_socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;disconnect&#39;</span><span class="p">,</span> <span class="nf">() -&gt;</span>
+      <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Arduino disconnected&#39;</span><span class="p">,</span> <span class="s1">&#39;ready&#39;</span><span class="o">:</span><span class="kc">false</span>
+      <span class="nx">client_socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;arduino disconnected&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h2>Processing</h2>
+
+<ul>
+<li>Process each type of job and add a tally mark</li>
+<li>Jobs and arduino calls are not 1:1. buffer() uses the values defined in the thresholds object to create tipping points for each action</li>
+<li>Call arduino with an action assignment when the tipping point is reached</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">process = </span><span class="nf">(job, done) -&gt;</span>
+      <span class="nv">buffer_count = </span><span class="nx">thresholds</span><span class="p">[</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span><span class="p">]</span>
+      <span class="k">if</span> <span class="nx">buffer</span><span class="p">(</span><span class="nx">buffer_count</span><span class="p">)</span>
+        <span class="nx">arduino_socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;action assignment&#39;</span><span class="p">,</span> <span class="nx">job</span>
+        <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Arduino call&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="o">:</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span><span class="p">,</span> <span class="s1">&#39;by&#39;</span><span class="o">:</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">handle</span>
+      <span class="k">else</span>
+        <span class="nx">client_socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;tally mark&#39;</span><span class="p">,</span> <span class="nx">job</span>
+        <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span> <span class="s1">&#39;Tally for arduino call&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="o">:</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span><span class="p">,</span> <span class="s1">&#39;by&#39;</span><span class="o">:</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">handle</span>
+      <span class="nx">done</span><span class="p">()</span>
+
+    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;snow&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;lights&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;discoball&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h2>Consuming</h2>
+
+<ul>
+<li>Use stylus and stitch middleware with an express webserver</li>
+<li>Serve index.html from the public dir</li>
+<li>Start the app and queue servers</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="nf">() -&gt;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">app</span><span class="p">.</span><span class="nx">router</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">stylus</span><span class="p">.</span><span class="nx">middleware</span> <span class="nx">cssOptions</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">express</span><span class="p">.</span><span class="nx">static</span> <span class="s2">&quot;#{__dirname}/public&quot;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;/application.js&#39;</span><span class="p">,</span> <span class="nx">package</span><span class="p">.</span><span class="nx">createServer</span><span class="p">()</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">sendfile</span> <span class="s2">&quot;#{__dirname}/public/index.html&quot;</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">kue</span><span class="p">.</span><span class="nx">app</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

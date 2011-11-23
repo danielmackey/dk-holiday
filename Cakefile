@@ -1,32 +1,22 @@
+{spawn, exec} = require 'child_process'
+{log, error} = console; print = log
+Notes = require 'notes'
 fs = require 'fs'
 sys = require 'sys'
-knox = require 'knox'
 colors = require 'colors'
-stitch = require 'stitch'
-cssmin = require 'clean-css'
-jsmin = require 'uglify-js'
-exec = require('child_process').exec
 
-status = (error, stdout, stderr) -> sys.puts stdout
+shell = (cmds, callback) ->
+    cmds = [cmds] if Object::toString.apply(cmds) isnt '[object Array]'
+    exec cmds.join(' && '), (err, stdout, stderr) ->
+        print trimStdout if trimStdout = stdout.trim()
+        error stderr.trim() if err
+        callback() if callback
 
-task 'deploy', 'Upload assets to S3', ->
-  s3Options =
-    key: ''
-    secret: ''
-    bucket: ''
 
-  client = knox.createClient s3Options
+task 'notes', 'Print out notes from project', ->
+  notes = new Notes __dirname
+  notes.annotate()
 
-  assets = []
 
-  assets.forEach (file, i) ->
-    fs.readFile "public/#{file}", (err, buf) ->
-      reqOptions =
-        'Content-Length':buf.length
-        'Content-Type':'text/plain'
-
-      req = client.put "/#{file}", reqOptions
-      req.on 'response', (res) ->
-        if res.statusCode is 200
-          sys.puts("#{"✓ saved to".green} #{req.url.cyan.underline}")
-      req.end buf
+task 'docco', 'build the docs', (options) ->
+  shell 'docco *.coffee'

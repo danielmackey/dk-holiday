@@ -16,7 +16,10 @@ io.set 'log level', 1
 
 
 #
-## Queue config
+# ###Queue config
+#
+#   - Use redisToGo on Heroku
+#   - Enable CORS with the job queue db for clientside stats
 #
 kue.redis.createClient = () ->
   process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
@@ -32,17 +35,18 @@ kue.app.set 'title', 'DK Holiday'
 
 
 #
-## Asset config
+# ###Asset config
+#
+#   - Use stitch to package and serve clientside CoffeeScript modules
+#   - Use stylus to precompile CSS
 #
 package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
 
-# Configure stylus to compile and serve all .styl files
 cssOptions =
   src:"#{__dirname}/src"
   dest:"#{__dirname}/public"
   compile:compile
 
-# Define a custom compiler for stylus
 compile = (str, path) ->
   stylus(str)
     .import "#{__dirname}/src/stylesheets"
@@ -52,17 +56,20 @@ compile = (str, path) ->
 
 
 #
-## Logging config
+# ###Logging config
+#
+#   - Use winston on the console with custom log levels and coloring
+#   - Optionally log to a file transport
 #
 logLevels =
   levels:
-    info: 0
-    warn: 1
+    info:0
+    warn:1
     error:2
   colors:
-    info: 'green'
-    warn: 'yellow'
-    error: 'red'
+    info:'green'
+    warn:'yellow'
+    error:'red'
 
 `var logger = new (winston.Logger)({
   transports:[
@@ -78,7 +85,11 @@ winston.addColors(logLevels.colors);`
 
 
 #
-## Twitter config TODO: Get production keys with @designkitchen account
+# ###Twitter config
+# TODO: Get production keys with @designkitchen account
+#
+#   - Pluck tweets with hashtags that exist in the tags array
+#   - Follow @designkitchen for production and @holiduino during development
 #
 twitterOptions =
   consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
@@ -99,13 +110,15 @@ users = [
   'holiduino'
 ]
 
-# Create a new twitter stream
 twit = new twitter twitterOptions
 
 
 
 #
-## Buffer config
+# ###Buffer config
+#
+#   - Set tipping points in the thresholds object
+#   - Each tipping point determines the individual frequency of events
 #
 buffer = (n) ->
   nth = n
@@ -113,8 +126,6 @@ buffer = (n) ->
   if rnd is nth then return true
   else return false
 
-
-# Set buffer thresholds for each trigger for desired frequency
 thresholds =
   "snow":1
   "lights":1
@@ -125,9 +136,12 @@ thresholds =
 
 
 #
-# ## Twitter stream
+# ##Streaming
 #
-#   - Create jobs for each #tag @designkitchen
+#   - Grab tweets @designkitchen
+#   - Filter for hashtags. Only tweets with hashtags are caught
+#   - Filter for relevancy. Only tweets with hashtags in the tags array are saved
+#   - Create a job for each relevant hashtag
 #
 twit.stream 'user', track:users, (stream) ->
   logger.info 'Twitter stream opened', 'following':users
@@ -135,7 +149,6 @@ twit.stream 'user', track:users, (stream) ->
     if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
       hashtags = data.entities.hashtags
 
-      # Only capture tweets with a hashtag
       if hashtags.length is 0
         logger.warn 'Tweet discarded', 'hashtags':hashtags.length
       else
@@ -152,48 +165,40 @@ twit.stream 'user', track:users, (stream) ->
               avatar:data.user.profile_image_url
               hashtag:hashtag
 
-            # Create a new arduino job with 3 attempts for each hashtag trigger
             jobs.create(hashtag, jobData).attempts(3).save()
 
 
 
 #
-# ##Arduino Socket
+# ##Messaging
 #
-#   - Listen for connections namspaced to /arduino
-#   - On connection, kick off job queue
+#   - 2 websocket channels: 1 for browser clients and 1 for arduino
+#   - Announce connections and disconnections
+#   - Announce completed actions
+#   - Requires both channels to be connected for jobs to process
 #
 arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
   logger.info 'Arduino connected', 'ready':true
 
-  #
-  # ##Client Socket
-  #
-  #
   client = io.of('/client').on 'connection', (client_socket) ->
     logger.info 'Client connected', 'audience':true
-    #
-    # ## Socket communication
-    #
-    #   - Listen for completed actions
-    #   - Update the clients with new events
-    #   - Announce when out of commission
-    #
+    client_socket.emit 'arduino connected'
+
     arduino_socket.on 'action complete', (job) ->
+      logger.info 'Arduino action complete', 'action':job.data.hashtag
       client_socket.emit 'new event', job
 
     arduino_socket.on 'disconnect', () ->
+      logger.info 'Arduino disconnected', 'ready':false
       client_socket.emit 'arduino disconnected'
 
-    #arduino_socket.on 'connect', () ->
-    client_socket.emit 'arduino connected'
 
     #
-    # ##Job Processor
+    # ##Processing
     #
-    #   - Process all 'arduino action' jobs
-    #   - Send message to activate arduino every nth time
-    #   - Add a tally mark all other times
+    #   - Process each type of job and add a tally mark
+    #   - Jobs and arduino calls are not 1:1. buffer() uses the values defined in the thresholds object to create tipping points for each action
+    #   - Call arduino with an action assignment when the tipping point is reached
     #
     process = (job, done) ->
       buffer_count = thresholds[job.data.hashtag]
@@ -219,10 +224,11 @@ arduino = io.of('/arduino').on 'connection', (arduino_socket) ->
 
 
 #
-# ##Configure the App server
+# ##Consuming
 #
-#   - Use stylus and stitch middleware
+#   - Use stylus and stitch middleware with an express webserver
 #   - Serve index.html from the public dir
+#   - Start the app and queue servers
 #
 app.configure () ->
   app.use app.router
@@ -232,6 +238,5 @@ app.configure () ->
   app.get '/', (req, res) ->
     res.sendfile "#{__dirname}/public/index.html"
 
-# Start the App server
 app.listen port
 app.use kue.app
