@@ -41,7 +41,8 @@ ledState = arduino.LOW
 #board.pinMode 13, arduino.OUTPUT
 #board.pinMode 13, ledState
 
-socket = io.connect 'http://localhost:1110/arduino'
+socket = io.connect 'http://localhost:1110/'
+
 socket.on 'action assignment', (job) ->
   switch job.data.hashtag
     when "snow"

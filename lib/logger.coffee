@@ -1,0 +1,40 @@
+winston = require 'winston'
+
+#
+# ###Logging config
+#
+#   - Use winston on the console with custom log levels and coloring
+#   - Optionally log to a file transport
+#
+module.exports = Logger =
+  init: () ->
+    logLevels =
+      levels:
+        info:0
+        junk:1
+        alert:2
+        tally:3
+        arduino:4
+        connect:5
+        disconnect:6
+        hold:7
+        save:8
+      colors:
+        info:'blue'
+        junk:'yellow'
+        alert:'red'
+        tally:'cyan'
+        arduino:'green'
+        connect:'green'
+        disconnect:'red'
+        hold:'cyan'
+        save:'green'
+
+    logOptions =
+      transports:[new (winston.transports.Console)( colorize:true )]
+      levels:logLevels.levels
+      colors:logLevels.colors
+
+    logger = new (winston.Logger)(logOptions)
+    winston.addColors logLevels.colors
+    return logger

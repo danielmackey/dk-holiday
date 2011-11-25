@@ -7,7 +7,7 @@ module.exports = class Socket
 
   openSockets: ->
     @tweets = $("ul.tweets")
-    client = io.connect '/client'
+    client = io.connect '/'
     client.on 'new event', (job) =>
       @tweets.find('li:last-child').remove()
       @tweets.prepend '<li data-tweet="'+job.data.title+'"><a href="http://twitter.com/'+job.data.handle+'">@'+job.data.handle+'</a> just made it <b>'+job.data.hashtag+'</b> in the DK Holiday Room.</li>'
@@ -15,11 +15,6 @@ module.exports = class Socket
     client.on 'tally mark', (job) ->
       console.log "tally mark for: #{job.data.hashtag}"
 
-    client.on 'arduino connected', () ->
-      $("#content h2 small.status").text 'Connected'
-
-    client.on 'arduino disconnected', () ->
-      $("#content h2 small.status").text 'Disconnected'
 
   eventsLog: (pagination) =>
       ajaxOptions =
