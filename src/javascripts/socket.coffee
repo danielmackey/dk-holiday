@@ -2,18 +2,18 @@ module.exports = class Socket
   constructor: () ->
 
   init: () ->
-    @openSockets()
+    @openSocket()
     @eventsLog '0..10'
 
-  openSockets: ->
+  openSocket: ->
     @tweets = $("ul.tweets")
-    client = io.connect '/'
+    client = io.connect '/arduino'
     client.on 'new event', (job) =>
       @tweets.find('li:last-child').remove()
       @tweets.prepend '<li data-tweet="'+job.data.title+'"><a href="http://twitter.com/'+job.data.handle+'">@'+job.data.handle+'</a> just made it <b>'+job.data.hashtag+'</b> in the DK Holiday Room.</li>'
 
     client.on 'tally mark', (job, fn) ->
-      fn job.data.hashtag
+      fn job
       console.log "tally mark for: #{job.data.hashtag}"
 
 

@@ -41,7 +41,7 @@ ledState = arduino.LOW
 #board.pinMode 13, arduino.OUTPUT
 #board.pinMode 13, ledState
 
-socket = io.connect 'http://localhost:1110/'
+socket = io.connect 'http://localhost:1110/arduino'
 
 socket.on 'action assignment', (job, fn) ->
   switch job.data.hashtag
@@ -64,5 +64,5 @@ socket.on 'action assignment', (job, fn) ->
   #board.digitalWrite pin, ledState = arduino.HIGH # on
   #setTimeout(board.digitalWrite(pin, ledState = arduino.LOW), time) # off
 
-  console.log "#{"✓ ".green} #{job.data.hashtag.rainbow} by #{job.data.handle.cyan}"
+  console.log "#{"✓ ".green} ##{job.data.hashtag.rainbow} by @#{job.data.handle.cyan}"
   fn job

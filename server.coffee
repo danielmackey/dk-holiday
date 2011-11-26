@@ -2,12 +2,11 @@ express = require 'express'
 stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
-url = require 'url'
 app = express.createServer()
+url = require 'url'
 kue = require 'kue'
 redis = require 'kue/node_modules/redis'
 port = process.env.PORT || 1110
-
 
 
 #
@@ -83,7 +82,7 @@ Logger = require './lib/logger'
 logger = new Logger()
 
 TwitterStream = require './lib/twitter'
-TwitterStream.init jobs, logger
+new TwitterStream jobs, logger
 
 Worker = require './lib/worker'
-Worker.init app, jobs, logger
+new Worker app, jobs, logger

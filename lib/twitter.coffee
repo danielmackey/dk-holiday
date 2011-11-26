@@ -37,22 +37,25 @@ twit = new twitter twitterOptions
 #   - Filter for relevancy. Only tweets with hashtags in the tags array are saved
 #   - Create a job for each relevant hashtag
 #
-module.exports = TwitterStream =
-  init: (jobs, logger) ->
-    twit.stream 'user', track:users, (stream) ->
-  	  logger.info 'Twitter stream opened', 'following':users
-  	  stream.on 'data', (data) ->
-  	    if data.friends is undefined # The first stream message is an array of friend IDs, ignore it
+module.exports = class TwitterStream
+  constructor: (@jobs, @logger) ->
+    @init()
+
+  init: ->
+    twit.stream 'user', track:users, (stream) =>
+  	  @logger.info 'Twitter stream opened', 'following':users
+  	  stream.on 'data', (data) =>
+  	    unless data.friends? # The first stream message is an array of friend IDs, ignore it
   	      hashtags = data.entities.hashtags
 
   	      if hashtags.length is 0
-  	        logger.junk 'Tweet has no hashtags'
+  	        @logger.junk 'Tweet has no hashtags'
   	      else
-  	        logger.hold "Tweet has #{hashtags.length} hashtag"
-  	        hashtags.forEach (hashtag, i) ->
+  	        @logger.hold "Tweet has #{hashtags.length} hashtag"
+  	        hashtags.forEach (hashtag, i) =>
   	          hashtag = hashtag.text
   	          if tags.indexOf(hashtag) is -1
-  	            logger.junk "##{hashtag} is irrelevant"
+  	            @logger.junk "##{hashtag} is irrelevant"
   	          else
-                logger.save "##{hashtag} job"
-                Job.create hashtag, data, jobs
+                @logger.save "##{hashtag} job"
+                Job.create hashtag, data, @jobs

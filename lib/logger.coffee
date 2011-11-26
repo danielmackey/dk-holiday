@@ -23,16 +23,18 @@ module.exports = class Logger
         disconnect:6
         hold:7
         save:8
+        confirm:9
       colors:
         info:'blue'
         junk:'yellow'
         alert:'red'
         tally:'cyan'
-        arduino:'green'
+        arduino:'cyan'
         connect:'green'
         disconnect:'red'
         hold:'cyan'
         save:'green'
+        confirm:'green'
 
     logOptions =
       transports:[new (winston.transports.Console)( colorize:true )]
