@@ -71,14 +71,16 @@ app.listen port
 
 
 #
-# ### App Workflow
+# ###App Workflow
 #
-#   - Audit all processes with a logger
-#   - Listen to a Twitter stream
-#   - Create and process relevant jobs
+#   - Open and listen to a Twitter stream
+#   - Capture tweets with relevant hashtags
+#   - Create a job for each relevant hashtag and add to queue
+#   - Process each job and call buffer
+#   - Buffer triggers arduino each time the tipping point is reached
 #
 Logger = require './lib/logger'
-logger = Logger.init()
+logger = new Logger()
 
 TwitterStream = require './lib/twitter'
 TwitterStream.init jobs, logger

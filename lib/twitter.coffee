@@ -1,13 +1,10 @@
 twitter = require 'ntwitter'
-
+Job = require './job'
 
 
 #
 # ###Twitter config
 # TODO: Get production keys with @designkitchen account
-#
-#   - Pluck tweets with hashtags that exist in the tags array
-#   - Follow @designkitchen for production and @holiduino during development
 #
 twitterOptions =
   consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
@@ -57,11 +54,5 @@ module.exports = TwitterStream =
   	          if tags.indexOf(hashtag) is -1
   	            logger.junk "##{hashtag} is irrelevant"
   	          else
-  	            logger.save "##{hashtag} job"
-  	            jobData =
-  	              title:data.text
-  	              handle:data.user.screen_name
-  	              avatar:data.user.profile_image_url
-  	              hashtag:hashtag
-
-  	            jobs.create(hashtag, jobData).attempts(3).save()
+                logger.save "##{hashtag} job"
+                Job.create hashtag, data, jobs

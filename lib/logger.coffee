@@ -6,7 +6,11 @@ winston = require 'winston'
 #   - Use winston on the console with custom log levels and coloring
 #   - Optionally log to a file transport
 #
-module.exports = Logger =
+module.exports = class Logger
+  constructor: () ->
+    @logger = @init()
+    return @logger
+
   init: () ->
     logLevels =
       levels:
