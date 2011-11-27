@@ -1,6 +1,6 @@
 Socket = require 'socket'
 
-module.exports = App =
+module.exports = Client =
   init: () ->
     events = new Socket()
     events.init()
