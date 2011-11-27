@@ -14,9 +14,9 @@ shell = (cmds, callback) ->
 
 
 task 'notes', 'Print out notes from project', ->
-  notes = new Notes __dirname
+  notes = new Notes "#{__dirname}/app"
   notes.annotate()
 
 
-task 'docco', 'build the docs', (options) ->
+task 'docs', 'build the docs', (options) ->
   shell 'docco *.coffee'

@@ -85,8 +85,8 @@ module.exports = class Worker
           done()
       else
         @logger.tally "#{job.data.hashtag} by #{job.data.handle}"
-        @socket.emit 'tally mark', job, (completedJob) =>
-          @logger.confirm "Tally mark counted", 'action':completedJob.data.hashtag
+        @socket.emit 'tally mark', job, (talliedJob) =>
+          @logger.confirm "Tally mark counted", 'action':talliedJob.data.hashtag
           done()
 
     #

@@ -30,7 +30,7 @@ twit = new twitter twitterOptions
 
 
 #
-# ##Streaming
+# ##Twitter Streaming
 #
 #   - Grab tweets @designkitchen
 #   - Filter for hashtags. Only tweets with hashtags are caught
@@ -43,19 +43,23 @@ module.exports = class TwitterStream
 
   init: ->
     twit.stream 'user', track:users, (stream) =>
-  	  @logger.info 'Twitter stream opened', 'following':users
-  	  stream.on 'data', (data) =>
-  	    unless data.friends? # The first stream message is an array of friend IDs, ignore it
-  	      hashtags = data.entities.hashtags
+      @logger.info 'Twitter stream opened', 'following':users
 
-  	      if hashtags.length is 0
-  	        @logger.junk 'Tweet has no hashtags'
-  	      else
-  	        @logger.hold "Tweet has #{hashtags.length} hashtag"
-  	        hashtags.forEach (hashtag, i) =>
-  	          hashtag = hashtag.text
-  	          if tags.indexOf(hashtag) is -1
-  	            @logger.junk "##{hashtag} is irrelevant"
-  	          else
-                @logger.save "##{hashtag} job"
-                Job.create hashtag, data, @jobs
+      stream.on 'data', (data) =>
+        # The first stream message is an array of friend IDs, ignore it
+        unless data.friends? then @filter data
+
+  filter: (data) ->
+    hashtags = data.entities.hashtags
+
+    if hashtags.length is 0 then @logger.junk 'Tweet has no hashtags'
+    else
+      @logger.hold "Tweet has #{hashtags.length} hashtag"
+
+      hashtags.forEach (hashtag, i) =>
+        hashtag = hashtag.text
+
+        if tags.indexOf(hashtag) is -1 then @logger.junk "##{hashtag} is irrelevant"
+        else
+          @logger.save "##{hashtag} job"
+          Job.create hashtag, data, @jobs

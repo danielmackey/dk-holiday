@@ -34,16 +34,16 @@ kue.app.set 'title', 'DK Holiday'
 #   - Use stitch to package and serve clientside CoffeeScript modules
 #   - Use stylus to precompile CSS
 #
-package = stitch.createPackage paths:[__dirname + '/src/javascripts'], dependencies:[]
+package = stitch.createPackage paths:[__dirname + '/src/client/javascripts'], dependencies:[]
 
 cssOptions =
-  src:"#{__dirname}/src"
-  dest:"#{__dirname}/public"
+  src:"#{__dirname}/app/src/client"
+  dest:"#{__dirname}/app/public"
   compile:compile
 
 compile = (str, path) ->
   stylus(str)
-    .import "#{__dirname}/src/stylesheets"
+    .import "#{__dirname}/app/src/client/stylesheets"
     .set 'filename', path
     .set 'compress', true
 
@@ -62,7 +62,7 @@ app.configure () ->
   app.use express.static "#{__dirname}/public"
   app.get '/application.js', package.createServer()
   app.get '/', (req, res) ->
-    res.sendfile "#{__dirname}/public/index.html"
+    res.sendfile "#{__dirname}/app/public/index.html"
 
 app.use kue.app
 app.listen port
@@ -78,11 +78,11 @@ app.listen port
 #   - Process each job and call buffer
 #   - Buffer triggers arduino each time the tipping point is reached
 #
-Logger = require './lib/logger'
+Logger = require './src/server/logger'
 logger = new Logger()
 
-TwitterStream = require './lib/twitter'
+TwitterStream = require './src/server/twitter'
 new TwitterStream jobs, logger
 
-Worker = require './lib/worker'
+Worker = require './src/server/worker'
 new Worker app, jobs, logger
