@@ -19,4 +19,4 @@ task 'notes', 'Print out notes from project', ->
 
 
 task 'docs', 'build the docs', (options) ->
-  shell 'docco *.coffee'
+  shell "docco #{__dirname}/app/*.coffee #{__dirname}/app/src/server/*.coffee #{__dirname}/app/src/client/javascripts/*.coffee"

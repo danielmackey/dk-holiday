@@ -1,0 +1,45 @@
+<!DOCTYPE html>  <html> <head>   <title>logger.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="blink.html">                 blink.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="app.html">                 app.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="job.html">                 job.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="twitter.html">                 twitter.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               logger.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">winston = </span><span class="nx">require</span> <span class="s1">&#39;winston&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Logging config</h3>
+
+<ul>
+<li>Use <a href="https://github.com/flatiron/winston">winston</a> on the console with custom log levels and coloring</li>
+<li>Optionally log to a file transport</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">module.exports = </span><span class="k">class</span> <span class="nx">Logger</span>
+  <span class="nv">constructor: </span><span class="nf">() -&gt;</span>
+    <span class="vi">@logger = </span><span class="nx">@init</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nx">@logger</span>
+
+  <span class="nv">init: </span><span class="nf">() -&gt;</span>
+    <span class="nv">logLevels =</span>
+      <span class="nv">levels:</span>
+        <span class="nx">info</span><span class="o">:</span><span class="mi">0</span>
+        <span class="nx">junk</span><span class="o">:</span><span class="mi">1</span>
+        <span class="nx">alert</span><span class="o">:</span><span class="mi">2</span>
+        <span class="nx">tally</span><span class="o">:</span><span class="mi">3</span>
+        <span class="nx">arduino</span><span class="o">:</span><span class="mi">4</span>
+        <span class="nx">connect</span><span class="o">:</span><span class="mi">5</span>
+        <span class="nx">disconnect</span><span class="o">:</span><span class="mi">6</span>
+        <span class="nx">hold</span><span class="o">:</span><span class="mi">7</span>
+        <span class="nx">save</span><span class="o">:</span><span class="mi">8</span>
+        <span class="nx">confirm</span><span class="o">:</span><span class="mi">9</span>
+      <span class="nv">colors:</span>
+        <span class="nx">info</span><span class="o">:</span><span class="s1">&#39;blue&#39;</span>
+        <span class="nx">junk</span><span class="o">:</span><span class="s1">&#39;yellow&#39;</span>
+        <span class="nx">alert</span><span class="o">:</span><span class="s1">&#39;red&#39;</span>
+        <span class="nx">tally</span><span class="o">:</span><span class="s1">&#39;cyan&#39;</span>
+        <span class="nx">arduino</span><span class="o">:</span><span class="s1">&#39;cyan&#39;</span>
+        <span class="nx">connect</span><span class="o">:</span><span class="s1">&#39;green&#39;</span>
+        <span class="nx">disconnect</span><span class="o">:</span><span class="s1">&#39;red&#39;</span>
+        <span class="nx">hold</span><span class="o">:</span><span class="s1">&#39;cyan&#39;</span>
+        <span class="nx">save</span><span class="o">:</span><span class="s1">&#39;green&#39;</span>
+        <span class="nx">confirm</span><span class="o">:</span><span class="s1">&#39;green&#39;</span>
+
+    <span class="nv">logOptions =</span>
+      <span class="nx">transports</span><span class="o">:</span><span class="p">[</span><span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">transports</span><span class="p">.</span><span class="nx">Console</span><span class="p">)(</span> <span class="nx">colorize</span><span class="o">:</span><span class="kc">true</span> <span class="p">)]</span>
+      <span class="nx">levels</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">levels</span>
+      <span class="nx">colors</span><span class="o">:</span><span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span>
+
+    <span class="nv">logger = </span><span class="k">new</span> <span class="p">(</span><span class="nx">winston</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)(</span><span class="nx">logOptions</span><span class="p">)</span>
+    <span class="nx">winston</span><span class="p">.</span><span class="nx">addColors</span> <span class="nx">logLevels</span><span class="p">.</span><span class="nx">colors</span>
+    <span class="k">return</span> <span class="nx">logger</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

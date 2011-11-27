@@ -3,7 +3,7 @@ winston = require 'winston'
 #
 # ###Logging config
 #
-#   - Use winston on the console with custom log levels and coloring
+#   - Use [winston](https://github.com/flatiron/winston) on the console with custom log levels and coloring
 #   - Optionally log to a file transport
 #
 module.exports = class Logger

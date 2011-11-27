@@ -1,3 +1,10 @@
+#
+# ####Create a Job
+#
+#   - Assemble the job data object
+#   - Create a new job with the data using [kue](https://github.com/LearnBoost/kue)
+#   - Log job complete, job failed, and progress for long-running jobs
+#
 module.exports = Job =
   create: (hashtag, data, jobs) ->
     jobData =

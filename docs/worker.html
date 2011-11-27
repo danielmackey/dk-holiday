@@ -1,0 +1,103 @@
+<!DOCTYPE html>  <html> <head>   <title>worker.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="blink.html">                 blink.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="app.html">                 app.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="job.html">                 job.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="twitter.html">                 twitter.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               worker.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Buffer config</h3>
+
+<ul>
+<li>Set tipping points in the thresholds object</li>
+<li>Each tipping point determines the individual frequency of events</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">thresholds =</span>
+  <span class="s2">&quot;snow&quot;</span><span class="o">:</span><span class="mi">1</span>
+  <span class="s2">&quot;lights&quot;</span><span class="o">:</span><span class="mi">1</span>
+  <span class="s2">&quot;train&quot;</span><span class="o">:</span><span class="mi">3</span>
+  <span class="s2">&quot;discoball&quot;</span><span class="o">:</span><span class="mi">1</span>
+  <span class="s2">&quot;fan&quot;</span><span class="o">:</span><span class="mi">1</span>
+
+<span class="nv">rollCall =</span>
+  <span class="nx">client</span><span class="o">:</span><span class="kc">false</span>
+  <span class="nx">arduino</span><span class="o">:</span><span class="kc">false</span>
+
+
+<span class="nv">module.exports = </span><span class="k">class</span> <span class="nx">Worker</span>
+  <span class="nv">constructor: </span><span class="nf">(@app, @jobs, @logger) -&gt;</span>
+    <span class="nx">@init</span><span class="p">()</span>
+
+  <span class="nv">init: </span><span class="o">-&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>Websocket config</h4>
+
+<ul>
+<li>Listen on the same port as the webserver app</li>
+<li>Reduce logging levels to low</li>
+<li>Expose socket handshake data for identification</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">io = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;socket.io&#39;</span><span class="p">).</span><span class="nx">listen</span> <span class="nx">@app</span>
+    <span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;log level&#39;</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="nf">(handshakeData, callback) -&gt;</span>
+      <span class="nx">callback</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h4>Websocket connection</h4>
+
+<ul>
+<li>Identify each client on connection</li>
+<li>Set rollCall to true for connecting identity</li>
+<li>Log the connecting identity</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">ws = </span><span class="nx">io</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">&#39;/arduino&#39;</span><span class="p">).</span><span class="kc">on</span> <span class="s1">&#39;connection&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">@socket</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nv">identity = </span><span class="nx">@identify</span> <span class="nx">@socket</span>
+      <span class="nx">rollCall</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+      <span class="nx">@logger</span><span class="p">.</span><span class="nx">connect</span> <span class="nx">identity</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h4>Websocket disconnection</h4>
+
+<ul>
+<li>Identify each client on disconnection</li>
+<li>Set rollCall to false for disconnecting identity</li>
+<li>Log the disconnecting identity</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">@socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;disconnect&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+        <span class="nv">identity = </span><span class="nx">@identify</span> <span class="nx">@socket</span>
+        <span class="nx">rollCall</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+        <span class="nx">@logger</span><span class="p">.</span><span class="nx">disconnect</span> <span class="nx">identity</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h4>Proceed if arduino is connected</h4>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="nx">rollCall</span><span class="p">.</span><span class="nx">arduino</span>
+        <span class="nx">@processJobs</span><span class="p">()</span>
+
+
+  <span class="nv">processJobs: </span><span class="o">-&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h2>Processing</h2>
+
+<ul>
+<li>Process each type of job and add a tally mark</li>
+<li>Jobs and arduino calls are not 1:1. @buffer() uses the values defined in the thresholds object to create tipping points for each action</li>
+<li>Call arduino with an action assignment when the tipping point is reached</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">process = </span><span class="p">(</span><span class="nx">job</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nv">buffer_count = </span><span class="nx">thresholds</span><span class="p">[</span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span><span class="p">]</span>
+      <span class="k">if</span> <span class="nx">@buffer</span> <span class="nx">buffer_count</span>
+        <span class="nx">@logger</span><span class="p">.</span><span class="nx">arduino</span> <span class="s2">&quot;##{job.data.hashtag} by @#{job.data.handle}&quot;</span>
+        <span class="nx">@socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;action assignment&#39;</span><span class="p">,</span> <span class="nx">job</span><span class="p">,</span> <span class="p">(</span><span class="nx">completedJob</span><span class="p">)</span> <span class="o">=&gt;</span>
+          <span class="nx">@logger</span><span class="p">.</span><span class="nx">confirm</span> <span class="s1">&#39;Arduino action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="o">:</span><span class="nx">completedJob</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span>
+          <span class="nx">@socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;new event&#39;</span><span class="p">,</span> <span class="nx">completedJob</span>
+          <span class="nx">done</span><span class="p">()</span>
+      <span class="k">else</span>
+        <span class="nx">@logger</span><span class="p">.</span><span class="nx">tally</span> <span class="s2">&quot;#{job.data.hashtag} by #{job.data.handle}&quot;</span>
+        <span class="nx">@socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;tally mark&#39;</span><span class="p">,</span> <span class="nx">job</span><span class="p">,</span> <span class="p">(</span><span class="nx">talliedJob</span><span class="p">)</span> <span class="o">=&gt;</span>
+          <span class="nx">@logger</span><span class="p">.</span><span class="nx">confirm</span> <span class="s2">&quot;Tally mark counted&quot;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="o">:</span><span class="nx">talliedJob</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">hashtag</span>
+          <span class="nx">done</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h4>Define a job process for each hashtag</h4>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;snow&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;lights&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;discoball&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>Identifier Utility</h3>
+
+<ul>
+<li>Crude identifier that only distinguishes between node clients and browser clients</li>
+<li>Accepts a socket connection</li>
+<li>Returns the identity as arduino if the client is node.js</li>
+<li>Returns the identity as client if the client is a browser user agent</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">identify: </span><span class="nf">(socket) -&gt;</span>
+    <span class="k">if</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">handshake</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">&#39;user-agent&#39;</span><span class="p">]</span> <span class="o">is</span> <span class="s1">&#39;node.js&#39;</span>
+      <span class="nv">identity = </span><span class="s1">&#39;arduino&#39;</span>
+    <span class="k">else</span> <span class="nv">identity = </span><span class="s1">&#39;client&#39;</span>
+    <span class="k">return</span> <span class="nx">identity</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>Buffer Utility</h3>
+
+<ul>
+<li>Tallies calls and returns false n times</li>
+<li>Reaches n threshold after n tallies and returns true</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">buffer: </span><span class="nf">(n) -&gt;</span>
+    <span class="nv">nth = </span><span class="nx">n</span>
+    <span class="nv">rnd = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">nth</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nx">rnd</span> <span class="o">is</span> <span class="nx">nth</span> <span class="k">then</span> <span class="k">return</span> <span class="kc">true</span>
+    <span class="k">else</span> <span class="k">return</span> <span class="kc">false</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
