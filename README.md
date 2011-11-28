@@ -2,7 +2,7 @@
 
   `npm install`
 
-  `brew install forman`
+  `brew install foreman`
 
 ##Development
 
