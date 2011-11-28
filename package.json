@@ -15,6 +15,7 @@
     "stitch":"0.3.2",
     "stylus":"0.19.2",
     "docco":"0.3.0",
+    "jasmine-node":"1.0.x",
     "connect":"1.7.3",
     "supervisor":"0.2.0",
     "notes":"0.0.1",

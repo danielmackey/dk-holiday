@@ -24,6 +24,7 @@ module.exports = class Logger
         hold:7
         save:8
         confirm:9
+        twitter:10
       colors:
         info:'blue'
         junk:'yellow'
@@ -35,6 +36,7 @@ module.exports = class Logger
         hold:'cyan'
         save:'green'
         confirm:'green'
+        twitter:'cyan'
 
     logOptions =
       transports:[new (winston.transports.Console)( colorize:true )]

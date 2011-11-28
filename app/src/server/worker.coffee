@@ -1,4 +1,4 @@
-
+Buffer = require './buffer'
 
 #
 # ###Buffer config
@@ -6,7 +6,6 @@
 #   - Set tipping points in the thresholds object
 #   - Each tipping point determines the individual frequency of events
 #
-
 thresholds =
   "snow":1
   "lights":1
@@ -14,16 +13,15 @@ thresholds =
   "discoball":1
   "fan":1
 
-rollCall =
-  client:false
-  arduino:false
-
 
 module.exports = class Worker
   constructor: (@app, @jobs, @logger) ->
     @init()
 
   init: ->
+    @openSocket()
+
+  openSocket: ->
     #
     # ####Websocket config
     #
@@ -45,7 +43,7 @@ module.exports = class Worker
     #
     ws = io.of('/arduino').on 'connection', (@socket) =>
       identity = @identify @socket
-      rollCall[identity] = true
+      @rollCall[identity] = true
       @logger.connect identity
 
       #
@@ -57,13 +55,13 @@ module.exports = class Worker
       #
       @socket.on 'disconnect', =>
         identity = @identify @socket
-        rollCall[identity] = false
+        @rollCall[identity] = false
         @logger.disconnect identity
 
       #
       # ####Proceed if arduino is connected
       #
-      if rollCall.arduino
+      if @rollCall.arduino
         @processJobs()
 
 
@@ -76,8 +74,8 @@ module.exports = class Worker
     #   - Call arduino with an action assignment when the tipping point is reached
     #
     process = (job, done) =>
-      buffer_count = thresholds[job.data.hashtag]
-      if @buffer buffer_count
+      count = thresholds[job.data.hashtag]
+      if Buffer count
         @logger.arduino "##{job.data.hashtag} by @#{job.data.handle}"
         @socket.emit 'action assignment', job, (completedJob) =>
           @logger.confirm 'Arduino action', 'action':completedJob.data.hashtag
@@ -116,18 +114,12 @@ module.exports = class Worker
   identify: (socket) ->
     if socket.handshake.headers['user-agent'] is 'node.js'
       identity = 'arduino'
-    else identity = 'client'
+    else identity = 'browser'
     return identity
 
-
   #
-  # ###Buffer Utility
+  # ###Keep track of which type of client is connected
   #
-  #   - Tallies calls and returns false n times
-  #   - Reaches n threshold after n tallies and returns true
-  #
-  buffer: (n) ->
-    nth = n
-    rnd = Math.floor(Math.random() * nth) + 1
-    if rnd is nth then return true
-    else return false
+  rollCall:
+    browser:false
+    arduino:false

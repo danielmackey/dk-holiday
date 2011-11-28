@@ -1,3 +1,9 @@
+#
+# ####Client Websocket
+#
+#   - Listen for the 'new event' message
+#   - Listen for the 'tally mark' message and confirm reception
+#
 module.exports = class Socket
   constructor: () ->
 
