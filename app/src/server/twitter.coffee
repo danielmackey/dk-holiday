@@ -28,7 +28,6 @@ module.exports = class TwitterStream
       @logger.twitter '', 'following':@users
 
       stream.on 'data', (tweet) =>
-        unless tweet.friends? then console.dir tweet.entities
         unless tweet.friends? then @filter tweet #The first stream message is an array of friend IDs, ignore it
 
   filter: (tweet) ->

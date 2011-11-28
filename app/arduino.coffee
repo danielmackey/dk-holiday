@@ -41,7 +41,7 @@ ledState = arduino.LOW
 #board.pinMode 13, arduino.OUTPUT
 #board.pinMode 13, ledState
 
-socket = io.connect 'http://localhost:1110/arduino'
+socket = io.connect 'http://localhost:5000/arduino'
 
 socket.on 'action assignment', (job, fn) ->
   switch job.data.hashtag
