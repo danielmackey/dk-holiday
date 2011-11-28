@@ -20,6 +20,7 @@
     "supervisor":"0.2.0",
     "notes":"0.0.1",
     "serialport":"0.3.x",
-    "arduino":"0.2.3"
+    "arduino":"0.2.3",
+    "redis-url":"0.0.1"
   }
 }
