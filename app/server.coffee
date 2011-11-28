@@ -70,7 +70,7 @@ app.listen port
 
 
 #
-# ###App Workflow
+# ##App Workflow
 #
 #   - Open and listen to a Twitter stream
 #   - Capture tweets with relevant hashtags

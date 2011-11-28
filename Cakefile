@@ -12,11 +12,15 @@ shell = (cmds, callback) ->
         error stderr.trim() if err
         callback() if callback
 
+task 'server', 'Start up the app server', ->
+  shell "supervisor app/server.coffee"
 
 task 'notes', 'Print out notes from project', ->
   notes = new Notes "#{__dirname}/app"
   notes.annotate()
 
+task 'test', 'Test the app', (options) ->
+  shell "jasmine-node --coffee spec"
 
 task 'docs', 'build the docs', (options) ->
   shell "docco #{__dirname}/app/*.coffee #{__dirname}/app/src/server/*.coffee #{__dirname}/app/src/client/javascripts/*.coffee"

@@ -1,5 +1,5 @@
 twitter = require 'ntwitter'
-Job = require './models'
+Job = require './job'
 
 #
 # ##Twitter Streaming
@@ -27,23 +27,29 @@ module.exports = class TwitterStream
     @api.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
 
-      stream.on 'data', (data) =>
-        unless data.friends? then @filter data #The first stream message is an array of friend IDs, ignore it
+      stream.on 'data', (tweet) =>
+        unless tweet.friends? then console.dir tweet.entities
+        unless tweet.friends? then @filter tweet #The first stream message is an array of friend IDs, ignore it
 
-  filter: (data) ->
-    hashtags = data.entities.hashtags
-
-    if hashtags.length is 0 then @logger.junk 'Tweet has no hashtags'
+  filter: (tweet) ->
+    hashtags = tweet.entities.hashtags
+    if hashtags.length is 0 then @noHashtags()
     else
       @logger.hold "Tweet has #{hashtags.length} hashtag"
-
       hashtags.forEach (hashtag, i) =>
         hashtag = hashtag.text
+        if @tags.indexOf(hashtag) is -1 then @notRelevant hashtag
+        else @saveTweet hashtag, tweet
 
-        if @tags.indexOf(hashtag) is -1 then @logger.junk "##{hashtag} is irrelevant"
-        else
-          @logger.save "##{hashtag} job"
-          Job.create hashtag, data, @jobs
+  noHashtags: ->
+    @logger.junk 'Tweet has no hashtags'
+
+  notRelevant: (hashtag) ->
+    @logger.junk "##{hashtag} is irrelevant"
+
+  saveTweet: (hashtag, data) ->
+    @logger.save "##{hashtag} job"
+    Job.create hashtag, data, @jobs
 
   tags: [
     'snow'
