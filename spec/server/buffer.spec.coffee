@@ -1,37 +1,56 @@
 Buffer = require '../../app/src/server/buffer'
+Worker = require '../../app/src/server/worker'
 
-Worker = {}
-Worker.reachTippingPoint = -> return
-Worker.addTallyMark = -> return
+describe 'Buffer', ->
+  it 'contains 10 events', ->
+    eventCount = Buffer.events.length
+    expect(eventCount).toEqual 10
 
-thresholds =
-  foo:1
-  bar:2
-  baz:3
+  it 'contains the correct events', ->
+    events = [
+      'snow'
+      'lights'
+      'train'
+      'discoball'
+      'fan'
+      'foo'
+      'bar'
+      'baz'
+      'lorem'
+      'ipsum'
+    ]
 
-tally = (key) ->
-  tips = thresholds[key]
-  if Buffer tips then Worker.reachTippingPoint()
-  else Worker.addTallyMark()
+    events.forEach (event, i) ->
+      expect(Buffer.events).toContain event
 
 
-describe 'Buffer with no threshold', ->
-  it 'has no threshold', ->
-    spyOn Worker, 'reachTippingPoint'
-    tally 'foo'
-    expect(Worker.reachTippingPoint).toHaveBeenCalled()
+  it 'processes an incoming tweet', ->
+    jobs = {}
+    tweet = {}
+    spyOn Buffer, 'tally'
+    spyOn Buffer, 'random'
+    spyOn Buffer, 'queue'
+    Buffer.process tweet, jobs
+    expect(Buffer.tally).toHaveBeenCalled()
+    expect(Buffer.random).toHaveBeenCalled()
+    expect(Buffer.queue).toHaveBeenCalled()
 
-describe 'Buffer tally mark', ->
-  it 'adds a tally mark', ->
-    spyOn Worker, 'addTallyMark'
-    tally 'baz'
-    expect(Worker.addTallyMark).toHaveBeenCalled()
 
-describe 'Buffer tipping point', ->
-  beforeEach ->
-    tally 'bar'
+  it 'randomly assigns an event', ->
+    event = Buffer.random()
+    expect(Buffer.events.indexOf(event)).toBeTruthy()
 
-  it 'reaches the tipping point', ->
-    spyOn Worker, 'reachTippingPoint'
-    tally 'bar'
-    expect(Worker.reachTippingPoint).toHaveBeenCalled()
+
+  it 'increments the event tally', ->
+    preTally = Buffer.eventTally
+    Buffer.tally()
+    postTally = Buffer.eventTally
+    expect(postTally = preTally + 1).toBeTruthy()
+
+
+  it 'creates a new job with Worker', ->
+    type = 'holicray'
+    tweet = {}
+    spyOn Worker, 'createJob'
+    Buffer.queue type, tweet
+    expect(Worker.createJob).toHaveBeenCalled()

@@ -22,7 +22,7 @@ module.exports = class Socket
       console.dir tweet
 
     client.on 'new tweet', (tweet) ->
-      console.log 'new tweet'
+      console.dir tweet
 
 
   eventsLog: (pagination) =>
