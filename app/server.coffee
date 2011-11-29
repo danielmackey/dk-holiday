@@ -16,6 +16,7 @@ port = process.env.PORT || 1110
 #   - Enable CORS with the job queue db for clientside stats
 #
 kue.redis.createClient = () ->
+  console.log "process.env.REDISTOGO_URL: " + process.env.REDISTOGO_URL
   process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
   redisUrl = url.parse(process.env.REDISTOGO_URL)
   client = redis.createClient(redisUrl.port, redisUrl.hostname)
