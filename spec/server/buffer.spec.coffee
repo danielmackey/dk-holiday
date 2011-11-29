@@ -51,6 +51,6 @@ describe 'Buffer', ->
   it 'creates a new job with Worker', ->
     type = 'holicray'
     tweet = {}
-    spyOn Worker, 'createJob'
+    spyOn Worker, 'assembleJob'
     Buffer.queue type, tweet
-    expect(Worker.createJob).toHaveBeenCalled()
+    expect(Worker.assembleJob).toHaveBeenCalled()

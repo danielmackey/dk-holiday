@@ -101,5 +101,4 @@ Logger = require './src/server/logger'
 logger = new Logger()
 
 Stream = require './src/server/stream'
-s = new Stream app, jobs, logger
-s.init()
+Stream.init app, jobs, logger

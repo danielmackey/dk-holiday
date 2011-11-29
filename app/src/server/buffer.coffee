@@ -33,4 +33,4 @@ module.exports = Buffer =
     return @eventTally
 
   queue: (type, tweet) ->
-    Worker.createJob type, tweet, @jobs
+    Worker.assembleJob type, tweet, @jobs

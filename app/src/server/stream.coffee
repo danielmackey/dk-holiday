@@ -7,22 +7,20 @@ Worker = require './worker'
 #
 #   - Grab tweets @designkitchen
 #
-module.exports = class Stream
-  constructor: (@app, @jobs, @logger) ->
-    @users = [
-      'designkitchen'
-      'holiduino'
-    ]
+module.exports = Stream =
+  users: [
+    'designkitchen'
+    'holiduino'
+  ]
 
-    # #### Keep tabs on which clients are currently connected
-    @roll =
-      browser:false
-      arduino:false
+  # #### Keep tabs on which clients are currently connected
+  roll:
+    browser:false
+    arduino:false
 
-  init: ->
+  init: (@app, @jobs, @logger) ->
     @openSocket()
     @openTwitter()
-
 
   openSocket: ->
     #

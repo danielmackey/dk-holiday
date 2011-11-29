@@ -1,13 +1,16 @@
 module.exports = Worker =
-  createJob: (type, data, jobs) ->
+  assembleJob: (type, data, jobs) ->
     jobData =
       title:data.text
       handle:data.user.screen_name
       avatar:data.user.profile_image_url
       event:type
 
-    job = jobs.create(type, jobData).attempts(3).save()
+    Worker.createJob type, jobData, jobs
 
+
+  createJob: (type, jobData, jobs) ->
+    job = jobs.create(type, jobData).attempts(3).save()
     job.on 'complete', -> console.log "Job complete"
 
 
