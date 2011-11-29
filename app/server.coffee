@@ -37,16 +37,15 @@ kue.app.set 'title', 'DK Holiday'
 package = stitch.createPackage paths:[__dirname + '/src/client/javascripts'], dependencies:[]
 
 cssOptions =
-  src:"#{__dirname}/app/src/client"
-  dest:"#{__dirname}/app/public"
+  src:"#{__dirname}/src/client"
+  dest:"#{__dirname}/public"
   compile:compile
 
 compile = (str, path) ->
   stylus(str)
-    .import "#{__dirname}/app/src/client/stylesheets"
+    .import "#{__dirname}/src/client/stylesheets"
     .set 'filename', path
     .set 'compress', true
-
 
 
 #
@@ -62,7 +61,7 @@ app.configure () ->
   app.use express.static "#{__dirname}/public"
   app.get '/application.js', package.createServer()
   app.get '/', (req, res) ->
-    res.sendfile "#{__dirname}/app/public/index.html"
+    res.sendfile "#{__dirname}/public/index.html"
 
 app.use kue.app
 app.listen port
@@ -77,12 +76,29 @@ app.listen port
 #   - Create a job for each relevant hashtag and add to queue
 #   - Process each job and call buffer
 #   - Buffer triggers arduino each time the tipping point is reached
+
+
+# ##New Workflow
+#
+#   - Stream
+#     - Open and listen for @designkitchen tweets
+#     - Open websocket
+#     - Emit all tweets and send to Buffer
+#
+#   - Buffer
+#     - Keep tally of each tweet
+#     - Assign a random event or holicray event if tipping point is reached
+#     - Create a new job with type of event and emit new job
+#
+#   - Worker
+#     - Tick through jobs and emit current job
+#     - Call arduino and wait for callback
+#     - On callback, next job is processed
+#     - Emit completed job/new event#
 #
 Logger = require './src/server/logger'
 logger = new Logger()
 
-TwitterStream = require './src/server/twitter'
-new TwitterStream jobs, logger
-
-Worker = require './src/server/worker'
-new Worker app, jobs, logger
+Stream = require './src/server/stream'
+s = new Stream app, jobs, logger
+s.init()

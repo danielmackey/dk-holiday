@@ -1322,6 +1322,14 @@ body {
 .omega {
   margin-right: 0;
 }
+h1 {
+  font-size: 36px;
+  margin: 20px 0;
+}
+h2 {
+  font-size: 20px;
+  margin: 20px 0;
+}
 div#wrapper {
   width: 960px;
   margin-left: auto;
@@ -1334,21 +1342,16 @@ div#wrapper #pageheader {
   margin-left: 10px;
   margin-right: 10px;
 }
-#video-feed {
-  width: 940px;
-  display: inline;
-  float: left;
-  margin-left: 10px;
-  margin-right: 10px;
-  height: 400px;
-  background: #eee;
-}
 div#content {
   width: 620px;
   display: inline;
   float: left;
   margin-left: 10px;
   margin-right: 10px;
+}
+div#content #video-feed {
+  height: 300px;
+  background: #eee;
 }
 div#content ul.tweets {
   height: 300px;

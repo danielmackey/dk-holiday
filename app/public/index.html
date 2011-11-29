@@ -6,24 +6,31 @@
 </head>
 <body>
   <div id="wrapper" class="clearfix">
-    <h1>Live Video Feed</h1>
-    <div id="video-feed"></div>
+    <header id="pageheader">
+      <h1>Holicray</h1>
+      <section id="right-now">
+        <h2>Right Now</h2>
+        <img src=""><p><span class="handle"></span> <span class="tweet"></span></p>
+      </section>
+    </header>
     <div id="content">
-      <h2>Recent Activity - <small class="status">Disconnected</small></h2>
-      <ul class="tweets"></ul>
-    </div>
-    <div id="sidebar">
+      <div id="video-feed"></div>
       <div id="tbox"></div>
       <script type="text/javascript">
         twttr.anywhere(function (T) {
           T("#tbox").tweetBox({
             height: 100,
-            label:'Interact with the room',
-            width: 300,
-            defaultContent: "@holiduino Let it #snow"
+            label:'',
+            width: 620,
+            defaultContent: "@holiduino"
           });
         });
       </script>
+    </div>
+
+    <div id="sidebar">
+      <h2>Cray-by-Cray</h2>
+      <ul class="tweets"></ul>
     </div>
   </div>
 
