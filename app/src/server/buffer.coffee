@@ -3,7 +3,7 @@ Worker = require './worker'
 module.exports = Buffer =
   eventTally: 0
   tippingPoint: 3
-  events: [
+  events: [ #TODO: Finalize events
     'snow'
     'lights'
     'train'

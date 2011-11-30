@@ -22,6 +22,8 @@ module.exports = class Socket
       console.dir tweet
 
     client.on 'new tweet', (tweet) ->
+      humane.success ["<h3>Just now:</h3>","<b>@#{tweet.user.screen_name}:</b> #{tweet.text}"]
+      humane.timeout = 7000
       console.dir tweet
 
 

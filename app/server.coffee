@@ -8,6 +8,9 @@ kue = require 'kue'
 redis = require 'kue/node_modules/redis'
 port = process.env.PORT || 1110
 
+#TODO: Get production domain
+#TODO: Add Travis CI
+
 
 #
 # ###Job Queue
@@ -69,17 +72,7 @@ app.listen port
 
 
 
-#
 # ##App Workflow
-#
-#   - Open and listen to a Twitter stream
-#   - Capture tweets with relevant hashtags
-#   - Create a job for each relevant hashtag and add to queue
-#   - Process each job and call buffer
-#   - Buffer triggers arduino each time the tipping point is reached
-
-
-# ##New Workflow
 #
 #   - Stream
 #     - Open and listen for @designkitchen tweets

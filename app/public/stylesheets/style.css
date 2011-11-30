@@ -1322,6 +1322,7 @@ body {
 .omega {
   margin-right: 0;
 }
+@import 'jackedup.css';
 h1 {
   font-size: 36px;
   margin: 20px 0;

@@ -1,0 +1,86 @@
+<!DOCTYPE html>  <html> <head>   <title>stream.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="buffer.html">                 buffer.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="stream.html">                 stream.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               stream.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">twitter = </span><span class="nx">require</span> <span class="s1">&#39;ntwitter&#39;</span>
+<span class="nv">Buffer = </span><span class="nx">require</span> <span class="s1">&#39;./buffer&#39;</span>
+<span class="nv">Worker = </span><span class="nx">require</span> <span class="s1">&#39;./worker&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Twitter Streaming</h2>
+
+<ul>
+<li>Grab tweets @designkitchen</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">module.exports = Stream =</span>
+  <span class="nv">users: </span><span class="p">[</span>
+    <span class="s1">&#39;designkitchen&#39;</span>
+    <span class="s1">&#39;holiduino&#39;</span>
+  <span class="p">]</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>Keep tabs on which clients are currently connected</h4>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">roll:</span>
+    <span class="nx">browser</span><span class="o">:</span><span class="kc">false</span>
+    <span class="nx">arduino</span><span class="o">:</span><span class="kc">false</span>
+
+  <span class="nv">init: </span><span class="nf">(@app, @jobs, @logger) -&gt;</span>
+    <span class="nx">@openSocket</span><span class="p">()</span>
+    <span class="nx">@openTwitter</span><span class="p">()</span>
+
+  <span class="nv">openSocket: </span><span class="o">-&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h4>Websocket</h4>
+
+<ul>
+<li>Identify each client on connection and disconnection</li>
+<li>Process jobs only if arduino is connected</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">io = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;socket.io&#39;</span><span class="p">).</span><span class="nx">listen</span> <span class="nx">@app</span>
+    <span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;log level&#39;</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="nf">(handshakeData, callback) -&gt;</span>
+      <span class="nx">callback</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">true</span>
+
+    <span class="nv">ws = </span><span class="nx">io</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">&#39;/arduino&#39;</span><span class="p">).</span><span class="kc">on</span> <span class="s1">&#39;connection&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">socket</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="vi">@socket = </span><span class="nx">socket</span>
+      <span class="nx">@rollCall</span> <span class="s1">&#39;present&#39;</span><span class="p">,</span> <span class="nx">socket</span>
+
+      <span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;disconnect&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+        <span class="nx">@rollCall</span> <span class="s1">&#39;absent&#39;</span><span class="p">,</span> <span class="nx">socket</span>
+
+      <span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="nf">(job) -&gt;</span>
+        <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;right now&#39;</span><span class="p">,</span> <span class="nx">job</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Proceed if arduino is connected</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="nx">@isPresent</span> <span class="s1">&#39;arduino&#39;</span>
+        <span class="nx">Worker</span><span class="p">.</span><span class="nx">processJobs</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">@jobs</span><span class="p">,</span> <span class="nx">@logger</span>
+
+
+  <span class="nv">openTwitter: </span><span class="o">-&gt;</span>
+    <span class="nv">keys = </span><span class="c1"># TODO: Get production keys with @designkitchen account</span>
+      <span class="nx">consumer_key</span><span class="o">:</span><span class="s1">&#39;hy0r9Q5TqWZjbGHGPfwPjg&#39;</span>
+      <span class="nx">consumer_secret</span><span class="o">:</span><span class="s1">&#39;EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w&#39;</span>
+      <span class="nx">access_token_key</span><span class="o">:</span><span class="s1">&#39;384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq&#39;</span>
+      <span class="nx">access_token_secret</span><span class="o">:</span><span class="s1">&#39;cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI&#39;</span>
+
+    <span class="nv">api = </span><span class="k">new</span> <span class="nx">twitter</span> <span class="nx">keys</span>
+    <span class="nx">api</span><span class="p">.</span><span class="nx">stream</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nx">track</span><span class="o">:</span><span class="nx">@users</span><span class="p">,</span> <span class="p">(</span><span class="nx">stream</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nx">@logger</span><span class="p">.</span><span class="nx">twitter</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;following&#39;</span><span class="o">:</span><span class="nx">@users</span>
+
+      <span class="nx">stream</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">tweet</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">unless</span> <span class="nx">tweet</span><span class="p">.</span><span class="nx">friends</span><span class="o">?</span> <span class="c1">#The first stream message is an array of friend IDs, ignore it</span>
+          <span class="nx">@logger</span><span class="p">.</span><span class="nx">save</span> <span class="s2">&quot;@#{tweet.user.screen_name}: #{tweet.text}&quot;</span>
+          <span class="nx">@save</span> <span class="nx">tweet</span>
+          <span class="k">if</span> <span class="nx">@socket</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;new tweet&#39;</span><span class="p">,</span> <span class="nx">tweet</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>Utilities</h3>
+
+<ul>
+<li>Pass a tweet to Buffer</li>
+<li>Identify node.js (arduino) vs. browser clients</li>
+<li>Keep tabs on when a type of client is connected or disconnected</li>
+<li>Find out if a type of client is connected or disconnected</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">save: </span><span class="nf">(tweet) -&gt;</span>
+    <span class="nx">Buffer</span><span class="p">.</span><span class="nx">process</span> <span class="nx">tweet</span><span class="p">,</span> <span class="nx">@jobs</span>
+
+
+  <span class="nv">identify: </span><span class="nf">(socket) -&gt;</span>
+    <span class="k">if</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">handshake</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">&#39;user-agent&#39;</span><span class="p">]</span> <span class="o">is</span> <span class="s1">&#39;node.js&#39;</span>
+      <span class="nv">identity = </span><span class="s1">&#39;arduino&#39;</span>
+    <span class="k">else</span> <span class="nv">identity = </span><span class="s1">&#39;browser&#39;</span>
+    <span class="k">return</span> <span class="nx">identity</span>
+
+
+  <span class="nv">rollCall: </span><span class="nf">(status, socket) -&gt;</span>
+    <span class="nv">identity = </span><span class="nx">@identify</span> <span class="nx">socket</span>
+    <span class="k">if</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">is</span> <span class="kc">true</span> <span class="k">then</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+    <span class="k">else</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="k">if</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">is</span> <span class="kc">true</span> <span class="k">then</span> <span class="nx">@logger</span><span class="p">.</span><span class="nx">connect</span> <span class="nx">identity</span>
+    <span class="k">else</span> <span class="nx">@logger</span><span class="p">.</span><span class="nx">disconnect</span> <span class="nx">identity</span>
+
+
+  <span class="nv">isPresent: </span><span class="nf">(identity) -&gt;</span>
+    <span class="k">if</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">is</span> <span class="kc">true</span> <span class="k">then</span> <span class="k">return</span> <span class="kc">true</span>
+    <span class="k">else</span> <span class="k">return</span> <span class="kc">false</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

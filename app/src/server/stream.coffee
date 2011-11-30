@@ -61,8 +61,9 @@ module.exports = Stream =
       @logger.twitter '', 'following':@users
 
       stream.on 'data', (tweet) =>
-        unless tweet.friends?
-          @save tweet #The first stream message is an array of friend IDs, ignore it
+        unless tweet.friends? #The first stream message is an array of friend IDs, ignore it
+          @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
+          @save tweet
           if @socket? then @socket.emit 'new tweet', tweet
 
 
@@ -75,7 +76,6 @@ module.exports = Stream =
   #   - Find out if a type of client is connected or disconnected
   #
   save: (tweet) ->
-    @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
     Buffer.process tweet, @jobs
 
 

@@ -7,6 +7,7 @@ describe 'Buffer', ->
     expect(eventCount).toEqual 10
 
   it 'contains the correct events', ->
+    #TODO: Finalize events and sync up with spec
     events = [
       'snow'
       'lights'
