@@ -6,7 +6,8 @@
 <span class="nv">url = </span><span class="nx">require</span> <span class="s1">&#39;url&#39;</span>
 <span class="nv">kue = </span><span class="nx">require</span> <span class="s1">&#39;kue&#39;</span>
 <span class="nv">redis = </span><span class="nx">require</span> <span class="s1">&#39;kue/node_modules/redis&#39;</span>
-<span class="nv">port = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">1110</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Job Queue</h3>
+<span class="nv">port = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">1110</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>TODO: Get production domain
+TODO: Add Travis CI</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Job Queue</h3>
 
 <ul>
 <li>Use redisToGo on Heroku</li>
@@ -21,7 +22,7 @@
 
 <span class="nv">jobs = </span><span class="nx">kue</span><span class="p">.</span><span class="nx">createQueue</span><span class="p">()</span>
 <span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">enable</span> <span class="s2">&quot;jsonp callback&quot;</span>
-<span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;DK Holiday&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Asset Middleware</h3>
+<span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;DK Holiday&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Asset Middleware</h3>
 
 <ul>
 <li>Use stitch to package and serve clientside CoffeeScript modules</li>
@@ -37,7 +38,7 @@
   <span class="nx">stylus</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">import</span> <span class="s2">&quot;#{__dirname}/src/client/stylesheets&quot;</span>
     <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="nx">path</span>
-    <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Web Server</h3>
+    <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>Web Server</h3>
 
 <ul>
 <li>Use stylus and stitch middleware with an express webserver</li>
@@ -52,15 +53,7 @@
     <span class="nx">res</span><span class="p">.</span><span class="nx">sendfile</span> <span class="s2">&quot;#{__dirname}/public/index.html&quot;</span>
 
 <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">kue</span><span class="p">.</span><span class="nx">app</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h2>App Workflow</h2>
-
-<ul>
-<li>Open and listen to a Twitter stream</li>
-<li>Capture tweets with relevant hashtags</li>
-<li>Create a job for each relevant hashtag and add to queue</li>
-<li>Process each job and call buffer</li>
-<li>Buffer triggers arduino each time the tipping point is reached</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h2>New Workflow</h2>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h2>App Workflow</h2>
 
 <ul>
 <li><p>Stream</p>

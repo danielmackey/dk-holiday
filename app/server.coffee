@@ -9,7 +9,6 @@ redis = require 'kue/node_modules/redis'
 port = process.env.PORT || 1110
 
 #TODO: Get production domain
-#TODO: Add Travis CI
 
 
 #
@@ -71,25 +70,6 @@ app.use kue.app
 app.listen port
 
 
-
-# ##App Workflow
-#
-#   - Stream
-#     - Open and listen for @designkitchen tweets
-#     - Open websocket
-#     - Emit all tweets and send to Buffer
-#
-#   - Buffer
-#     - Keep tally of each tweet
-#     - Assign a random event or holicray event if tipping point is reached
-#     - Create a new job with type of event and emit new job
-#
-#   - Worker
-#     - Tick through jobs and emit current job
-#     - Call arduino and wait for callback
-#     - On callback, next job is processed
-#     - Emit completed job/new event#
-#
 Logger = require './src/server/logger'
 logger = new Logger()
 

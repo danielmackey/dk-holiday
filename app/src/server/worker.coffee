@@ -1,48 +1,123 @@
 module.exports = Worker =
-  assembleJob: (type, data, jobs) ->
+  #
+  # ## Utilities
+  #
+  init: (@jobs, @logger) ->
+
+  rollCall: (status, socket) ->
+    identity = @identify socket
+    if @roll[identity] is true then @roll[identity] = false
+    else @roll[identity] = true
+    if @roll[identity] is true then @logger.connect identity
+    else @logger.disconnect identity
+
+
+  # #### Keep tabs on which clients are currently connected
+  roll:
+    browser:false
+    arduino:false
+
+
+  identify: (socket) ->
+    if socket.handshake.headers['user-agent'] is 'node.js'
+      identity = 'arduino'
+    else identity = 'browser'
+    return identity
+
+
+  isPresent: (identity) ->
+    if @roll[identity] is true then return true
+    else return false
+
+
+  start: (socket) ->
+    if @isPresent 'arduino' then @processJobs socket
+
+
+
+
+  #
+  # ## Event Assignment
+  #
+  eventTally:0
+  tippingPoint:40
+  #TODO: Finalize events
+  events:[
+    'snow'
+    'lights'
+    'train'
+    'discoball'
+    'fan'
+    'foo'
+    'bar'
+    'baz'
+    'lorem'
+    'ipsum'
+  ]
+
+  assign: (tweet) ->
+    @tally()
+    if @eventTally is @tippingPoint then event = 'holicray'
+    else event = @random()
+    @assembleJob event, tweet
+
+  random: ->
+    randomize = -> return (Math.round(Math.random())-0.5)
+    randomEvent = @events.sort @randomize
+    event = randomEvent.pop()
+    return event
+
+  tally: ->
+    @eventTally++
+    return @eventTally
+
+
+
+  #
+  # ## Job processor
+  #
+  #   - Emit a new job to arduino
+  #   - Emit a right now message
+  #   - Wait for callback of completed job
+  #   - Emit a new event and finish job
+  #
+  assembleJob: (type, data) ->
     jobData =
       title:data.text
       handle:data.user.screen_name
       avatar:data.user.profile_image_url
       event:type
-
-    Worker.createJob type, jobData, jobs
-
-
-  createJob: (type, jobData, jobs) ->
-    job = jobs.create(type, jobData).attempts(3).save()
-    job.on 'complete', -> console.log "Job complete"
+    @createJob type, jobData
 
 
-  processJobs: (socket, jobs, logger) ->
-    #
-    # ### Job processor
-    #
-    #   - Emit a new job to arduino
-    #   - Emit a right now message
-    #   - Wait for callback of completed job
-    #   - Emit a new event and finish job
-    #
+  createJob: (type, jobData) ->
+    job = @jobs.create(type, jobData).attempts(3).save()
+    job.on 'complete', -> console.log "10 second pause complete"
+
+
+  processJobs: (socket) ->
     process = (job, done) =>
-      logger.arduino "##{job.data.event} by @#{job.data.handle}"
+      @logger.arduino "##{job.data.event} by @#{job.data.handle}"
       socket.emit 'action assignment', job, (completedJob) =>
-        logger.confirm 'Arduino action', 'event':completedJob.data.event
-        socket.emit 'new event', completedJob
-        done()
+        setTimeout () =>
+          @logger.confirm 'Arduino action', 'event':completedJob.data.event
+          socket.emit 'new event', completedJob
+          done()
+        , 10000
 
 
     # #### Define a job process for each event
-    jobs.process 'snow', (job, done) ->
+    @jobs.process 'snow', (job, done) ->
       process job, done
 
-    jobs.process 'lights', (job, done) ->
+    @jobs.process 'lights', (job, done) ->
       process job, done
 
-    jobs.process 'train', (job, done) ->
+    @jobs.process 'train', (job, done) ->
       process job, done
 
-    jobs.process 'discoball', (job, done) ->
+    @jobs.process 'discoball', (job, done) ->
       process job, done
 
-    jobs.process 'holicray', (job, done) ->
+    @jobs.process 'holicray', (job, done) ->
       process job, done

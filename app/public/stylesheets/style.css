@@ -1343,6 +1343,16 @@ div#wrapper #pageheader {
   margin-left: 10px;
   margin-right: 10px;
 }
+div#wrapper #pageheader #right-now img {
+  float: left;
+  margin: 0 20px 20px 0;
+}
+div#wrapper #pageheader #right-now p {
+  margin-top: 30px;
+}
+div#wrapper #pageheader #right-now p span.handle {
+  font-weight: bold;
+}
 div#content {
   width: 620px;
   display: inline;
