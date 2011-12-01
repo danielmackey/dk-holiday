@@ -1,11 +1,16 @@
 Worker = require '../../app/src/server/worker'
 
 describe 'Worker', ->
-  it 'attaches the queue and logger', ->
+  it 'has a queue', ->
     jobs = {}
     logger = {}
     Worker.init jobs, logger
     expect(Worker.jobs).toBeDefined()
+
+  it 'has a logger', ->
+    jobs = {}
+    logger = {}
+    Worker.init jobs, logger
     expect(Worker.logger).toBeDefined()
 
   it 'assembles and creates a new job', ->
@@ -23,19 +28,6 @@ describe 'Worker', ->
 
 
   it 'processes jobs if arduino is connected', ->
-
-
-  it 'saves incoming tweets', ->
-    tweet =
-      text:'Lorem ipsum dolor sit amet'
-      user:
-        screen_name:'ConanObrien'
-        profile_image_url:'http://placehold.it/90x90'
-
-    spyOn Worker, 'assembleJob'
-    #Worker.assign tweet
-    expect(Worker.assembleJob).toHaveBeenCalled()
-
 
   it 'checks if the arduino client is connected', ->
     identity = 'arduino'
@@ -60,12 +52,11 @@ describe 'Worker', ->
     expect(identity).toMatch 'browser'
 
 
-  it 'contains 10 events', ->
+  it 'contains 6 events', ->
     eventCount = Worker.events.length
-    expect(eventCount).toEqual 10
+    expect(eventCount).toEqual 6
 
   it 'contains the correct events', ->
-    #TODO: Finalize events and sync up with spec
     events = [
       'snow'
       'lights'
@@ -73,10 +64,6 @@ describe 'Worker', ->
       'discoball'
       'fan'
       'foo'
-      'bar'
-      'baz'
-      'lorem'
-      'ipsum'
     ]
 
     events.forEach (event, i) ->
@@ -104,3 +91,16 @@ describe 'Worker', ->
     Worker.tally()
     postTally = Worker.eventTally
     expect(postTally = preTally + 1).toBeTruthy()
+
+  it 'saves incoming tweets', ->
+    tweet =
+      text:'Lorem ipsum dolor sit amet'
+      user:
+        screen_name:'ConanObrien'
+        profile_image_url:'http://placehold.it/90x90'
+
+    spyOn Worker, 'assembleJob'
+    Worker.assign tweet
+    expect(Worker.assembleJob).toHaveBeenCalled()
+
+

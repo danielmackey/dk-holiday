@@ -41,7 +41,7 @@ module.exports = Worker =
   #
   eventTally:0
   tippingPoint:40
-  #TODO: Finalize events
+  #TODO: Finalize events and sync up with spec
   events:[
     'snow'
     'lights'
@@ -49,10 +49,6 @@ module.exports = Worker =
     'discoball'
     'fan'
     'foo'
-    'bar'
-    'baz'
-    'lorem'
-    'ipsum'
   ]
 
   assign: (tweet) ->

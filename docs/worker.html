@@ -1,44 +1,94 @@
-<!DOCTYPE html>  <html> <head>   <title>worker.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="buffer.html">                 buffer.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="stream.html">                 stream.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               worker.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">module.exports = Worker =</span>
-  <span class="nv">assembleJob: </span><span class="nf">(type, data, jobs) -&gt;</span>
-    <span class="nv">jobData =</span>
-      <span class="nx">title</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">text</span>
-      <span class="nx">handle</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">screen_name</span>
-      <span class="nx">avatar</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">profile_image_url</span>
-      <span class="nx">event</span><span class="o">:</span><span class="nx">type</span>
+<!DOCTYPE html>  <html> <head>   <title>worker.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="stats.html">                 stats.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="stream.html">                 stream.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               worker.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">module.exports = Worker =</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Utilities</h2>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">init: </span><span class="nf">(@jobs, @logger) -&gt;</span>
 
-    <span class="nx">Worker</span><span class="p">.</span><span class="nx">createJob</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">jobData</span><span class="p">,</span> <span class="nx">jobs</span>
-
-
-  <span class="nv">createJob: </span><span class="nf">(type, jobData, jobs) -&gt;</span>
-    <span class="nv">job = </span><span class="nx">jobs</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">jobData</span><span class="p">).</span><span class="nx">attempts</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="nx">save</span><span class="p">()</span>
-    <span class="nx">job</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;complete&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s2">&quot;Job complete&quot;</span>
+  <span class="nv">rollCall: </span><span class="nf">(status, socket) -&gt;</span>
+    <span class="nv">identity = </span><span class="nx">@identify</span> <span class="nx">socket</span>
+    <span class="k">if</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">is</span> <span class="kc">true</span> <span class="k">then</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+    <span class="k">else</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="k">if</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">is</span> <span class="kc">true</span> <span class="k">then</span> <span class="nx">@logger</span><span class="p">.</span><span class="nx">connect</span> <span class="nx">identity</span>
+    <span class="k">else</span> <span class="nx">@logger</span><span class="p">.</span><span class="nx">disconnect</span> <span class="nx">identity</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>Keep tabs on which clients are currently connected</h4>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">roll:</span>
+    <span class="nx">browser</span><span class="o">:</span><span class="kc">false</span>
+    <span class="nx">arduino</span><span class="o">:</span><span class="kc">false</span>
 
 
-  <span class="nv">processJobs: </span><span class="nf">(socket, jobs, logger) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Job processor</h3>
+  <span class="nv">identify: </span><span class="nf">(socket) -&gt;</span>
+    <span class="k">if</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">handshake</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">&#39;user-agent&#39;</span><span class="p">]</span> <span class="o">is</span> <span class="s1">&#39;node.js&#39;</span>
+      <span class="nv">identity = </span><span class="s1">&#39;arduino&#39;</span>
+    <span class="k">else</span> <span class="nv">identity = </span><span class="s1">&#39;browser&#39;</span>
+    <span class="k">return</span> <span class="nx">identity</span>
+
+
+  <span class="nv">isPresent: </span><span class="nf">(identity) -&gt;</span>
+    <span class="k">if</span> <span class="nx">@roll</span><span class="p">[</span><span class="nx">identity</span><span class="p">]</span> <span class="o">is</span> <span class="kc">true</span> <span class="k">then</span> <span class="k">return</span> <span class="kc">true</span>
+    <span class="k">else</span> <span class="k">return</span> <span class="kc">false</span>
+
+
+  <span class="nv">start: </span><span class="nf">(socket) -&gt;</span>
+    <span class="k">if</span> <span class="nx">@isPresent</span> <span class="s1">&#39;arduino&#39;</span> <span class="k">then</span> <span class="nx">@processJobs</span> <span class="nx">socket</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h2>Event Assignment</h2>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">eventTally</span><span class="o">:</span><span class="mi">0</span>
+  <span class="nx">tippingPoint</span><span class="o">:</span><span class="mi">40</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO: Finalize events and sync up with spec</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">events</span><span class="o">:</span><span class="p">[</span>
+    <span class="s1">&#39;snow&#39;</span>
+    <span class="s1">&#39;lights&#39;</span>
+    <span class="s1">&#39;train&#39;</span>
+    <span class="s1">&#39;discoball&#39;</span>
+    <span class="s1">&#39;fan&#39;</span>
+    <span class="s1">&#39;foo&#39;</span>
+  <span class="p">]</span>
+
+  <span class="nv">assign: </span><span class="nf">(tweet) -&gt;</span>
+    <span class="nx">@tally</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">@eventTally</span> <span class="o">is</span> <span class="nx">@tippingPoint</span> <span class="k">then</span> <span class="nv">event = </span><span class="s1">&#39;holicray&#39;</span>
+    <span class="k">else</span> <span class="nv">event = </span><span class="nx">@random</span><span class="p">()</span>
+    <span class="nx">@assembleJob</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">tweet</span>
+
+  <span class="nv">random: </span><span class="o">-&gt;</span>
+    <span class="nv">randomize = </span><span class="o">-&gt;</span> <span class="k">return</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">())</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="nv">randomEvent = </span><span class="nx">@events</span><span class="p">.</span><span class="nx">sort</span> <span class="nx">@randomize</span>
+    <span class="nv">event = </span><span class="nx">randomEvent</span><span class="p">.</span><span class="nx">pop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nx">event</span>
+
+  <span class="nv">tally: </span><span class="o">-&gt;</span>
+    <span class="nx">@eventTally</span><span class="o">++</span>
+    <span class="k">return</span> <span class="nx">@eventTally</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h2>Job processor</h2>
 
 <ul>
 <li>Emit a new job to arduino</li>
 <li>Emit a right now message</li>
 <li>Wait for callback of completed job</li>
 <li>Emit a new event and finish job</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">process = </span><span class="p">(</span><span class="nx">job</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">logger</span><span class="p">.</span><span class="nx">arduino</span> <span class="s2">&quot;##{job.data.event} by @#{job.data.handle}&quot;</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">assembleJob: </span><span class="nf">(type, data) -&gt;</span>
+    <span class="nv">jobData =</span>
+      <span class="nx">title</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">text</span>
+      <span class="nx">handle</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">screen_name</span>
+      <span class="nx">avatar</span><span class="o">:</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">profile_image_url</span>
+      <span class="nx">event</span><span class="o">:</span><span class="nx">type</span>
+    <span class="nx">@createJob</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">jobData</span>
+
+
+  <span class="nv">createJob: </span><span class="nf">(type, jobData) -&gt;</span>
+    <span class="nv">job = </span><span class="nx">@jobs</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">jobData</span><span class="p">).</span><span class="nx">attempts</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="nx">save</span><span class="p">()</span>
+    <span class="nx">job</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;complete&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s2">&quot;10 second pause complete&quot;</span>
+
+
+  <span class="nv">processJobs: </span><span class="nf">(socket) -&gt;</span>
+    <span class="nv">process = </span><span class="p">(</span><span class="nx">job</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nx">@logger</span><span class="p">.</span><span class="nx">arduino</span> <span class="s2">&quot;##{job.data.event} by @#{job.data.handle}&quot;</span>
       <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;action assignment&#39;</span><span class="p">,</span> <span class="nx">job</span><span class="p">,</span> <span class="p">(</span><span class="nx">completedJob</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">logger</span><span class="p">.</span><span class="nx">confirm</span> <span class="s1">&#39;Arduino action&#39;</span><span class="p">,</span> <span class="s1">&#39;event&#39;</span><span class="o">:</span><span class="nx">completedJob</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">event</span>
-        <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;new event&#39;</span><span class="p">,</span> <span class="nx">completedJob</span>
-        <span class="nx">done</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>Define a job process for each event</h4>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;snow&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+        <span class="nx">setTimeout</span> <span class="p">()</span> <span class="o">=&gt;</span>
+          <span class="nx">@logger</span><span class="p">.</span><span class="nx">confirm</span> <span class="s1">&#39;Arduino action&#39;</span><span class="p">,</span> <span class="s1">&#39;event&#39;</span><span class="o">:</span><span class="nx">completedJob</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">event</span>
+          <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;new event&#39;</span><span class="p">,</span> <span class="nx">completedJob</span>
+          <span class="nx">done</span><span class="p">()</span>
+        <span class="p">,</span> <span class="mi">10000</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h4>Define a job process for each event</h4>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;snow&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;lights&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;lights&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;discoball&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;discoball&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;holicray&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;holicray&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
