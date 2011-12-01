@@ -1,5 +1,5 @@
 Socket = require 'socket'
-
+Stats = require 'stats'
 
 
 #
@@ -9,5 +9,5 @@ Socket = require 'socket'
 #
 module.exports = Client =
   init: () ->
-    events = new Socket()
-    events.init()
+    new Socket()
+    Stats.init()

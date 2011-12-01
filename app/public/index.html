@@ -9,12 +9,12 @@
   <div id="wrapper" class="clearfix">
     <header id="pageheader">
       <h1>Holicray</h1>
-      <section id="right-now">
-        <h2>Right Now</h2>
-        <img src=""><p><span class="handle"></span> <span class="tweet"></span></p>
+      <section id="holicray-meter">
+        <h4>Tweets til next Holicray</h4>
       </section>
     </header>
-    <div id="content">
+
+    <section id="content">
       <div id="video-feed"></div>
       <div id="tbox"></div>
       <script type="text/javascript">
@@ -22,17 +22,39 @@
           T("#tbox").tweetBox({
             height: 100,
             label:'',
-            width: 620,
+            width: 660,
             defaultContent: "@holiduino"
           });
         });
       </script>
-    </div>
 
-    <div id="sidebar">
-      <h2>Cray-by-Cray</h2>
-      <ul class="tweets"></ul>
-    </div>
+      <section id="stats">
+        <article id="total-tweets">
+          <span></span>
+          <h4>Total tweets</h4>
+        </article>
+        <article id="latest"></article>
+        <article id="total-holicrays">
+          <span></span>
+          <h4>Total Holicrays</h4>
+        </article>
+      </section>
+
+      <section id="activity-feed">
+        <article id="up-next">
+          <h2>Up Next</h2>
+          <ul></ul>
+          <a href="#">Load more in the queue</a>
+        </article>
+
+        <article id="history">
+          <h2>History</h2>
+          <ul></ul>
+          <a href="#" class="load-more" data-from="10" data-to="19">Load more in the history</a>
+        </article>
+      </section>
+    </section>
+
   </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>

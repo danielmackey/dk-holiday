@@ -51,8 +51,8 @@ module.exports = Worker =
     'foo'
   ]
 
-  assign: (tweet) ->
-    @tally()
+  assign: (tweet, socket) ->
+    @tally socket
     if @eventTally is @tippingPoint then event = 'holicray'
     else event = @random()
     @assembleJob event, tweet
@@ -63,8 +63,9 @@ module.exports = Worker =
     event = randomEvent.pop()
     return event
 
-  tally: ->
+  tally: (socket) ->
     @eventTally++
+    if socket? then socket.emit 'tally mark'
     return @eventTally
 
 

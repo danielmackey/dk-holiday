@@ -1,6 +1,8 @@
 @import reset
 @import grid
-@import 'jackedup.css'
+
+body
+  background #fffedf
 
 h1
   font-size 36px
@@ -10,23 +12,39 @@ h2
   margin 20px 0
 
 div#wrapper
-  container()
-  #pageheader
-    grid_(12)
-    #right-now
-      img
-        float left
-        margin 0 20px 20px 0
-      p
-        margin-top 30px
-        span.handle
-          font-weight bold
+  width 660px
+  margin 0 auto
+  padding 20px 60px
+  background #fffff5
 
-div#content
-  grid_(8)
+
+#content
   #video-feed
     height 300px
+    margin 20px 0
     background #eee
+
+  #stats
+    position relative
+
+    #total-tweets
+      position absolute
+      top 0
+      left -100px
+
+    #total-holicrays
+      position absolute
+      top 0
+      right -100px
+
+  #activity-feed
+    #up-next
+      width 48%
+      float left
+
+    #history
+      width 48%
+      float right
   ul.tweets
     height 300px
     overflow scroll

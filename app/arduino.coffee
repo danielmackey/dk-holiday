@@ -44,8 +44,6 @@ ledState = arduino.LOW
 socket = io.connect 'http://localhost:5000/arduino'
 
 socket.on 'action assignment', (job, fn) ->
-  socket.emit 'current', job
-
   switch job.data.event
     when "snow"
       pin = 1

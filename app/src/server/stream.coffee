@@ -38,9 +38,7 @@ module.exports = Stream =
     ws = io.of('/arduino').on 'connection', (socket) =>
       @socket = socket
       Worker.rollCall 'present', socket
-
-      socket.on 'disconnect', => Worker.rollCall 'absent', socket
-      socket.on 'current', (job) -> socket.broadcast.emit 'right now', job
+      socket.on 'disconnect', -> Worker.rollCall 'absent', socket
       Worker.start socket
 
 
@@ -52,5 +50,5 @@ module.exports = Stream =
       stream.on 'data', (tweet) =>
         unless tweet.friends? #The first stream message is an array of friend IDs, ignore it
           @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
-          Worker.assign tweet
-          if @socket? then @socket.emit 'new tweet', tweet
+          if @socket? then Worker.assign tweet, @socket
+          else Worker.assign tweet

@@ -1322,7 +1322,9 @@ body {
 .omega {
   margin-right: 0;
 }
-@import 'jackedup.css';
+body {
+  background: #fffedf;
+}
 h1 {
   font-size: 36px;
   margin: 20px 0;
@@ -1332,39 +1334,38 @@ h2 {
   margin: 20px 0;
 }
 div#wrapper {
-  width: 960px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 660px;
+  margin: 0 auto;
+  padding: 20px 60px;
+  background: #fffff5;
 }
-div#wrapper #pageheader {
-  width: 940px;
-  display: inline;
-  float: left;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-div#wrapper #pageheader #right-now img {
-  float: left;
-  margin: 0 20px 20px 0;
-}
-div#wrapper #pageheader #right-now p {
-  margin-top: 30px;
-}
-div#wrapper #pageheader #right-now p span.handle {
-  font-weight: bold;
-}
-div#content {
-  width: 620px;
-  display: inline;
-  float: left;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-div#content #video-feed {
+#content #video-feed {
   height: 300px;
+  margin: 20px 0;
   background: #eee;
 }
-div#content ul.tweets {
+#content #stats {
+  position: relative;
+}
+#content #stats #total-tweets {
+  position: absolute;
+  top: 0;
+  left: -100px;
+}
+#content #stats #total-holicrays {
+  position: absolute;
+  top: 0;
+  right: -100px;
+}
+#content #activity-feed #up-next {
+  width: 48%;
+  float: left;
+}
+#content #activity-feed #history {
+  width: 48%;
+  float: right;
+}
+#content ul.tweets {
   height: 300px;
   overflow: scroll;
 }

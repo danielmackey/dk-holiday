@@ -8,8 +8,6 @@ kue = require 'kue'
 redis = require 'kue/node_modules/redis'
 port = process.env.PORT || 1110
 
-#TODO: Get production domain
-
 
 #
 # ###Job Queue
