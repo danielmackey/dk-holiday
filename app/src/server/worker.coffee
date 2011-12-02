@@ -41,14 +41,14 @@ module.exports = Worker =
   #
   eventTally:0
   tippingPoint:40
-  #TODO: Change events to event phrases and sync up with spec
+  #TODO: Finalize events and sync up with job processes and spec
   events:[
-    'snow'
-    'lights'
-    'train'
-    'discoball'
-    'fan'
-    'foo'
+    'it snow'
+    'the lights on the tree blink'
+    'the stars light up'
+    'the discoball spin'
+    'the wacky man dance'
+    'the foo bar baz'
   ]
 
   assign: (tweet, socket) ->
@@ -102,18 +102,22 @@ module.exports = Worker =
           done()
         , 10000
 
-
-    # #### Define a job process for each event
-    @jobs.process 'snow', (job, done) ->
+    @jobs.process 'it snow', (job, done) ->
       process job, done
 
-    @jobs.process 'lights', (job, done) ->
+    @jobs.process 'the lights on the tree blink', (job, done) ->
       process job, done
 
-    @jobs.process 'train', (job, done) ->
+    @jobs.process 'the stars light up', (job, done) ->
       process job, done
 
-    @jobs.process 'discoball', (job, done) ->
+    @jobs.process 'the discoball spin', (job, done) ->
+      process job, done
+
+    @jobs.process 'the wacky man dance', (job, done) ->
+      process job, done
+
+    @jobs.process 'the foo bar baz', (job, done) ->
       process job, done
 
     @jobs.process 'holicray', (job, done) ->
