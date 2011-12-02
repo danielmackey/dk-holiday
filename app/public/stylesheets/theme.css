@@ -28,7 +28,7 @@ header {width:780px; margin:-51px auto 0 auto; padding-top:50px; background: url
 #container #tweetometer {width:650px; height:40px; margin:10px auto; border:2px solid #D64C1E;}
 #container #tweetometer #full {width:646px; height:36px; display:inline-block; float:left; background: url('/images/green-diagonals.png') repeat; border:2px solid white;}
 #container #tweetometer #full #full-bar {width:598px;}
-#container #tweetometer #full #full-bar #full-inner {width:20%; height:36px; display:inline-block; float:left; background:#59AB4B;}
+#container #tweetometer #full #full-bar #full-inner {width:1%; height:36px; display:inline-block; float:left; background:#59AB4B;}
 #container #tweetometer #full #tweet-counter {width:48px; height:38px; display:inline-block; float:right; margin:-2px -4px 0 0; padding:4px 0 0 2px; font-size:30px; font-family:'HomesteadRegular'; text-align:center; background:#D64C1E; border-left:2px solid white; color:#fff;}
 #container #tweetometer-title {height:15px; position:absolute; top:20px; left:260px; padding:5px 6px 0 5px; display:inline-block; font-size:12px; letter-spacing:1px; text-transform:uppercase; background:#D64C1E; border:2px solid white; color:#fff; font-weight:bold;}
 #container #video {width:670px; height:344px; padding-top:16px; text-align:center; text-transform:uppercase; font-weight:bold; font-size:12px; letter-spacing:1px; background:url('/images/video-overlay.png') #000 no-repeat 0 0;}
@@ -75,6 +75,6 @@ header {width:780px; margin:-51px auto 0 auto; padding-top:50px; background: url
 #column-repeat a {color:#2A6130; text-decoration:none;}
 #column-repeat a:hover {color:#59AB4B; text-decoration:underline;}
 #column-repeat a:active {color:#2A6130;}
-a.load-more {color:#fff!important; text-align:center;background:#59AB4B;display:inline-block; margin:9px auto; padding:9px 9px 7px; background:#59AB4B; color:#fff; font-weight:bold; text-transform:uppercase; letter-spacing:1px; border-radius:3px 3px 3px 3px; -webkit-border-radius:3px 3px 3px 3px; -moz-border-radius:3px 3px 3px 3px; -ms-border-radius:3px 3px 3px 3px;}
+a.load-more {color:#fff!important; text-align:center;background:#59AB4B;display:inline-block; margin:9px 0 9px 45px; padding:9px 9px 7px; background:#59AB4B; color:#fff; font-weight:bold; text-transform:uppercase; letter-spacing:1px; border-radius:3px 3px 3px 3px; -webkit-border-radius:3px 3px 3px 3px; -moz-border-radius:3px 3px 3px 3px; -ms-border-radius:3px 3px 3px 3px;}
 a.load-more:hover {background:#2A6130;text-decoration:none!important;}
 a.load-more:active {color:#59AB4B;}

@@ -2,9 +2,12 @@ twitter = require 'ntwitter'
 Worker = require "#{__dirname}/worker"
 
 #
-# ##Twitter Streaming
+# ##Data Stream
 #
-#   - Grab tweets @designkitchen
+#   - Grab tweets @designkitchen and assign to Worker
+#   - Open websocket connection at /arduino
+#   - Announce client connections and disconnections
+#   - On connection, conditionally start Worker
 #
 module.exports = Stream =
   users: [
@@ -12,7 +15,7 @@ module.exports = Stream =
     'holiduino'
   ]
 
-  keys: # TODO: Get production keys with @designkitchen account
+  keys: # FIXME: Get production keys with @designkitchen account
     consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
     consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
     access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'

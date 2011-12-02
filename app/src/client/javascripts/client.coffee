@@ -10,4 +10,4 @@ Stats = require 'stats'
 module.exports = Client =
   init: () ->
     new Socket()
-    Stats.init()
+    Stats.refresh()

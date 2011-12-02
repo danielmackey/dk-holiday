@@ -12,20 +12,36 @@ module.exports = Stats =
     latest:$ "#current-tweet"
     history:$ "#history ul"
     queue:$ "#up-next ul"
+    tweetCount: $ "#tweet-counter"
 
+  historyFrom:1
+  historyTo:11
+
+  # TODO: Test newEvent() and animateMeter() with new tweets
   newEvent: ->
-    console.log 'refresh stats'
+    console.log 'refresh stats and animate meter'
+    @refresh()
+    preTally = parseInt @el.tweetCount, 10
+    postTally = preTally--
+    @el.tweetCount.text postTally
+    @animateMeter()
 
-  crayTally: ->
-    console.log 'update cray meter'
+  animateMeter: ->
+    bar = $ "#full-inner"
+    startingWidth = bar.width()
+    totalWidth =$("#full-bar").width()
+    increment = totalWidth / 40
+    bar.css 'width', startingWidth + increment
 
-  init: ->
+
+
+  refresh: ->
     @getTotalTweets()
-    @getTotalHolicrays()
+    @getTotalCrays()
     @getLatest()
-    @getHistory '0..10000'
+    @getHistory()
     @getQueue '0..9'
-    @loadMoreHistory()
+    @clickMoreHistory()
 
   getStats: (url, callback) ->
     ajaxOptions =
@@ -45,10 +61,10 @@ module.exports = Stats =
     Stats.el.totalTweets.text stats.completeCount
 
 
-  getTotalHolicrays: ->
-    @getStats '/jobs/holicray/complete/0..10000/desc', Stats.renderTotalHolicrays
+  getTotalCrays: ->
+    @getStats '/jobs/holicray/complete/0..10000/desc', Stats.renderTotalCrays
 
-  renderTotalHolicrays: (jobs) ->
+  renderTotalCrays: (jobs) ->
     Stats.el.totalHolicrays.text jobs.length
 
 
@@ -61,15 +77,20 @@ module.exports = Stats =
     Stats.el.latest.html template job
 
 
-  #TODO: refactor history to paginate like https://gist.github.com/4a873b4355ab936ae0e9
-  getHistory: (pagination) ->
-    @getStats "/jobs/complete/#{pagination}/desc", Stats.renderHistory
+  getHistory: ->
+    @getStats "/jobs/complete/0..10000/desc", Stats.renderHistory
 
   renderHistory: (jobs) ->
-    jobs = jobs.slice 1, 10
+    jobs = jobs.slice Stats.historyFrom, Stats.historyTo
+    Stats.historyFrom = Stats.historyFrom + 10
+    Stats.historyTo = Stats.historyTo + 10
+    if jobs.length <= 9 then $("#history a.load-more").hide()
     template = _.template $("#history-item").html()
     $.each jobs, (i) =>
       Stats.el.history.append template jobs[i]
+
+  getMoreHistory: ->
+    @getHistory()
 
 
   getQueue: (pagination) ->
@@ -82,11 +103,7 @@ module.exports = Stats =
       Stats.el.queue.append template jobs[i]
 
 
-  loadMoreHistory: () ->
+  clickMoreHistory: () ->
     $("#history a.load-more").bind 'click', (e) =>
       e.preventDefault()
-      from = $(e.currentTarget).attr 'data-from'
-      to = $(e.currentTarget).attr 'data-to'
-      @getHistory "#{from}..#{to}"
-      $(e.currentTarget).attr 'data-from', from + 10
-      $(e.currentTarget).attr 'data-to', to + 10
+      @getMoreHistory()

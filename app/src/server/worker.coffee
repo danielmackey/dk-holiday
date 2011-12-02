@@ -41,7 +41,7 @@ module.exports = Worker =
   #
   eventTally:0
   tippingPoint:40
-  #TODO: Finalize events and sync up with spec
+  #TODO: Change events to event phrases and sync up with spec
   events:[
     'snow'
     'lights'
