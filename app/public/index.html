@@ -54,10 +54,39 @@
         </article>
       </section>
     </section>
-
   </div>
 
+  <script id="history-item" type="text/template">
+    <li data-tweet="<%= data.title %>">
+      <p>
+        <small><%= id %></small>
+        <a href="http://twitter.com/<%= data.handle %>">@<%= data.handle %></a>
+        made it <%= data.event %>
+      </p>
+    </li>
+  </script>
+
+  <script id="queue-item" type="text/template">
+    <li data-tweet="<%= data.title %>">
+      <p>
+        <small><%= id %></small>
+        <a href="http://twitter.com/<%= data.handle %>">@<%= data.handle %></a>
+        is about to make <%= data.event %>
+      </p>
+    </li>
+  </script>
+
+  <script id="latest-item" type="text/template">
+    <small><%= id %></small>
+    <h3>
+      <a href="http://twitter.com/<%= data.handle %>">@<%= data.handle %></a>
+      is about to make <%= data.event %>
+    </h3>
+    <p><%= data.title %></p>
+  </script>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+  <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/humane.min.js"></script>
   <script src="/application.js"></script>

@@ -29,7 +29,7 @@ kue.app.set 'title', 'DK Holiday'
 
 
 
-#
+
 # ###Asset Middleware
 #
 #   - Use stitch to package and serve clientside CoffeeScript modules
