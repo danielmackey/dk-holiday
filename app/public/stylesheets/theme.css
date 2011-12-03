@@ -31,7 +31,7 @@ header {width:780px; margin:-51px auto 0 auto; padding-top:50px; background: url
 #container #tweetometer #full #full-bar #full-inner {width:1%; height:36px; display:inline-block; float:left; background:#59AB4B;}
 #container #tweetometer #full #tweet-counter {width:48px; height:38px; display:inline-block; float:right; margin:-2px -4px 0 0; padding:4px 0 0 2px; font-size:30px; font-family:'HomesteadRegular'; text-align:center; background:#D64C1E; border-left:2px solid white; color:#fff;}
 #container #tweetometer-title {height:15px; position:absolute; top:20px; left:260px; padding:5px 6px 0 5px; display:inline-block; font-size:12px; letter-spacing:1px; text-transform:uppercase; background:#D64C1E; border:2px solid white; color:#fff; font-weight:bold;}
-#container #video {width:670px; height:344px; padding-top:16px; text-align:center; text-transform:uppercase; font-weight:bold; font-size:12px; letter-spacing:1px; background:url('/images/video-overlay.png') #000 no-repeat 0 0;}
+#container #video {width:670px; position:relative; z-index:1; height:344px; padding-top:16px; text-align:center; text-transform:uppercase; font-weight:bold; font-size:12px; letter-spacing:1px; background:url('/images/video-overlay.png') transparent no-repeat 0 0;}
 
 /*CIRCLE BADGES*/
 #circle {width:160px; height:80px; display:block; position:absolute; z-index:10; top:150px; margin-left:-40px; color:#737364; text-transform:uppercase; line-height:35px; font-weight:bold; text-decoration:none; text-align:center;}

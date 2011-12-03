@@ -35,7 +35,6 @@ module.exports = Worker =
 
 
 
-
   #
   # ## Event Assignment
   #
@@ -65,7 +64,7 @@ module.exports = Worker =
 
   tally: (socket) ->
     @eventTally++
-    if socket? then socket.emit 'tally mark'
+    if socket? then socket.emit 'tally mark', @eventTally
     return @eventTally
 
 

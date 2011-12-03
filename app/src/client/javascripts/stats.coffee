@@ -1,9 +1,4 @@
-# - tweets til next holicray - eventTally websocket
-# - total tweets: GET /jobs/complete/0..1/desc.id
-# - total holicrays - GET /jobs/holicray/complete/0..1/desc.id
-# - just made it ______ GET /jobs/complete/0..1/desc
-# - queue - GET /jobs/inactive/0..10/asc
-# - history - GET /jobs/complete/1..11/desc
+# FIXME: Persist cray meter
 
 module.exports = Stats =
   el:
@@ -13,26 +8,27 @@ module.exports = Stats =
     history:$ "#history ul"
     queue:$ "#up-next ul"
     tweetCount: $ "#tweet-counter"
+    tweetMeter:$ "#full-inner"
 
   historyFrom:1
   historyTo:11
 
-  # TODO: Test newEvent() and animateMeter() with new tweets
-  newEvent: ->
-    console.log 'refresh stats and animate meter'
+  newEvent: (count) ->
+    @el.history.empty()
+    @el.queue.empty()
     @refresh()
-    preTally = parseInt @el.tweetCount, 10
-    postTally = preTally--
-    @el.tweetCount.text postTally
-    @animateMeter()
+    @el.tweetCount.text "#{40 - count}"
+    if count <= 40 then @resetMeter()
+    else @animateMeter()
 
   animateMeter: ->
-    bar = $ "#full-inner"
-    startingWidth = bar.width()
+    startingWidth = @el.tweetMeter.width()
     totalWidth =$("#full-bar").width()
     increment = totalWidth / 40
-    bar.css 'width', startingWidth + increment
+    @el.tweetMeter.css 'width', startingWidth + increment
 
+  resetMeter: ->
+    @el.tweetMeter.css 'width', '0px'
 
 
   refresh: ->

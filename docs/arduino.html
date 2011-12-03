@@ -35,8 +35,6 @@ board.pinMode 13, arduino.OUTPUT
 board.pinMode 13, ledState</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">socket = </span><span class="nx">io</span><span class="p">.</span><span class="nx">connect</span> <span class="s1">&#39;http://localhost:5000/arduino&#39;</span>
 
 <span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;action assignment&#39;</span><span class="p">,</span> <span class="nf">(job, fn) -&gt;</span>
-  <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="nx">job</span>
-
   <span class="k">switch</span> <span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">event</span>
     <span class="k">when</span> <span class="s2">&quot;snow&quot;</span>
       <span class="nv">pin = </span><span class="mi">1</span>

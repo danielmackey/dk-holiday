@@ -24,17 +24,17 @@
 
   <span class="nv">start: </span><span class="nf">(socket) -&gt;</span>
     <span class="k">if</span> <span class="nx">@isPresent</span> <span class="s1">&#39;arduino&#39;</span> <span class="k">then</span> <span class="nx">@processJobs</span> <span class="nx">socket</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h2>Event Assignment</h2>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">eventTally</span><span class="o">:</span><span class="mi">0</span>
-  <span class="nx">tippingPoint</span><span class="o">:</span><span class="mi">40</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO: Finalize events and sync up with spec</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">events</span><span class="o">:</span><span class="p">[</span>
-    <span class="s1">&#39;snow&#39;</span>
-    <span class="s1">&#39;lights&#39;</span>
-    <span class="s1">&#39;train&#39;</span>
-    <span class="s1">&#39;discoball&#39;</span>
-    <span class="s1">&#39;fan&#39;</span>
-    <span class="s1">&#39;foo&#39;</span>
+  <span class="nx">tippingPoint</span><span class="o">:</span><span class="mi">40</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO: Finalize events and sync up with job processes and spec</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">events</span><span class="o">:</span><span class="p">[</span>
+    <span class="s1">&#39;it snow&#39;</span>
+    <span class="s1">&#39;the lights on the tree blink&#39;</span>
+    <span class="s1">&#39;the stars light up&#39;</span>
+    <span class="s1">&#39;the discoball spin&#39;</span>
+    <span class="s1">&#39;the wacky man dance&#39;</span>
+    <span class="s1">&#39;the foo bar baz&#39;</span>
   <span class="p">]</span>
 
-  <span class="nv">assign: </span><span class="nf">(tweet) -&gt;</span>
-    <span class="nx">@tally</span><span class="p">()</span>
+  <span class="nv">assign: </span><span class="nf">(tweet, socket) -&gt;</span>
+    <span class="nx">@tally</span> <span class="nx">socket</span>
     <span class="k">if</span> <span class="nx">@eventTally</span> <span class="o">is</span> <span class="nx">@tippingPoint</span> <span class="k">then</span> <span class="nv">event = </span><span class="s1">&#39;holicray&#39;</span>
     <span class="k">else</span> <span class="nv">event = </span><span class="nx">@random</span><span class="p">()</span>
     <span class="nx">@assembleJob</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">tweet</span>
@@ -45,8 +45,9 @@
     <span class="nv">event = </span><span class="nx">randomEvent</span><span class="p">.</span><span class="nx">pop</span><span class="p">()</span>
     <span class="k">return</span> <span class="nx">event</span>
 
-  <span class="nv">tally: </span><span class="o">-&gt;</span>
+  <span class="nv">tally: </span><span class="nf">(socket) -&gt;</span>
     <span class="nx">@eventTally</span><span class="o">++</span>
+    <span class="k">if</span> <span class="nx">socket</span><span class="o">?</span> <span class="k">then</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;tally mark&#39;</span><span class="p">,</span> <span class="nx">@eventTally</span>
     <span class="k">return</span> <span class="nx">@eventTally</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h2>Job processor</h2>
 
 <ul>
@@ -76,16 +77,24 @@
           <span class="nx">@logger</span><span class="p">.</span><span class="nx">confirm</span> <span class="s1">&#39;Arduino action&#39;</span><span class="p">,</span> <span class="s1">&#39;event&#39;</span><span class="o">:</span><span class="nx">completedJob</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">event</span>
           <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;new event&#39;</span><span class="p">,</span> <span class="nx">completedJob</span>
           <span class="nx">done</span><span class="p">()</span>
-        <span class="p">,</span> <span class="mi">10000</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h4>Define a job process for each event</h4>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;snow&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+        <span class="p">,</span> <span class="mi">10000</span>
+
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;it snow&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;lights&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;the lights on the tree blink&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;the stars light up&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
-    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;discoball&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;the discoball spin&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;the wacky man dance&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
+      <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
+
+    <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;the foo bar baz&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>
       <span class="nx">process</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">done</span>
 
     <span class="nx">@jobs</span><span class="p">.</span><span class="nx">process</span> <span class="s1">&#39;holicray&#39;</span><span class="p">,</span> <span class="nf">(job, done) -&gt;</span>

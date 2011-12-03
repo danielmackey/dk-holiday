@@ -58,12 +58,12 @@ describe 'Worker', ->
 
   it 'contains the correct events', ->
     events = [
-      'snow'
-      'lights'
-      'train'
-      'discoball'
-      'fan'
-      'foo'
+      'it snow'
+      'the lights on the tree blink'
+      'the stars light up'
+      'the discoball spin'
+      'the wacky man dance'
+      'the foo bar baz'
     ]
 
     events.forEach (event, i) ->
