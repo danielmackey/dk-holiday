@@ -1,5 +1,3 @@
-# FIXME: Persist cray meter
-
 module.exports = Stats =
   el:
     totalTweets:$ "#total-tweets-number"
@@ -111,7 +109,7 @@ module.exports = Stats =
     @getStats "/jobs/inactive/#{pagination}/asc", Stats.renderQueue
 
   renderQueue: (jobs) ->
-    if jobs.length <= 10 then $("#up-next a").hide()
+    if jobs.length <= 9 then $("#up-next a").hide()
     template = _.template $("#queue-item").html()
     $.each jobs, (i) =>
       Stats.el.queue.append template jobs[i]

@@ -9,5 +9,16 @@ Stats = require 'stats'
 #
 module.exports = Client =
   init: () ->
+    `
+    twttr.anywhere(function (T) {
+      T("#tweet-box").tweetBox({
+        height:75,
+        label:'',
+        width:630,
+        defaultContent:""
+      });
+    });
+    `
+
     new Socket()
     Stats.refresh()

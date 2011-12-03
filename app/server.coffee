@@ -29,13 +29,12 @@ kue.app.set 'title', 'DK Holiday'
 
 
 
-
 # ###Asset Middleware
 #
 #   - Use stitch to package and serve clientside CoffeeScript modules
 #   - Use stylus to precompile CSS
 #
-package = stitch.createPackage paths:[__dirname + '/src/client/javascripts'], dependencies:[]
+package = stitch.createPackage paths:["#{__dirname}/src/client/javascripts"], dependencies:["#{__dirname}/public/javascripts/jquery.js","#{__dirname}/public/javascripts/underscore.js","#{__dirname}/public/javascripts/socket.io.js"]
 
 cssOptions =
   src:"#{__dirname}/src/client"
@@ -61,8 +60,9 @@ app.configure () ->
   app.use stylus.middleware cssOptions
   app.use express.static "#{__dirname}/public"
   app.get '/application.js', package.createServer()
-  app.get '/', (req, res) ->
-    res.sendfile "#{__dirname}/public/index.html"
+
+app.get '/', (req, res) ->
+  res.sendfile "#{__dirname}/public/index.html"
 
 app.use kue.app
 app.listen port

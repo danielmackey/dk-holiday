@@ -97,7 +97,7 @@ module.exports = Worker =
       @logger.arduino "##{job.data.event} by @#{job.data.handle}"
       socket.emit 'action assignment', job, (completedJob) =>
         @logger.confirm 'Arduino action', 'event':completedJob.data.event
-        socket.emit 'new event', completedJob
+        socket.broadcast.emit 'new event', completedJob
         done()
 
     @jobs.promote()

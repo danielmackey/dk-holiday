@@ -1,0 +1,463 @@
+body
+  background url('/images/bg.gif') repeat
+  font-family futura-pt
+  color #59AB4B
+  -webkit-font-smoothing antialiased
+  padding-bottom 100px
+
+
+@font-face
+  font-family 'HomesteadDisplay'
+  src url('/fonts/homestead-display-webfont.eot')
+  src url('/fonts/homestead-display-webfont.eot?#iefix') format('embedded-opentype'), url('/fonts/homestead-display-webfont.woff') format('woff'), url('/fonts/homestead-display-webfont.ttf') format('truetype'), url('/fonts/homestead-display-webfont.svg#HomesteadDisplay') format('svg')
+
+@font-face
+  font-family 'HomesteadRegular'
+  src url('/fonts/homestead-regular-webfont.eot')
+  src url('/fonts/homestead-regular-webfont.eot?#iefix') format('embedded-opentype'),url('/fonts/homestead-regular-webfont.woff') format('woff'),url('/fonts/homestead-regular-webfont.ttf') format('truetype'),url('/fonts/homestead-regular-webfont.svg#HomesteadRegular') format('svg')
+
+@font-face
+  font-family 'TommasoRegular'
+  src url('/fonts/tommaso-webfont.eot')
+  src url('/fonts/tommaso-webfont.eot?#iefix') format('embedded-opentype'),url('/fonts/tommaso-webfont.woff') format('woff'),url('/fonts/tommaso-webfont.ttf') format('truetype'),url('/fonts/tommaso-webfont.svg#TommasoRegular') format('svg')
+
+a
+  text-decoration none
+
+a:visited
+  color inherit
+  text-decoration none
+
+hr
+  height 6px
+  border none
+  border-top 2px solid #59AB4B
+  border-bottom 2px solid #59AB4B
+
+h1
+  margin 0 5px
+  font-family 'TommasoRegular'
+  text-rendering optimizeLegibility
+  font-size 85px
+  font-weight normal
+  text-align center
+
+h1 span.a
+  margin-right -5px
+
+h1 span.y
+  margin-left -3px
+
+h1 span.hyphen
+  display inline-block
+  margin 0 -9px
+  transform scale(.5,1)
+  -ms-transform scale(.5,1)
+  -webkit-transform scale(.5,1)
+  -o-transform scale(.5,1)
+  -moz-transform scale(.5,1)
+
+.red
+  color #D64622!important
+  text-decoration none
+
+.green
+  color #59AB4B!important
+  text-decoration none
+
+#wrapper
+  width 925px
+  margin 10px auto 0 auto
+
+#container
+  position relative
+  width 656px
+  margin 0 auto
+  padding 0 60px
+  overflow hidden
+  background-color #FFFFF5
+  border-right 2px solid #C2C2A9
+  border-left 2px solid #C2C2A9
+
+a.dk-button
+  width 218px
+  height 32px
+  margin 0 auto
+  display block
+  position relative
+  background url('/images/dk-button.png') no-repeat center 0
+  text-align center
+  padding-top 19px
+  text-decoration none
+  text-transform uppercase
+  color #fff
+  font-weight bold
+  font-size 12px
+  z-index 1000
+
+a.dk-button:hover
+  background-position center -51px
+
+a.dk-button:active
+  background-position center -102px
+
+a.dk-button span.left
+  margin-right 45px
+  margin-left -1px
+  letter-spacing 2px
+
+
+header
+  width 780px
+  margin -51px auto 0 auto
+  padding-top 50px
+  background url('/images/header.png') no-repeat 0 0
+
+#description
+  font-size 18px
+  line-height 23px
+  text-align center
+  padding 10px 160px
+  font-weight bold
+
+#container #tweetometer
+  width 650px
+  height 40px
+  margin 10px auto
+  border 2px solid #D64C1E
+
+#container #tweetometer #full
+  width 646px
+  height 36px
+  display inline-block
+  float left
+  background url('/images/green-diagonals.png') repeat
+  border 2px solid white
+
+#container #tweetometer #full #full-bar
+  width 598px
+
+#container #tweetometer #full #full-bar #full-inner
+  width 1%
+  height 36px
+  display inline-block
+  float left
+  background #59AB4B
+
+#container #tweetometer #full #tweet-counter
+  width 48px
+  height 38px
+  display inline-block
+  float right
+  margin -2px -4px 0 0
+  padding 4px 0 0 2px
+  font-size 30px
+  font-family 'HomesteadRegular'
+  text-align center
+  background #D64C1E
+  border-left 2px solid white
+  color #fff
+
+#container #tweetometer-title
+  height 15px
+  position absolute
+  top 20px
+  left 260px
+  padding 5px 6px 0 5px
+  display inline-block
+  font-size 12px
+  letter-spacing 1px
+  text-transform uppercase
+  background #D64C1E
+  border 2px solid white
+  color #fff
+  font-weight bold
+
+#container #video
+  width 670px
+  position relative
+  z-index 1
+  height 344px
+  padding-top 16px
+  text-align center
+  text-transform uppercase
+  font-weight bold
+  font-size 12px
+  letter-spacing 1px
+  background url('/images/video-overlay.png') transparent no-repeat 0 0
+
+#circle
+  width 160px
+  height 80px
+  display block
+  position absolute
+  z-index 10
+  top 150px
+  margin-left -40px
+  color #737364
+  text-transform uppercase
+  line-height 35px
+  font-weight bold
+  text-decoration none
+  text-align center
+
+#circle span
+  display block
+  position relative
+  color #fff
+  font-size 33px
+  margin-top -3px
+  font-family 'Tommaso'
+
+#circle span.circle
+  width 160px
+  height 160px
+  display block
+  background #C2C2A9
+  top -129px
+  z-index -12
+  position relative
+  -webkit-border-radius 80px 80px 80px 80px
+  -moz-border-radius 80px 80px 80px 80px
+  -ms-border-radius 80px 80px 80px 80px
+  border-radius 80px 80px 80px 80px
+  -webkit-transition .1s ease-in-out all
+  -moz-transition .1s ease-in-out all
+  -ms-transition .1s ease-in-out all
+  transition .1s ease-in-out all
+
+#circle.github
+  margin-left 816px
+  top 380px
+  cursor pointer
+  -webkit-transform rotate(-8deg)
+  -moz-transform rotate(-8deg)
+  -ms-transform rotate(-8deg)
+  transform rotate(-8deg)
+  -webkit-transition .1s ease-in-out all
+  -moz-transition .1s ease-in-out all
+  -ms-transition .1s ease-in-out all
+  transition .1s ease-in-out all
+
+#circle.scrooge
+  -webkit-transform rotate(8deg)
+  -moz-transform rotate(8deg)
+  -ms-transform rotate(8deg)
+  transform rotate(8deg)
+
+#circle.github:hover
+  color #7C2413
+  cursor pointer
+  -webkit-transform rotate(8deg)
+  -moz-transform rotate(8deg)
+  -ms-transform rotate(8deg)
+  transform rotate(8deg)
+
+#circle.github:hover span.circle
+  background #D64622
+  cursor pointer
+  -webkit-transform scale(1.1,1.1) rotate(8deg)
+  -moz-transform scale(1.1,1.1) rotate(8deg)
+  -ms-transform scale(1.1,1.1) rotate(8deg)
+  transform scale(1.1,1.1) rotate(8deg)
+
+#container #tweet
+  height 25px
+  margin 10px 0
+  padding 14px 0 0 30px
+  font-size 20px
+  background url('/images/twitter.png') no-repeat left center
+
+#container #tweet #tweet-box
+  height 110px
+  margin -20px 0 40px 0
+  float left
+
+#container #tweet a
+  color #59AB4B
+  text-decoration none
+
+#container #tweet a:hover
+  color #2A6130
+  text-decoration underline
+
+#container #tweet a:active
+  color #59AB4B
+
+#column-top
+  width 925px
+  height 138px
+  background url('/images/column-top.png') no-repeat
+
+#column-mid
+  width 740px
+  height 60px
+  margin 0 auto
+  background url('/images/column-mid.png') no-repeat
+
+#column-mid .up-next, #column-mid .history
+  color #D64622
+  font-weight bold
+  font-size 20px
+  margin-top 17px
+  display inline-block
+
+#column-mid .up-next
+  margin-left 160px
+
+#column-mid .history
+  margin-left 240px
+
+#column-top #total-tweets
+  text-align center
+
+#column-top #total-tweets #total-tweets-number
+  width 84px
+  height 60px
+  color white
+  font-size 50px
+  font-family 'HomesteadDisplay'
+  position relative
+  top 55px
+  left 21px
+
+#column-top #total-tweets #total-tweets-title
+  width 84px
+  height 30px
+  font-weight bold
+  text-transform uppercase
+  font-size 12px
+  color #59AB4B
+  font-family futura-pt
+  position relative
+  top 88px
+  left 18px
+
+#column-top #total-tweets #total-crays-number
+  width 80px
+  height 63px
+  color white
+  font-size 50px
+  font-family 'HomesteadDisplay'
+  position relative
+  top -35px
+  left 819px
+  margin-right 890px
+
+#column-top #total-tweets #total-crays-title
+  width 70px
+  height 30px
+  font-weight bold
+  text-transform uppercase
+  font-size 12px
+  color #D64C1E
+  font-family futura-pt
+  position relative
+  top -5px
+  left 828px
+
+#column-top #total-tweets #current-tweet
+  width 670px
+  margin -140px auto
+
+#column-top #total-tweets #current-tweet #current-tweet-number
+  width 125px
+  height 90px
+  margin-top 4px
+  font-family 'HomesteadDisplay'
+  font-size 50px
+  text-align center
+  float left
+
+#column-top #total-tweets #current-tweet #current-action
+  width 520px
+  height 30px
+  font-size 20px
+  font-weight bold
+  text-align left
+  float right
+
+#column-top #total-tweets #current-tweet #current-tweet-text
+  width 520px
+  height 45px
+  line-height 20px
+  text-align left
+  float right
+
+#column-top #total-tweets #current-tweet a:hover
+  text-decoration underline
+
+#column-repeat
+  margin -5px 92px
+  font-size 14px
+  border-bottom 2px solid #C2C2A9
+  background url('/images/column-repeat.png') repeat-y
+  padding 0 37px
+  overflow hidden
+
+#up-next
+  float left
+  width 313px
+  padding 0 10px
+
+#history
+  float right
+  width 313px
+  padding 0 10px
+
+#column-repeat ul li
+  height 52px
+  margin 0
+  list-style-type none
+
+#column-repeat ul li span.left
+  width 50px
+  height 30px
+  margin 11px 0 0 -5px
+  float left
+  font-size 25px
+  text-align center
+  font-family 'HomesteadRegular'
+
+#column-repeat ul li span.right
+  width 268px
+  float right
+  padding 11px 0
+
+#column-repeat a
+  color #2A6130
+  text-decoration none
+
+#column-repeat a:hover
+  color #59AB4B
+  text-decoration underline
+
+#column-repeat a:active
+  color #2A6130
+
+a.load-more
+  color #fff!important
+  text-align center
+  background #59AB4B
+  display inline-block
+  margin 9px 0 9px 45px
+  padding 9px 9px 7px
+
+a.load-more
+  background #59AB4B
+  color #fff
+  font-weight bold
+  text-transform uppercase
+  letter-spacing 1px
+  border-radius 3px 3px 3px 3px
+  -webkit-border-radius 3px 3px 3px 3px
+  -moz-border-radius 3px 3px 3px 3px
+  -ms-border-radius 3px 3px 3px 3px
+
+a.load-more:hover
+  background #2A6130
+  text-decoration none!important
+
+a.load-more:active
+  color #59AB4B
+

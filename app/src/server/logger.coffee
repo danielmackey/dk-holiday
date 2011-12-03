@@ -1,5 +1,7 @@
 winston = require 'winston'
 
+#TODO: Add file transport for production and with NODE_ENV
+
 #
 # ###Logging config
 #
