@@ -569,7 +569,7 @@
    */
 
   EventEmitter.prototype.removeAllListeners = function (name) {
-    // TODO: enable this when node 0.5 is stable
+    // enable this when node 0.5 is stable
     //if (name === undefined) {
       //this.$events = {};
       //return this;
@@ -1423,7 +1423,7 @@
   Transport.prototype.onClose = function () {
     var self = this;
 
-    /* FIXME: reopen delay causing a infinit loop
+    /* reopen delay causing a infinit loop
     this.reopenTimeout = setTimeout(function () {
       self.open();
     }, this.socket.options['reopen delay']);*/
