@@ -1,7 +1,5 @@
 winston = require 'winston'
 
-#TODO: Add file transport for production and with NODE_ENV
-
 #
 # ###Logging config
 #
@@ -41,7 +39,7 @@ module.exports = class Logger
         twitter:'cyan'
 
     logOptions =
-      transports:[new (winston.transports.Console)( colorize:true )]
+      transports:[new (winston.transports.Console)( colorize:true ), new (winston.transports.File)( colorize:true, filename: 'cray.log' )]
       levels:logLevels.levels
       colors:logLevels.colors
 
