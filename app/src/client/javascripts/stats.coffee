@@ -86,7 +86,13 @@ module.exports = Stats =
   renderLatest: (jobs) ->
     job = jobs.pop()
     tpl = Stats.el.latest.html()
-    latest = Plates.bind tpl, job
+    map =
+      "event":"class"
+      "title":"class"
+      "handle":"class"
+      "id":"class"
+    job.data.id = job.id
+    latest = Plates.bind tpl, job.data, map
     Stats.el.latest.html latest
 
 
@@ -98,10 +104,18 @@ module.exports = Stats =
     Stats.historyFrom = Stats.historyFrom + 10
     Stats.historyTo = Stats.historyTo + 10
     if jobs.length <= 9 then $("#history a.load-more").hide()
-    tpl = Stats.el.history.html()
+    map =
+      "event":"class"
+      "title":["class","data-bind-tweet"]
+      "handle":"class"
+      "id":"class"
+    tpl = Stats.el.history.html().split('</li>')[0]
     $.each jobs, (i) =>
-      item = Plates.bind tpl, jobs[i]
+      jobs[i].data.id = jobs[i].id
+      item = Plates.bind tpl, jobs[i].data, map
       Stats.el.history.append item
+
+    Stats.el.history.find('li:first-child').hide()
 
   getMoreHistory: ->
     @getHistory()
@@ -112,12 +126,18 @@ module.exports = Stats =
 
   renderQueue: (jobs) ->
     if jobs.length <= 9 then $("#up-next a").hide()
-    tpl = Stats.el.queue.html()
+    map =
+      "event":"class"
+      "title":["class","data-bind-tweet"]
+      "handle":"class"
+      "id":"class"
+    tpl = Stats.el.queue.html().split('</li>')[0]
     $.each jobs, (i) =>
-      #Stats.el.queue.append template jobs[i]
-      item = Plates.bind tpl, jobs[i]
+      jobs[i].data.id = jobs[i].id
+      item = Plates.bind tpl, jobs[i].data, map
       Stats.el.queue.append item
 
+    Stats.el.queue.find('li:first-child').hide()
 
   clickMoreHistory: () ->
     $("#history a.load-more").bind 'click', (e) =>

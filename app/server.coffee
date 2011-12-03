@@ -10,6 +10,7 @@ port = process.env.PORT || 1110
 
 
 #TODO: Finish conversion of underscore.js templating to Plates.js
+#FIXME: Use node-request to query the totalCompletedJobs and calculate cray tally. Then assign to Worker.eventTally
 
 #
 # ###Job Queue
