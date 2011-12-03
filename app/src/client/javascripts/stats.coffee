@@ -85,8 +85,9 @@ module.exports = Stats =
 
   renderLatest: (jobs) ->
     job = jobs.pop()
-    template = _.template $("#latest-item").html()
-    Stats.el.latest.html template job
+    tpl = Stats.el.latest.html()
+    latest = Plates.bind tpl, job
+    Stats.el.latest.html latest
 
 
   getHistory: ->
@@ -97,9 +98,10 @@ module.exports = Stats =
     Stats.historyFrom = Stats.historyFrom + 10
     Stats.historyTo = Stats.historyTo + 10
     if jobs.length <= 9 then $("#history a.load-more").hide()
-    template = _.template $("#history-item").html()
+    tpl = Stats.el.history.html()
     $.each jobs, (i) =>
-      Stats.el.history.append template jobs[i]
+      item = Plates.bind tpl, jobs[i]
+      Stats.el.history.append item
 
   getMoreHistory: ->
     @getHistory()
@@ -110,9 +112,11 @@ module.exports = Stats =
 
   renderQueue: (jobs) ->
     if jobs.length <= 9 then $("#up-next a").hide()
-    template = _.template $("#queue-item").html()
+    tpl = Stats.el.queue.html()
     $.each jobs, (i) =>
-      Stats.el.queue.append template jobs[i]
+      #Stats.el.queue.append template jobs[i]
+      item = Plates.bind tpl, jobs[i]
+      Stats.el.queue.append item
 
 
   clickMoreHistory: () ->
