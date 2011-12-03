@@ -7,8 +7,8 @@ module.exports = Stats =
     latest:$ "#current-tweet"
     history:$ "#history ul"
     queue:$ "#up-next ul"
-    tweetCount: $ "#tweet-counter"
-    tweetMeter:$ "#full-inner"
+    tallyCount: $ "#tweet-counter"
+    tallyMeter:$ "#full-inner"
 
   historyFrom:1
   historyTo:11
@@ -17,18 +17,35 @@ module.exports = Stats =
     @el.history.empty()
     @el.queue.empty()
     @refresh()
-    @el.tweetCount.text "#{40 - count}"
+    @el.tallyCount.text "#{40 - count}"
     if count <= 40 then @resetMeter()
     else @animateMeter()
 
   animateMeter: ->
-    startingWidth = @el.tweetMeter.width()
+    startingWidth = @el.tallyMeter.width()
     totalWidth =$("#full-bar").width()
     increment = totalWidth / 40
-    @el.tweetMeter.css 'width', startingWidth + increment
+    @el.tallyMeter.css 'width', startingWidth + increment
 
   resetMeter: ->
-    @el.tweetMeter.css 'width', '0px'
+    @el.tallyMeter.css 'width', '0px'
+
+  renderCrayTally: (count) ->
+    factorForty = (n) ->
+      if n < 41 then return n
+      else
+        timesOver = parseInt n / 40, 10
+        extra = timesOver * 40
+        return n - extra
+
+    tally = factorForty count
+    @el.tallyCount.text "#{40 - tally}"
+
+    startingWidth = @el.tallyMeter.width()
+    totalWidth =$("#full-bar").width()
+    increment = totalWidth / 40
+    width = tally * increment
+    @el.tallyMeter.css 'width', width
 
 
   refresh: ->
@@ -55,6 +72,7 @@ module.exports = Stats =
 
   renderTotalTweets: (stats) ->
     Stats.el.totalTweets.text stats.completeCount
+    Stats.renderCrayTally stats.completeCount
 
 
   getTotalCrays: ->

@@ -38,10 +38,11 @@ module.exports = Worker =
   #
   # ## Event Assignment
   #
+  delay:10000
   eventTally:0
   tippingPoint:40
-  #TODO: Finalize events and sync up with job processes and spec
-  events:[
+
+  events:[ #TODO: Finalize events and sync up with job processes and spec
     'it snow'
     'the lights on the tree blink'
     'the stars light up'
@@ -87,19 +88,19 @@ module.exports = Worker =
 
 
   createJob: (type, jobData) ->
-    job = @jobs.create(type, jobData).attempts(3).save()
-    job.on 'complete', -> console.log "10 second pause complete"
+    job = @jobs.create(type, jobData).attempts(3).delay(@delay).save()
+    job.on 'promotion', -> console.log "10 second pause complete"
 
 
   processJobs: (socket) ->
     process = (job, done) =>
       @logger.arduino "##{job.data.event} by @#{job.data.handle}"
       socket.emit 'action assignment', job, (completedJob) =>
-        setTimeout () =>
-          @logger.confirm 'Arduino action', 'event':completedJob.data.event
-          socket.emit 'new event', completedJob
-          done()
-        , 10000
+        @logger.confirm 'Arduino action', 'event':completedJob.data.event
+        socket.emit 'new event', completedJob
+        done()
+
+    @jobs.promote()
 
     @jobs.process 'it snow', (job, done) ->
       process job, done

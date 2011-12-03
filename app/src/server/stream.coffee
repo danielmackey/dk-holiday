@@ -1,14 +1,7 @@
 twitter = require 'ntwitter'
 Worker = require "#{__dirname}/worker"
 
-#
-# ##Data Stream
-#
-#   - Grab tweets @designkitchen and assign to Worker
-#   - Open websocket connection at /arduino
-#   - Announce client connections and disconnections
-#   - On connection, conditionally start Worker
-#
+
 module.exports = Stream =
   users: [
     'designkitchen'
@@ -26,13 +19,13 @@ module.exports = Stream =
     @openTwitter()
     Worker.init @jobs, @logger
 
+  #
+  # ### Websocket
+  #
+  #   - Open a connection and start Worker
+  #   - Take roll call using handshakeData on client connection and disconnection
+  #
   openSocket: ->
-    #
-    # #### Websocket
-    #
-    #   - Identify each client on connection and disconnection
-    #   - Process jobs only if arduino is connected
-    #
     io = require('socket.io').listen @app
     io.set 'log level', 1
     io.set 'authorization', (handshakeData, callback) ->
@@ -45,13 +38,20 @@ module.exports = Stream =
       Worker.start socket
 
 
+  #
+  # ### Twitter Stream
+  #
+  #   - Open a twitter stream following @users
+  #   - Ignore the first stream payload - its an array of friends
+  #   - Capture new tweets and assign to Worker
+  #
   openTwitter: ->
     api = new twitter @keys
     api.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
 
       stream.on 'data', (tweet) =>
-        unless tweet.friends? #The first stream message is an array of friend IDs, ignore it
+        unless tweet.friends?
           @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
           if @socket? then Worker.assign tweet, @socket
           else Worker.assign tweet
