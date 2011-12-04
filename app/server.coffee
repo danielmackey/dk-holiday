@@ -2,15 +2,12 @@ express = require 'express'
 stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
-app = express.createServer()
 url = require 'url'
 kue = require 'kue'
 redis = require 'kue/node_modules/redis'
-port = process.env.PORT || 1110
-
-
-#TODO: Finish conversion of underscore.js templating to Plates.js
-#FIXME: Use node-request to query the totalCompletedJobs and calculate cray tally. Then assign to Worker.eventTally
+app = express.createServer()
+port = process.env.PORT || 5000
+Holicray = require './src/server/holicray'
 
 #
 # ###Job Queue
@@ -19,7 +16,6 @@ port = process.env.PORT || 1110
 #   - Enable CORS with the job queue db for clientside stats
 #
 kue.redis.createClient = () ->
-  console.log "process.env.REDISTOGO_URL: " + process.env.REDISTOGO_URL
   process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
   redisUrl = url.parse(process.env.REDISTOGO_URL)
   client = redis.createClient(redisUrl.port, redisUrl.hostname)
@@ -66,7 +62,6 @@ viewOptions =
 app.configure () ->
   app.use app.router
   app.use stylus.middleware cssOptions
-  app.use 'views', "#{__dirname}/src/client/views"
   app.use 'view engine', 'jade'
   app.get '/application.js', package.createServer()
 
@@ -75,10 +70,9 @@ app.configure 'development', ->
   app.use express.errorHandler dumpExceptions: true, showStack: true
 
 app.configure 'production', ->
-  oneYear = 31557600000;
+  oneYear = 31557600000
   app.use express.static "#{__dirname}/public", maxAge: oneYear
   app.use express.errorHandler()
-
 
 app.get '/', (req, res) ->
   res.render "#{__dirname}/src/client/views/index.jade", viewOptions
@@ -86,9 +80,4 @@ app.get '/', (req, res) ->
 app.use kue.app
 app.listen port
 
-
-Logger = require './src/server/logger'
-logger = new Logger()
-
-Stream = require './src/server/stream'
-Stream.init app, jobs, logger
+new Holicray app, jobs

@@ -2,7 +2,8 @@ module.exports = Worker =
   #
   # ## Utilities
   #
-  init: (@jobs, @logger) ->
+  init: (@jobs, @logger, @count) ->
+    if @count? then @eventTally = @count
 
   rollCall: (status, socket) ->
     identity = @identify socket
@@ -51,8 +52,8 @@ module.exports = Worker =
     'the foo bar baz'
   ]
 
-  assign: (tweet, socket) ->
-    @tally socket
+  assign: (tweet) ->
+    @tally()
     if @eventTally is @tippingPoint then event = 'holicray'
     else event = @random()
     @assembleJob event, tweet
@@ -63,9 +64,8 @@ module.exports = Worker =
     event = randomEvent.pop()
     return event
 
-  tally: (socket) ->
+  tally: ->
     @eventTally++
-    if socket? then socket.emit 'tally mark', @eventTally
     return @eventTally
 
 
@@ -95,10 +95,8 @@ module.exports = Worker =
   processJobs: (socket) ->
     process = (job, done) =>
       @logger.arduino "##{job.data.event} by @#{job.data.handle}"
-      socket.emit 'action assignment', job, (completedJob) =>
-        @logger.confirm 'Arduino action', 'event':completedJob.data.event
-        socket.broadcast.emit 'new event', completedJob
-        done()
+      socket.broadcast.emit 'action assignment', job
+      done()
 
     @jobs.promote()
 

@@ -1,10 +1,8 @@
-express = require 'express'
 SerialPort = require('serialport').SerialPort
 arduino = require 'arduino'
 #board = arduino.connect('/dev/tty.usbmodemfa131')
 connect = require 'connect'
 colors = require 'colors'
-app = express.createServer()
 port = 1112
 io = require 'socket.io-client'
 
@@ -43,26 +41,9 @@ ledState = arduino.LOW
 
 socket = io.connect 'http://localhost:5000/arduino'
 
-socket.on 'action assignment', (job, fn) ->
-  switch job.data.event
-    when "snow"
-      pin = 1
-      time = 5000
-    when "lights"
-      pin = 13
-      time = 5000
-    when "train"
-      pin = 3
-      time = 5000
-    when "discoball"
-      pin = 4
-      time = 10000
-    when "fan"
-      pin = 5
-      time = 10000
-
+socket.on 'action assignment', (job) ->
+  socket.emit 'right now'
   #board.digitalWrite pin, ledState = arduino.HIGH # on
   #setTimeout(board.digitalWrite(pin, ledState = arduino.LOW), time) # off
 
-  console.log "#{"✓ ".green} ##{job.data.event.rainbow} by @#{job.data.handle.cyan}"
-  fn job
+  console.log "@#{job.data.handle.cyan} just made #{job.data.event.rainbow}"

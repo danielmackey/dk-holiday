@@ -8,16 +8,16 @@ module.exports = Stream =
     'holiduino'
   ]
 
-  keys: # FIXME: Get production keys with @designkitchen account
+  keys: # TODO: Get production keys with @designkitchen account
     consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
     consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
     access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
     access_token_secret:'cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI'
 
-  init: (@app, @jobs, @logger) ->
+  init: (@app, @jobs, @logger, @tally) ->
     @openSocket()
     @openTwitter()
-    Worker.init @jobs, @logger
+    Worker.init @jobs, @logger, @tally
 
   #
   # ### Websocket
@@ -32,9 +32,9 @@ module.exports = Stream =
       callback null, true
 
     ws = io.of('/arduino').on 'connection', (socket) =>
-      @socket = socket
       Worker.rollCall 'present', socket
       socket.on 'disconnect', -> Worker.rollCall 'absent', socket
+      socket.on 'right now', -> socket.broadcast.emit 'refresh stats'
       Worker.start socket
 
 
@@ -53,5 +53,4 @@ module.exports = Stream =
       stream.on 'data', (tweet) =>
         unless tweet.friends?
           @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
-          if @socket? then Worker.assign tweet, @socket
-          else Worker.assign tweet
+          Worker.assign tweet

@@ -1,3 +1,4 @@
+#FIXME: Latest event appends instead of replaces on newEvent()
 module.exports = Stats =
   el:
     totalTweets:$ "#total-tweets-number"
@@ -11,13 +12,8 @@ module.exports = Stats =
   historyFrom:1
   historyTo:11
 
-  newEvent: (count) ->
-    @el.history.empty()
-    @el.queue.empty()
+  newEvent: ->
     @refresh()
-    @el.tallyCount.text "#{40 - count}"
-    if count <= 40 then @resetMeter()
-    else @animateMeter()
 
   animateMeter: ->
     startingWidth = @el.tallyMeter.width()

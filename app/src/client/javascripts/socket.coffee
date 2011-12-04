@@ -12,4 +12,4 @@ module.exports = class Socket
 
   openSocket: ->
     client = io.connect '/arduino'
-    client.on 'tally mark', (count) -> Stats.newEvent count
+    client.on 'refresh stats', -> Stats.newEvent()

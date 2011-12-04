@@ -4,7 +4,7 @@ winston = require 'winston'
 # ###Logging config
 #
 #   - Use [winston](https://github.com/flatiron/winston) on the console with custom log levels and coloring
-#   - Optionally log to a file transport
+#   - Write log to cray.log
 #
 module.exports = class Logger
   constructor: () ->
