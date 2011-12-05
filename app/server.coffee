@@ -10,17 +10,6 @@ path = require 'path'
 nconf = require 'nconf'
 app = express.createServer()
 Holicray = require './src/server/holicray'
-
-
-
-#TODO: FIX THIS SHIT
-#
-#   - When arduino is disconnected, jobs still get made and stay in delayed queue
-#   - Once arduino connects, the job is promoted but the action assignment doesn't get resent (undefined socket?)
-#   - Emit 'refresh stats' when a job is created
-#   - Emit 'refresh stats' when a job is completed
-#
-
 #TODO: Replace jQuery and other dependencies with ender lib
 
 
@@ -81,6 +70,7 @@ compile = (str, path) ->
     .set 'compress', true
 
 
+
 #
 # ### Web Server
 #
@@ -112,6 +102,7 @@ app.get '/', (req, res) ->
 
 app.use kue.app
 app.listen port
+
 
 
 # ### That shit cray

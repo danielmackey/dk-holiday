@@ -2,6 +2,8 @@ twitter = require 'ntwitter'
 Worker = require "#{__dirname}/worker"
 
 
+#FIXME: write spec for Stream
+
 module.exports = Stream =
   users: [
     'designkitchen'
@@ -16,26 +18,29 @@ module.exports = Stream =
 
   init: (@app, @jobs, @logger, @tally) ->
     @openSocket()
-    @openTwitter()
     Worker.init @jobs, @logger, @tally
 
   #
   # ### Websocket
   #
-  #   - Open a connection and start Worker
+  #   - Open a websocket connection and open a Twitter stream
+  #   - Start Worker
   #   - Take roll call using handshakeData on client connection and disconnection
+  #   - Broadcast the 'right now' event from arduino
   #
   openSocket: ->
     io = require('socket.io').listen @app
     io.set 'log level', 1
-    io.set 'authorization', (handshakeData, callback) ->
-      callback null, true
+    io.set 'authorization', (handshakeData, callback) -> callback null, true
+    ws = io.of('/arduino').on 'connection', (socket) => @connect socket
 
-    ws = io.of('/arduino').on 'connection', (socket) =>
-      Worker.rollCall 'present', socket
-      socket.on 'disconnect', -> Worker.rollCall 'absent', socket
-      socket.on 'right now', -> socket.broadcast.emit 'refresh stats'
-      Worker.start socket
+  connect: (socket) ->
+    unless @api? then @openTwitter socket
+    Worker.rollCall 'present', socket
+    Worker.start socket
+    socket.on 'disconnect', -> Worker.rollCall 'absent', socket
+    socket.on 'right now', -> socket.broadcast.emit 'refresh stats'
+
 
 
   #
@@ -45,12 +50,15 @@ module.exports = Stream =
   #   - Ignore the first stream payload - its an array of friends
   #   - Capture new tweets and assign to Worker
   #
-  openTwitter: ->
-    api = new twitter @keys
-    api.stream 'user', track:@users, (stream) =>
+  openTwitter: (socket) ->
+    @api = new twitter @keys
+    @api.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
-
       stream.on 'data', (tweet) =>
-        unless tweet.friends?
-          @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
-          Worker.assign tweet
+        unless tweet.friends? then @saveTweet tweet, socket
+
+
+  saveTweet: (tweet, socket) ->
+    @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
+    socket.broadcast.emit 'refresh stats'
+    Worker.assign tweet
