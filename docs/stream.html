@@ -10,6 +10,7 @@
   <span class="p">]</span>
 
 
+
   <span class="nv">keys: </span><span class="c1"># TODO: Get production keys with @designkitchen account</span>
     <span class="nx">consumer_key</span><span class="o">:</span><span class="s1">&#39;hy0r9Q5TqWZjbGHGPfwPjg&#39;</span>
     <span class="nx">consumer_secret</span><span class="o">:</span><span class="s1">&#39;EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w&#39;</span>
@@ -40,10 +41,7 @@
 <li>Broadcast the 'right now' event from arduino</li>
 </ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">goOnline: </span><span class="nf">(socket) -&gt;</span>
     <span class="nx">unless</span> <span class="nx">@twitter</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@setupTwitter</span> <span class="nx">socket</span>
-    <span class="nx">Worker</span><span class="p">.</span><span class="nx">rollCall</span> <span class="s1">&#39;present&#39;</span><span class="p">,</span> <span class="nx">socket</span>
-    <span class="nx">Worker</span><span class="p">.</span><span class="nx">start</span> <span class="nx">socket</span>
-    <span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;disconnect&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">Worker</span><span class="p">.</span><span class="nx">rollCall</span> <span class="s1">&#39;absent&#39;</span><span class="p">,</span> <span class="nx">socket</span>
-    <span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;right now&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">emit</span> <span class="s1">&#39;refresh stats&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>Twitter Stream</h4>
+    <span class="nx">Worker</span><span class="p">.</span><span class="nx">start</span> <span class="nx">socket</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>Twitter Stream</h4>
 
 <ul>
 <li>Open a twitter stream following @users</li>
