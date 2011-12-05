@@ -1,9 +1,7 @@
 SerialPort = require('serialport').SerialPort
 arduino = require 'arduino'
 #board = arduino.connect('/dev/tty.usbmodemfa131')
-connect = require 'connect'
 colors = require 'colors'
-port = 1112
 io = require 'socket.io-client'
 
 # Arduino config

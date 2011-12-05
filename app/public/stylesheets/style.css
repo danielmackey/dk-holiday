@@ -653,3 +653,6 @@ a.load-more:hover {
 a.load-more:active {
   color: #59ab4b;
 }
+.tpl {
+  display: none;
+}

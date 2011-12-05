@@ -5,12 +5,46 @@ stitch = require 'stitch'
 url = require 'url'
 kue = require 'kue'
 redis = require 'kue/node_modules/redis'
+fs = require 'fs'
+path = require 'path'
+nconf = require 'nconf'
 app = express.createServer()
-port = process.env.PORT || 5000
 Holicray = require './src/server/holicray'
 
+
+
+#TODO: FIX THIS SHIT
 #
-# ###Job Queue
+#   - When arduino is disconnected, jobs still get made and stay in delayed queue
+#   - Once arduino connects, the job is promoted but the action assignment doesn't get resent (undefined socket?)
+#   - Emit 'refresh stats' when a job is created
+#   - Emit 'refresh stats' when a job is completed
+#
+
+#TODO: Replace jQuery and other dependencies with ender lib
+
+
+
+#
+# ### App Configuration
+#
+#   - Read values from config.json
+#   - Inherit the port from the foreman proc or fall back to app:port
+#
+configOptions =
+  env:true
+  argv:true
+  store:
+    type:'file'
+    file:path.join __dirname, '../../../config.json'
+
+conf = new nconf.Provider configOptions
+port = process.env.PORT || conf.get 'app:port'
+
+
+
+#
+# ### Job Queue
 #
 #   - Use redisToGo on Heroku
 #   - Enable CORS with the job queue db for clientside stats
@@ -24,16 +58,16 @@ kue.redis.createClient = () ->
 
 jobs = kue.createQueue()
 kue.app.enable "jsonp callback"
-kue.app.set 'title', 'DK Holiday'
+kue.app.set 'title', conf.get 'app:name'
 
 
 
-# ###Asset Middleware
+# ### Asset Middleware
 #
 #   - Use stitch to package and serve clientside CoffeeScript modules
 #   - Use stylus to precompile CSS
-#
-package = stitch.createPackage paths:["#{__dirname}/src/client/javascripts"], dependencies:["#{__dirname}/public/javascripts/jquery.js","#{__dirname}/public/javascripts/socket.io.js","#{__dirname}/public/javascripts/plates.js"]
+#"#{__dirname}/public/javascripts/plates.js"
+package = stitch.createPackage paths:["#{__dirname}/src/client/javascripts","#{__dirname}/src/shared"], dependencies:["#{__dirname}/public/javascripts/jquery.js","#{__dirname}/public/javascripts/plates.js","#{__dirname}/public/javascripts/socket.io.js"]
 
 cssOptions =
   src:"#{__dirname}/src/client"
@@ -48,7 +82,7 @@ compile = (str, path) ->
 
 
 #
-# ###Web Server
+# ### Web Server
 #
 #   - Use stylus and stitch middleware with an express webserver
 #   - Serve index.html from the public dir
@@ -56,7 +90,7 @@ compile = (str, path) ->
 #
 viewOptions =
   locals:
-    title:'Holicray by Designkitchen'
+    title:conf.get 'app:name'
   layout:'layout'
 
 app.configure () ->
@@ -70,8 +104,7 @@ app.configure 'development', ->
   app.use express.errorHandler dumpExceptions: true, showStack: true
 
 app.configure 'production', ->
-  oneYear = 31557600000
-  app.use express.static "#{__dirname}/public", maxAge: oneYear
+  app.use express.static "#{__dirname}/public", maxAge:conf.get 'app:cache'
   app.use express.errorHandler()
 
 app.get '/', (req, res) ->
@@ -80,4 +113,6 @@ app.get '/', (req, res) ->
 app.use kue.app
 app.listen port
 
-new Holicray app, jobs
+
+# ### That shit cray
+new Holicray app, jobs, conf

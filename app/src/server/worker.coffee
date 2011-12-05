@@ -39,7 +39,7 @@ module.exports = Worker =
   #
   # ## Event Assignment
   #
-  delay:10000
+  delay:10000 * 6
   eventTally:0
   tippingPoint:40
 

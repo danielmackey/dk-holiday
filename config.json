@@ -1,0 +1,11 @@
+{
+  app:{
+    name:'Holicray by Designkitchen',
+    cache:31557600000,
+    port:5000
+  },
+  stats_url:{
+    production:'http://holiday.designkitchen.com/stats',
+    development:'http://localhost:5000/stats'
+  }
+}

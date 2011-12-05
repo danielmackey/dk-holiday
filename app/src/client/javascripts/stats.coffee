@@ -1,4 +1,5 @@
-#FIXME: Latest event appends instead of replaces on newEvent()
+Util = require 'utility'
+
 module.exports = Stats =
   el:
     totalTweets:$ "#total-tweets-number"
@@ -15,24 +16,8 @@ module.exports = Stats =
   newEvent: ->
     @refresh()
 
-  animateMeter: ->
-    startingWidth = @el.tallyMeter.width()
-    totalWidth =$("#full-bar").width()
-    increment = totalWidth / 40
-    @el.tallyMeter.css 'width', startingWidth + increment
-
-  resetMeter: ->
-    @el.tallyMeter.css 'width', '0px'
-
   renderCrayTally: (count) ->
-    factorForty = (n) ->
-      if n < 41 then return n
-      else
-        timesOver = parseInt n / 40, 10
-        extra = timesOver * 40
-        return n - extra
-
-    tally = factorForty count
+    tally = Util.factorForty count
     @el.tallyCount.text "#{40 - tally}"
 
     startingWidth = @el.tallyMeter.width()
@@ -47,7 +32,7 @@ module.exports = Stats =
     @getTotalCrays()
     @getLatest()
     @getHistory()
-    @getQueue '0..9'
+    @getQueue()
     @clickMoreHistory()
 
   getStats: (url, callback) ->
@@ -81,7 +66,7 @@ module.exports = Stats =
 
   renderLatest: (jobs) ->
     job = jobs.pop()
-    tpl = Stats.el.latest.html()
+    tpl = $("#latest-tpl").html()
     map =
       "event":"class"
       "title":"class"
@@ -105,20 +90,18 @@ module.exports = Stats =
       "title":["class","data-bind-tweet"]
       "handle":"class"
       "id":"class"
-    tpl = Stats.el.history.html().split('</li>')[0]
+    tpl = $("#history-tpl").html()
     $.each jobs, (i) =>
       jobs[i].data.id = jobs[i].id
       item = Plates.bind tpl, jobs[i].data, map
       Stats.el.history.append item
 
-    Stats.el.history.find('li:first-child').hide()
-
   getMoreHistory: ->
     @getHistory()
 
 
-  getQueue: (pagination) ->
-    @getStats "/jobs/inactive/#{pagination}/asc", Stats.renderQueue
+  getQueue: ->
+    @getStats "/jobs/delayed/0..9/asc", Stats.renderQueue
 
   renderQueue: (jobs) ->
     if jobs.length <= 9 then $("#up-next a").hide()
@@ -127,13 +110,12 @@ module.exports = Stats =
       "title":["class","data-bind-tweet"]
       "handle":"class"
       "id":"class"
-    tpl = Stats.el.queue.html().split('</li>')[0]
+    tpl = $("#queue-tpl").html()
     $.each jobs, (i) =>
       jobs[i].data.id = jobs[i].id
       item = Plates.bind tpl, jobs[i].data, map
       Stats.el.queue.append item
 
-    Stats.el.queue.find('li:first-child').hide()
 
   clickMoreHistory: () ->
     $("#history a.load-more").bind 'click', (e) =>

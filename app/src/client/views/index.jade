@@ -45,12 +45,6 @@ div#wrapper.clearfix
       #total-crays-number
       #total-crays-title total crays
       #current-tweet
-        #current-tweet-number.red.id
-        #current-action.red @
-          a(href='', class='handle')
-          span &nbsp;just made&nbsp;
-          span.event
-        #current-tweet-text.green.title
 
 
   section#column-mid
@@ -61,20 +55,37 @@ div#wrapper.clearfix
   section#column-repeat
     article#up-next
       ul
-        li(data-bind-tweet='title', class='title')
-          span.left.red.id
-          span.right @
-            a(href='', class='handle')
-            span&nbsp;is about to make&nbsp;
-            span.event
       a(href='#', class='load-more') load more in the queue
 
     article#history
       ul
-        li(data-bind-tweet='title', class='title')
-          span.left.red.id
-          span.right @
-            a(href='', class='handle')
-            span&nbsp;made&nbsp;
-            span.event
       a(href='#', class='load-more') load more in the history
+
+
+
+
+    #latest-tpl.tpl
+      #current-tweet-number.red.id
+      #current-action.red @
+        a(href='', class='handle')
+        span &nbsp;just made&nbsp;
+        span.event
+      #current-tweet-text.green.title
+
+
+    #history-tpl.tpl
+      li(data-bind-tweet='title', class='title')
+        span.left.red.id
+        span.right @
+          a(href='', class='handle')
+          span&nbsp;made&nbsp;
+          span.event
+
+
+    #queue-tpl.tpl
+      li(data-bind-tweet='title', class='title')
+        span.left.red.id
+        span.right @
+          a(href='', class='handle')
+          span&nbsp;is about to make&nbsp;
+          span.event
