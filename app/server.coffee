@@ -15,6 +15,7 @@ State = require './src/server/state'
 #TODO: Convert Zepto to jQuery in Parts
 #TODO: Convert jasmine specs to mocha
 #TODO: Set up Log.ly
+#TODO: Set up landing page route
 
 
 #
