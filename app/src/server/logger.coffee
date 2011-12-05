@@ -29,6 +29,7 @@ module.exports = class Logger
         arduino:'cyan'
 
     logOptions =
+      #transports:[new (winston.transports.Console)( colorize:true ), new (winston.transports.File)( colorize:true, filename: 'cray.log' ), new (winston.transports.Loggly)( subdomain:'todoubled', auth:{username:'todoubled', password:'mi11ions'}, inputName:'Holicray' )]
       transports:[new (winston.transports.Console)( colorize:true ), new (winston.transports.File)( colorize:true, filename: 'cray.log' )]
       levels:logLevels.levels
       colors:logLevels.colors

@@ -12,6 +12,10 @@ app = express.createServer()
 State = require './src/server/state'
 
 
+#TODO: Convert Zepto to jQuery in Parts
+#TODO: Convert jasmine specs to mocha
+#TODO: Set up Log.ly
+
 
 #
 # ### App Configuration
@@ -73,7 +77,6 @@ javascripts =
   dependencies:[
     "#{__dirname}/public/javascripts/zepto.min.js"
     "#{__dirname}/public/javascripts/plates.js"
-    "#{__dirname}/public/javascripts/socket.io.min.js"
     "#{__dirname}/public/javascripts/underscore.min.js"
   ]
 
