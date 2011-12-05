@@ -10,6 +10,7 @@ module.exports = Stream =
   ]
 
 
+
   keys: # TODO: Get production keys with @designkitchen account
     consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
     consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
@@ -44,12 +45,7 @@ module.exports = Stream =
   #
   goOnline: (socket) ->
     unless @twitter? then @setupTwitter socket
-    Worker.rollCall 'present', socket
     Worker.start socket
-    socket.on 'disconnect', -> Worker.rollCall 'absent', socket
-    socket.on 'right now', -> socket.broadcast.emit 'refresh stats'
-
-
 
   #
   # #### Twitter Stream

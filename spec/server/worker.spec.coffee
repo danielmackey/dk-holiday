@@ -31,7 +31,7 @@ describe 'Worker', ->
 
   it 'checks if the arduino client is connected', ->
     identity = 'arduino'
-    Worker.roll.arduino = true
+    Worker.present.arduino = true
     present = Worker.isPresent identity
     expect(present).toBeTruthy()
 
@@ -87,10 +87,11 @@ describe 'Worker', ->
 
 
   it 'increments the event tally', ->
+    Worker.init {}, {}, 10
     preTally = Worker.eventTally
     Worker.tally()
     postTally = Worker.eventTally
-    expect(postTally = preTally + 1).toBeTruthy()
+    expect(postTally).toEqual(preTally + 1)
 
   it 'saves incoming tweets', ->
     tweet =

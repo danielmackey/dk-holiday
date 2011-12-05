@@ -1,7 +1,8 @@
 module.exports = Worker =
   # ### Setup Worker with jobs, a logger, and a restored state starting tally
-  init: (@jobs, @logger, @tally) ->
-    @eventTally = @tally
+  init: (@jobs, @logger, tally) ->
+    @eventTally = tally
+
 
 
   # Log connections and disconnections
@@ -13,10 +14,12 @@ module.exports = Worker =
     else @logger.disconnect identity
 
 
+
   # Keep tabs on which type of clients are connected
   present:
     browser:false
     arduino:false
+
 
 
   # Identify a socket as browser or arduino client
@@ -27,15 +30,26 @@ module.exports = Worker =
     return identity
 
 
+
   # Check to see if a given client identity is connected
   isPresent: (identity) ->
     if @present[identity] is true then return true
     else return false
 
 
+
   # Start processing jobs if arduino is connected
   start: (socket) ->
+    @rollCall 'present', socket
     if @isPresent 'arduino' then @processJobs socket
+    @listen socket
+
+
+
+  # Listen for websocket events
+  listen: (socket) ->
+    socket.on 'disconnect', => @rollCall 'absent', socket
+    socket.on 'right now', -> socket.broadcast.emit 'refresh stats'
 
 
 
