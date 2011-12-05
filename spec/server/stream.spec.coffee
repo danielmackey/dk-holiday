@@ -9,18 +9,18 @@ describe 'Stream', ->
     expect(Stream.keys).toBeDefined()
 
   it 'opens a websocket', ->
-    spyOn Stream, 'openSocket'
+    spyOn Stream, 'setupSocket'
     Stream.init {}, {}, {}, 1
-    expect(Stream.openSocket).toHaveBeenCalled()
+    expect(Stream.setupSocket).toHaveBeenCalled()
 
   it 'initializes Worker with jobs, a logger, and a starting tally', ->
-    spyOn Worker, 'init'
+    spyOn Stream, 'setupWorker'
     Stream.init {}, {}, {}, 1
-    expect(Worker.init).toHaveBeenCalled()
+    expect(Stream.setupWorker).toHaveBeenCalled()
 
   it 'opens a twitter stream on websocket connection', ->
     socket = {}
-    spyOn Stream, 'openTwitter'
-    Stream.connect socket
-    expect(Stream.openTwitter).toHaveBeenCalled()
+    spyOn Stream, 'setupTwitter'
+    Stream.goOnline socket
+    expect(Stream.setupTwitter).toHaveBeenCalled()
 
