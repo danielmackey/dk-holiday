@@ -13,20 +13,14 @@ describe 'Stream', ->
     Stream.init {}, {}, {}, 1
     expect(Stream.openSocket).toHaveBeenCalled()
 
-  #it 'initializes Worker with jobs, a logger, and a starting tally', ->
-    #spyOn Worker, 'init'
-    #Stream.init {}, {}, {}, 1
-    #expect(Worker.init).toHaveBeenCalled()
-    #
+  it 'initializes Worker with jobs, a logger, and a starting tally', ->
+    spyOn Worker, 'init'
+    Stream.init {}, {}, {}, 1
+    expect(Worker.init).toHaveBeenCalled()
 
   it 'opens a twitter stream on websocket connection', ->
-    #socket = {}
-    #spyOn Stream, 'openTwitter'
-    #Stream.connect socket
-    #expect(Stream.openTwitter).toHaveBeenCalled()
+    socket = {}
+    spyOn Stream, 'openTwitter'
+    Stream.connect socket
+    expect(Stream.openTwitter).toHaveBeenCalled()
 
-  it 'takes roll call', ->
-    #socket = {}
-    #spyOn Worker, 'rollCall'
-    #Stream.connect socket
-    #expect(Worker.rollCall).toHaveBeenCalled()

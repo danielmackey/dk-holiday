@@ -19,6 +19,5 @@ module.exports = Client =
       });
     });
     `
-
     new Socket()
     Stats.refresh()

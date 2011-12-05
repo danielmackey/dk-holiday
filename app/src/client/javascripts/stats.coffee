@@ -37,12 +37,10 @@ module.exports = Stats =
 
   getStats: (url, callback) ->
     ajaxOptions =
-      url:url
-      dataType:'jsonp'
+      url:"#{url}?callback=?"
+      type:'jsonp'
       data:{}
-      crossDomain:true
       success:(stats) => callback stats
-      error:(jqXHR, textStatus, errorThrown) -> console.log jqXHR, textStatus, errorThrown
     $.ajax ajaxOptions
 
 
@@ -91,9 +89,9 @@ module.exports = Stats =
       "handle":"class"
       "id":"class"
     tpl = $("#history-tpl").html()
-    $.each jobs, (i) =>
-      jobs[i].data.id = jobs[i].id
-      item = Plates.bind tpl, jobs[i].data, map
+    _.each jobs, (job) =>
+      job.data.id = job.id
+      item = Plates.bind tpl, job.data, map
       Stats.el.history.append item
 
   getMoreHistory: ->
@@ -111,13 +109,14 @@ module.exports = Stats =
       "handle":"class"
       "id":"class"
     tpl = $("#queue-tpl").html()
-    $.each jobs, (i) =>
-      jobs[i].data.id = jobs[i].id
-      item = Plates.bind tpl, jobs[i].data, map
+    _.each jobs, (job) =>
+      job.data.id = job.id
+      item = Plates.bind tpl, job.data, map
       Stats.el.queue.append item
 
 
   clickMoreHistory: () ->
-    $("#history a.load-more").bind 'click', (e) =>
+    $('#history a.load-more').bind 'click', (e) =>
       e.preventDefault()
       @getMoreHistory()
+

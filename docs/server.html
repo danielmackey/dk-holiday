@@ -1,18 +1,36 @@
-<!DOCTYPE html>  <html> <head>   <title>server.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="stats.html">                 stats.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="stream.html">                 stream.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               server.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">express = </span><span class="nx">require</span> <span class="s1">&#39;express&#39;</span>
+<!DOCTYPE html>  <html> <head>   <title>server.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="stats.html">                 stats.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="state.html">                 state.coffee               </a>                                           <a class="source" href="stream.html">                 stream.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               server.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">express = </span><span class="nx">require</span> <span class="s1">&#39;express&#39;</span>
 <span class="nv">stylus = </span><span class="nx">require</span> <span class="s1">&#39;stylus&#39;</span>
 <span class="nv">connect = </span><span class="nx">require</span> <span class="s1">&#39;connect&#39;</span>
 <span class="nv">stitch = </span><span class="nx">require</span> <span class="s1">&#39;stitch&#39;</span>
-<span class="nv">app = </span><span class="nx">express</span><span class="p">.</span><span class="nx">createServer</span><span class="p">()</span>
 <span class="nv">url = </span><span class="nx">require</span> <span class="s1">&#39;url&#39;</span>
 <span class="nv">kue = </span><span class="nx">require</span> <span class="s1">&#39;kue&#39;</span>
 <span class="nv">redis = </span><span class="nx">require</span> <span class="s1">&#39;kue/node_modules/redis&#39;</span>
-<span class="nv">port = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">1110</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>Job Queue</h3>
+<span class="nv">fs = </span><span class="nx">require</span> <span class="s1">&#39;fs&#39;</span>
+<span class="nv">path = </span><span class="nx">require</span> <span class="s1">&#39;path&#39;</span>
+<span class="nv">nconf = </span><span class="nx">require</span> <span class="s1">&#39;nconf&#39;</span>
+<span class="nv">app = </span><span class="nx">express</span><span class="p">.</span><span class="nx">createServer</span><span class="p">()</span>
+<span class="nv">State = </span><span class="nx">require</span> <span class="s1">&#39;./src/server/state&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h3>App Configuration</h3>
+
+<ul>
+<li>Read values from config.json</li>
+<li>Inherit the port from the foreman proc or fall back to app:port</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">configOptions =</span>
+  <span class="nx">env</span><span class="o">:</span><span class="kc">true</span>
+  <span class="nx">argv</span><span class="o">:</span><span class="kc">true</span>
+  <span class="nv">store:</span>
+    <span class="nx">type</span><span class="o">:</span><span class="s1">&#39;file&#39;</span>
+    <span class="nx">file</span><span class="o">:</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span> <span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;../../../config.json&#39;</span>
+
+<span class="nv">conf = </span><span class="k">new</span> <span class="nx">nconf</span><span class="p">.</span><span class="nx">Provider</span> <span class="nx">configOptions</span>
+<span class="nv">port = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="nx">conf</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;app:port&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Websocket Configuration</h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">io = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;socket.io&#39;</span><span class="p">).</span><span class="nx">listen</span> <span class="nx">app</span>
+<span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;log level&#39;</span><span class="p">,</span> <span class="mi">1</span>
+<span class="nx">io</span><span class="p">.</span><span class="nx">enable</span> <span class="s1">&#39;browser client minification&#39;</span>
+<span class="nx">io</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="nf">(handshakeData, callback) -&gt;</span> <span class="nx">callback</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Job Queue</h3>
 
 <ul>
 <li>Use redisToGo on Heroku</li>
 <li>Enable CORS with the job queue db for clientside stats</li>
 </ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">kue.redis.createClient = </span><span class="nf">() -&gt;</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s2">&quot;process.env.REDISTOGO_URL: &quot;</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">REDISTOGO_URL</span>
   <span class="nv">process.env.REDISTOGO_URL = </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">REDISTOGO_URL</span> <span class="o">||</span> <span class="s2">&quot;redis://localhost:6379&quot;</span>
   <span class="nv">redisUrl = </span><span class="nx">url</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">REDISTOGO_URL</span><span class="p">)</span>
   <span class="nv">client = </span><span class="nx">redis</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span><span class="nx">redisUrl</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nx">redisUrl</span><span class="p">.</span><span class="nx">hostname</span><span class="p">)</span>
@@ -21,14 +39,24 @@
 
 <span class="nv">jobs = </span><span class="nx">kue</span><span class="p">.</span><span class="nx">createQueue</span><span class="p">()</span>
 <span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">enable</span> <span class="s2">&quot;jsonp callback&quot;</span>
-<span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;DK Holiday&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Asset Middleware</h3>
+<span class="nx">kue</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="nx">conf</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;app:name&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>Asset Middleware</h3>
 
 <ul>
-<li>Use stitch to package and serve clientside CoffeeScript modules</li>
+<li>Use stitch to package and serve clientside CoffeeScript modules and dependencies</li>
 <li>Use stylus to precompile CSS</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">package = </span><span class="nx">stitch</span><span class="p">.</span><span class="nx">createPackage</span> <span class="nx">paths</span><span class="o">:</span><span class="p">[</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/src/client/javascripts&#39;</span><span class="p">],</span> <span class="nx">dependencies</span><span class="o">:</span><span class="p">[]</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">javascripts =</span>
+  <span class="nx">paths</span><span class="o">:</span><span class="p">[</span>
+    <span class="s2">&quot;#{__dirname}/src/client/javascripts&quot;</span>
+    <span class="s2">&quot;#{__dirname}/src/shared&quot;</span>
+  <span class="p">]</span>
+  <span class="nx">dependencies</span><span class="o">:</span><span class="p">[</span>
+    <span class="s2">&quot;#{__dirname}/public/javascripts/zepto.min.js&quot;</span>
+    <span class="s2">&quot;#{__dirname}/public/javascripts/plates.js&quot;</span>
+    <span class="s2">&quot;#{__dirname}/public/javascripts/socket.io.js&quot;</span>
+    <span class="s2">&quot;#{__dirname}/public/javascripts/underscore.min.js&quot;</span>
+  <span class="p">]</span>
 
-<span class="nv">cssOptions =</span>
+<span class="nv">stylesheets =</span>
   <span class="nx">src</span><span class="o">:</span><span class="s2">&quot;#{__dirname}/src/client&quot;</span>
   <span class="nx">dest</span><span class="o">:</span><span class="s2">&quot;#{__dirname}/public&quot;</span>
   <span class="nx">compile</span><span class="o">:</span><span class="nx">compile</span>
@@ -37,28 +65,38 @@
   <span class="nx">stylus</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">import</span> <span class="s2">&quot;#{__dirname}/src/client/stylesheets&quot;</span>
     <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="nx">path</span>
-    <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>Web Server</h3>
+    <span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;compress&#39;</span><span class="p">,</span> <span class="kc">true</span>
+
+<span class="nv">package = </span><span class="nx">stitch</span><span class="p">.</span><span class="nx">createPackage</span> <span class="nx">javascripts</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>Web Server</h3>
 
 <ul>
 <li>Use stylus and stitch middleware with an express webserver</li>
 <li>Serve index.html from the public dir</li>
 <li>Start the app and queue servers</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="nf">() -&gt;</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">viewOptions =</span>
+  <span class="nv">locals:</span>
+    <span class="nx">title</span><span class="o">:</span><span class="nx">conf</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;app:name&#39;</span>
+  <span class="nx">layout</span><span class="o">:</span><span class="s1">&#39;layout&#39;</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="nf">() -&gt;</span>
   <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">app</span><span class="p">.</span><span class="nx">router</span>
-  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">stylus</span><span class="p">.</span><span class="nx">middleware</span> <span class="nx">cssOptions</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">stylus</span><span class="p">.</span><span class="nx">middleware</span> <span class="nx">stylesheets</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;view engine&#39;</span><span class="p">,</span> <span class="s1">&#39;jade&#39;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s1">&#39;views&#39;</span><span class="p">,</span> <span class="s2">&quot;#{__dirname}/src/client/views&quot;</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="s1">&#39;development&#39;</span><span class="p">,</span> <span class="o">-&gt;</span>
   <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">express</span><span class="p">.</span><span class="nx">static</span> <span class="s2">&quot;#{__dirname}/public&quot;</span>
-  <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;/application.js&#39;</span><span class="p">,</span> <span class="nx">package</span><span class="p">.</span><span class="nx">createServer</span><span class="p">()</span>
-  <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
-    <span class="nx">res</span><span class="p">.</span><span class="nx">sendfile</span> <span class="s2">&quot;#{__dirname}/public/index.html&quot;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">express</span><span class="p">.</span><span class="nx">errorHandler</span> <span class="nv">dumpExceptions: </span><span class="kc">true</span><span class="p">,</span> <span class="nv">showStack: </span><span class="kc">true</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="s1">&#39;production&#39;</span><span class="p">,</span> <span class="o">-&gt;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">express</span><span class="p">.</span><span class="nx">static</span> <span class="s2">&quot;#{__dirname}/public&quot;</span><span class="p">,</span> <span class="nx">maxAge</span><span class="o">:</span><span class="nx">conf</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;app:cache&#39;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">express</span><span class="p">.</span><span class="nx">errorHandler</span><span class="p">()</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;/application.js&#39;</span><span class="p">,</span> <span class="nx">package</span><span class="p">.</span><span class="nx">createServer</span><span class="p">()</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">render</span> <span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="nx">viewOptions</span>
 
 <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">kue</span><span class="p">.</span><span class="nx">app</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span>
-
-
-<span class="nv">Logger = </span><span class="nx">require</span> <span class="s1">&#39;./src/server/logger&#39;</span>
-<span class="nv">logger = </span><span class="k">new</span> <span class="nx">Logger</span><span class="p">()</span>
-
-<span class="nv">Stream = </span><span class="nx">require</span> <span class="s1">&#39;./src/server/stream&#39;</span>
-<span class="nx">Stream</span><span class="p">.</span><span class="nx">init</span> <span class="nx">app</span><span class="p">,</span> <span class="nx">jobs</span><span class="p">,</span> <span class="nx">logger</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h4>Restore the state of the app</h4>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">State</span><span class="p">.</span><span class="nx">restore</span> <span class="nx">jobs</span><span class="p">,</span> <span class="nx">io</span><span class="p">,</span> <span class="nx">conf</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

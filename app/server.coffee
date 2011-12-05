@@ -9,8 +9,7 @@ fs = require 'fs'
 path = require 'path'
 nconf = require 'nconf'
 app = express.createServer()
-Holicray = require './src/server/holicray'
-#TODO: Replace jQuery and other dependencies with ender lib
+State = require './src/server/state'
 
 
 
@@ -29,6 +28,16 @@ configOptions =
 
 conf = new nconf.Provider configOptions
 port = process.env.PORT || conf.get 'app:port'
+
+
+
+#
+# ### Websocket Configuration
+#
+io = require('socket.io').listen app
+io.set 'log level', 1
+io.enable 'browser client minification'
+io.set 'authorization', (handshakeData, callback) -> callback null, true
 
 
 
@@ -53,12 +62,22 @@ kue.app.set 'title', conf.get 'app:name'
 
 # ### Asset Middleware
 #
-#   - Use stitch to package and serve clientside CoffeeScript modules
+#   - Use stitch to package and serve clientside CoffeeScript modules and dependencies
 #   - Use stylus to precompile CSS
-#"#{__dirname}/public/javascripts/plates.js"
-package = stitch.createPackage paths:["#{__dirname}/src/client/javascripts","#{__dirname}/src/shared"], dependencies:["#{__dirname}/public/javascripts/jquery.js","#{__dirname}/public/javascripts/plates.js","#{__dirname}/public/javascripts/socket.io.js"]
+#
+javascripts =
+  paths:[
+    "#{__dirname}/src/client/javascripts"
+    "#{__dirname}/src/shared"
+  ]
+  dependencies:[
+    "#{__dirname}/public/javascripts/zepto.min.js"
+    "#{__dirname}/public/javascripts/plates.js"
+    "#{__dirname}/public/javascripts/socket.io.js"
+    "#{__dirname}/public/javascripts/underscore.min.js"
+  ]
 
-cssOptions =
+stylesheets =
   src:"#{__dirname}/src/client"
   dest:"#{__dirname}/public"
   compile:compile
@@ -68,6 +87,8 @@ compile = (str, path) ->
     .import "#{__dirname}/src/client/stylesheets"
     .set 'filename', path
     .set 'compress', true
+
+package = stitch.createPackage javascripts
 
 
 
@@ -85,9 +106,9 @@ viewOptions =
 
 app.configure () ->
   app.use app.router
-  app.use stylus.middleware cssOptions
-  app.use 'view engine', 'jade'
-  app.get '/application.js', package.createServer()
+  app.use stylus.middleware stylesheets
+  app.set 'view engine', 'jade'
+  app.set 'views', "#{__dirname}/src/client/views"
 
 app.configure 'development', ->
   app.use express.static "#{__dirname}/public"
@@ -97,13 +118,14 @@ app.configure 'production', ->
   app.use express.static "#{__dirname}/public", maxAge:conf.get 'app:cache'
   app.use express.errorHandler()
 
+app.get '/application.js', package.createServer()
 app.get '/', (req, res) ->
-  res.render "#{__dirname}/src/client/views/index.jade", viewOptions
+  res.render "index", viewOptions
 
 app.use kue.app
 app.listen port
 
 
 
-# ### That shit cray
-new Holicray app, jobs, conf
+# #### Restore the state of the app
+State.restore jobs, io, conf
