@@ -1,6 +1,6 @@
 module.exports = Worker =
-  listening:false # TODO: Spec out the listening state
-  processing:false # TODO: Spec out the processing state
+  listening:false
+  processing:false
   delay:10000 # Delay between jobs being processed
   eventTally:0 # Keep a running tally of events to compare against tippingPoin
   tippingPoint:40 # Point at which it gets cray

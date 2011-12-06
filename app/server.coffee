@@ -12,8 +12,8 @@ app = express.createServer()
 State = require './src/server/state'
 
 
-#TODO: Convert Zepto to jQuery in Parts
-#TODO: Set up Log.ly
+#OPTIMIZE: Convert Zepto to jQuery in Parts
+#OPTIMIZE: Set up Log.ly
 
 
 #
