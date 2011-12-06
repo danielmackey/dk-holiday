@@ -38,14 +38,11 @@ module.exports = Stream =
 
   # #### Websocket Connection
   #
-  #   - Called on websocket connection
   #   - Open Twitter stream
-  #   - Take roll call using handshakeData on client connection and disconnection
   #   - Start Worker
-  #   - Broadcast the 'right now' event from arduino
   #
   goOnline: (socket) ->
-    unless @twitter? then @setupTwitter @io.sockets
+    unless @twitter? then @createTwitter()
     Worker.start @io.sockets
 
 
@@ -58,23 +55,23 @@ module.exports = Stream =
   #   - Log the stream users
   #   - On new data, save the tweet unless it's the friends array
   #
-  setupTwitter: (socket) ->
+  createTwitter: ->
     @twitter = new twitter @keys
     @twitter.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
       stream.on 'data', (tweet) =>
-        unless tweet.friends? then @save tweet, socket
+        unless tweet.friends? then @save tweet
 
 
 
   #
   # #### Save
   #
+  #   - Capture new tweets and assign to Worker
   #   - Log the saved tweet
   #   - Broadcast 'refresh stats' event
-  #   - Capture new tweets and assign to Worker
   #
-  save: (tweet, socket) ->
-    @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
-    socket.emit 'refresh stats'
+  save: (tweet) ->
     Worker.assign tweet
+    @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
+    @io.sockets.emit 'refresh stats'

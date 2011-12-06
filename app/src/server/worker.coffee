@@ -1,5 +1,22 @@
 module.exports = Worker =
-  # ### Setup Worker with jobs, a logger, and a restored state starting tally
+  listening:false # TODO: Spec out the listening state
+  processing:false # TODO: Spec out the processing state
+  delay:10000 # Delay between jobs being processed
+  eventTally:0 # Keep a running tally of events to compare against tippingPoin
+  tippingPoint:40 # Point at which it gets cray
+  # The list of possible events that lead up to holicray
+  events:[ #TODO: Finalize events and sync up with job processes and spec
+    'it snow'
+    'the lights on the tree blink'
+    'the stars light up'
+    'the discoball spin'
+    'the wacky man dance'
+    'the foo bar baz'
+  ]
+
+
+
+  # #### Setup Worker with jobs, a logger, and a restored state starting tally
   init: (@jobs, @logger, tally) ->
     @eventTally = tally
 
@@ -17,44 +34,10 @@ module.exports = Worker =
 
 
 
-  # TODO: Spec out the listening/processing state
-  listening:false
-  processing:false
-
-
-
   # Listen for websocket events
   listen: (socket) ->
-    socket.on 'disconnect', => @rollCall 'absent', socket
     socket.on 'right now', -> socket.emit 'refresh stats'
     @listening = true
-
-
-
-  # Delay between jobs being processed
-  delay:10000
-
-
-
-  # Keep a running tally of events to compare against tippingPoint
-  eventTally:0
-
-
-
-  # Point at which it gets cray
-  tippingPoint:40
-
-
-
-  # The list of possible events that lead up to holicray
-  events:[ #TODO: Finalize events and sync up with job processes and spec
-    'it snow'
-    'the lights on the tree blink'
-    'the stars light up'
-    'the discoball spin'
-    'the wacky man dance'
-    'the foo bar baz'
-  ]
 
 
 
@@ -83,14 +66,7 @@ module.exports = Worker =
 
 
 
-  #
-  # ## Job processor
-  #
-  #   - Emit a new job to arduino
-  #   - Emit a right now message
-  #   - Wait for callback of completed job
-  #   - Emit a new event and finish job
-  #
+  # Assemble jobData from the incoming tweet data
   assembleJob: (type, data) ->
     jobData =
       title:data.text
@@ -101,6 +77,7 @@ module.exports = Worker =
 
 
 
+  # Create a new job and log job promotion and job completion
   createJob: (type, jobData) ->
     job = @jobs.create(type, jobData).attempts(3).delay(@delay).save()
     job.on 'promotion', -> console.log "10 second pause complete"
@@ -108,6 +85,7 @@ module.exports = Worker =
 
 
 
+  # Process jobs and emit assignment to arduino
   processJobs: (socket) ->
     @processing = true
 
