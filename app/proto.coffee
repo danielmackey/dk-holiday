@@ -1,7 +1,8 @@
 express = require 'express'
 SerialPort = require('serialport').SerialPort
 arduino = require 'arduino'
-board = arduino.connect('/dev/tty.usbmodemfd131')
+#board = arduino.connect('/dev/tty.usbmodemfd131') # laptop
+board = arduino.connect('/dev/tty.usbmodem1d11') #towe
 connect = require 'connect'
 colors = require 'colors'
 app = express.createServer()
