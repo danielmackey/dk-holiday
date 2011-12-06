@@ -12,6 +12,7 @@
     "socket.io-client":"0.8.7",
     "winston":"0.5.6",
     "ntwitter":"0.2.9-2",
+    "nconf":"",
     "stitch":"0.3.2",
     "stylus":"0.19.2",
     "docco":"0.3.0",
@@ -21,6 +22,7 @@
     "notes":"0.0.1",
     "serialport":"0.3.x",
     "arduino":"0.2.3",
+    "request":"2.2.9",
     "redis-url":"0.0.1"
   }
 }

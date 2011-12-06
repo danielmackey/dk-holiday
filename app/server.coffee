@@ -2,21 +2,55 @@ express = require 'express'
 stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
-app = express.createServer()
 url = require 'url'
 kue = require 'kue'
 redis = require 'kue/node_modules/redis'
-port = process.env.PORT || 1110
+fs = require 'fs'
+path = require 'path'
+nconf = require 'nconf'
+app = express.createServer()
+State = require './src/server/state'
+
+
+#OPTIMIZE: Convert Zepto to jQuery in Parts
+#OPTIMIZE: Set up Log.ly
 
 
 #
-# ###Job Queue
+# ### App Configuration
+#
+#   - Read values from config.json
+#   - Inherit the port from the foreman proc or fall back to app:port
+#
+configOptions =
+  env:true
+  argv:true
+  store:
+    type:'file'
+    file:path.join __dirname, '../../../config.json'
+
+conf = new nconf.Provider configOptions
+port = process.env.PORT || conf.get 'app:port'
+
+
+
+#
+# ### Websocket Configuration
+#
+io = require('socket.io').listen app
+io.enable 'browser client minification'
+io.set 'authorization', (handshakeData, callback) -> callback null, true
+io.configure 'production', ->
+  io.set 'log level', 1
+
+
+#
+# ### Job Queue
 #
 #   - Use redisToGo on Heroku
 #   - Enable CORS with the job queue db for clientside stats
 #
 kue.redis.createClient = () ->
-  console.log "process.env.REDISTOGO_URL: " + process.env.REDISTOGO_URL
   process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
   redisUrl = url.parse(process.env.REDISTOGO_URL)
   client = redis.createClient(redisUrl.port, redisUrl.hostname)
@@ -25,65 +59,77 @@ kue.redis.createClient = () ->
 
 jobs = kue.createQueue()
 kue.app.enable "jsonp callback"
-kue.app.set 'title', 'DK Holiday'
+kue.app.set 'title', conf.get 'app:name'
 
 
 
+# ### Asset Middleware
 #
-# ###Asset Middleware
-#
-#   - Use stitch to package and serve clientside CoffeeScript modules
+#   - Use stitch to package and serve clientside CoffeeScript modules and dependencies
 #   - Use stylus to precompile CSS
 #
-package = stitch.createPackage paths:[__dirname + '/src/client/javascripts'], dependencies:[]
+javascripts =
+  paths:[
+    "#{__dirname}/src/client/javascripts"
+    "#{__dirname}/src/shared"
+  ]
+  dependencies:[
+    "#{__dirname}/public/javascripts/zepto.min.js"
+    "#{__dirname}/public/javascripts/plates.js"
+    "#{__dirname}/public/javascripts/underscore.min.js"
+  ]
 
-cssOptions =
-  src:"#{__dirname}/app/src/client"
-  dest:"#{__dirname}/app/public"
+stylesheets =
+  src:"#{__dirname}/src/client"
+  dest:"#{__dirname}/public"
   compile:compile
 
 compile = (str, path) ->
   stylus(str)
-    .import "#{__dirname}/app/src/client/stylesheets"
+    .import "#{__dirname}/src/client/stylesheets"
     .set 'filename', path
     .set 'compress', true
+
+package = stitch.createPackage javascripts
 
 
 
 #
-# ###Web Server
+# ### Web Server
 #
 #   - Use stylus and stitch middleware with an express webserver
 #   - Serve index.html from the public dir
 #   - Start the app and queue servers
 #
+viewOptions =
+  locals:
+    title:conf.get 'app:name'
+  layout:'layout'
+
 app.configure () ->
   app.use app.router
-  app.use stylus.middleware cssOptions
+  app.use stylus.middleware stylesheets
+  app.set 'view engine', 'jade'
+  app.set 'views', "#{__dirname}/src/client/views"
+
+app.configure 'development', ->
   app.use express.static "#{__dirname}/public"
-  app.get '/application.js', package.createServer()
-  app.get '/', (req, res) ->
-    res.sendfile "#{__dirname}/app/public/index.html"
+  app.use express.errorHandler dumpExceptions: true, showStack: true
+
+app.configure 'production', ->
+  app.use express.static "#{__dirname}/public", maxAge:conf.get 'app:cache'
+  app.use express.errorHandler()
+
+app.get '/application.js', package.createServer()
+app.get '/', (req, res) ->
+  res.render "landing", viewOptions
+app.get '/cray', (req, res) ->
+  res.render 'index', viewOptions
 
 app.use kue.app
 app.listen port
 
 
 
-#
-# ##App Workflow
-#
-#   - Open and listen to a Twitter stream
-#   - Capture tweets with relevant hashtags
-#   - Create a job for each relevant hashtag and add to queue
-#   - Process each job and call buffer
-#   - Buffer triggers arduino each time the tipping point is reached
-#
-Logger = require './src/server/logger'
-logger = new Logger()
-
-TwitterStream = require './src/server/twitter'
-new TwitterStream jobs, logger
-
-Worker = require './src/server/worker'
-new Worker app, jobs, logger
+# #### Restore the state of the app
+State.restore jobs, io, conf

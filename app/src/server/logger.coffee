@@ -4,7 +4,7 @@ winston = require 'winston'
 # ###Logging config
 #
 #   - Use [winston](https://github.com/flatiron/winston) on the console with custom log levels and coloring
-#   - Optionally log to a file transport
+#   - Write log to cray.log
 #
 module.exports = class Logger
   constructor: () ->
@@ -15,31 +15,22 @@ module.exports = class Logger
     logLevels =
       levels:
         info:0
-        junk:1
-        alert:2
-        tally:3
-        arduino:4
-        connect:5
-        disconnect:6
-        hold:7
-        save:8
-        confirm:9
-        twitter:10
+        twitter:1
+        save:2
+        connect:3
+        disconnect:4
+        arduino:5
       colors:
         info:'blue'
-        junk:'yellow'
-        alert:'red'
-        tally:'cyan'
-        arduino:'cyan'
+        twitter:'cyan'
+        save:'green'
         connect:'green'
         disconnect:'red'
-        hold:'cyan'
-        save:'green'
-        confirm:'green'
-        twitter:'cyan'
+        arduino:'cyan'
 
     logOptions =
-      transports:[new (winston.transports.Console)( colorize:true )]
+      #transports:[new (winston.transports.Console)( colorize:true ), new (winston.transports.File)( colorize:true, filename: 'cray.log' ), new (winston.transports.Loggly)( subdomain:'todoubled', auth:{username:'todoubled', password:'mi11ions'}, inputName:'Holicray' )]
+      transports:[new (winston.transports.Console)( colorize:true ), new (winston.transports.File)( colorize:true, filename: 'cray.log' )]
       levels:logLevels.levels
       colors:logLevels.colors
 

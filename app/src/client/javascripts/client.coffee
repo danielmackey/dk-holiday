@@ -1,5 +1,5 @@
 Socket = require 'socket'
-
+Stats = require 'stats'
 
 
 #
@@ -9,5 +9,15 @@ Socket = require 'socket'
 #
 module.exports = Client =
   init: () ->
-    events = new Socket()
-    events.init()
+    `
+    twttr.anywhere(function (T) {
+      T("#tweet-box").tweetBox({
+        height:75,
+        label:'',
+        width:630,
+        defaultContent:""
+      });
+    });
+    `
+    new Socket()
+    Stats.refresh()

@@ -1,0 +1,123 @@
+<!DOCTYPE html>  <html> <head>   <title>stats.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="arduino.html">                 arduino.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="socket.html">                 socket.coffee               </a>                                           <a class="source" href="stats.html">                 stats.coffee               </a>                                           <a class="source" href="logger.html">                 logger.coffee               </a>                                           <a class="source" href="state.html">                 state.coffee               </a>                                           <a class="source" href="stream.html">                 stream.coffee               </a>                                           <a class="source" href="worker.html">                 worker.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               stats.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Util = </span><span class="nx">require</span> <span class="s1">&#39;utility&#39;</span>
+
+<span class="nv">module.exports = Stats =</span>
+  <span class="nv">el:</span>
+    <span class="nx">totalTweets</span><span class="o">:</span><span class="nx">$</span> <span class="s2">&quot;#total-tweets-number&quot;</span>
+    <span class="nx">totalHolicrays</span><span class="o">:</span><span class="nx">$</span> <span class="s2">&quot;#total-crays-number&quot;</span>
+    <span class="nx">latest</span><span class="o">:</span><span class="nx">$</span> <span class="s2">&quot;#current-tweet&quot;</span>
+    <span class="nx">history</span><span class="o">:</span><span class="nx">$</span> <span class="s2">&quot;#history ul&quot;</span>
+    <span class="nx">queue</span><span class="o">:</span><span class="nx">$</span> <span class="s2">&quot;#up-next ul&quot;</span>
+    <span class="nv">tallyCount: </span><span class="nx">$</span> <span class="s2">&quot;#tweet-counter&quot;</span>
+    <span class="nx">tallyMeter</span><span class="o">:</span><span class="nx">$</span> <span class="s2">&quot;#full-inner&quot;</span>
+
+  <span class="nx">historyFrom</span><span class="o">:</span><span class="mi">1</span>
+  <span class="nx">historyTo</span><span class="o">:</span><span class="mi">11</span>
+
+  <span class="nv">newEvent: </span><span class="o">-&gt;</span>
+    <span class="nx">@refresh</span><span class="p">()</span>
+
+  <span class="nv">renderCrayTally: </span><span class="nf">(count) -&gt;</span>
+    <span class="nv">tally = </span><span class="nx">Util</span><span class="p">.</span><span class="nx">factorForty</span> <span class="nx">count</span>
+    <span class="nx">@el</span><span class="p">.</span><span class="nx">tallyCount</span><span class="p">.</span><span class="nx">text</span> <span class="s2">&quot;#{40 - tally}&quot;</span>
+
+    <span class="nv">startingWidth = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">tallyMeter</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span>
+    <span class="nx">totalWidth</span> <span class="o">=</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#full-bar&quot;</span><span class="p">).</span><span class="nx">width</span><span class="p">()</span>
+    <span class="nv">increment = </span><span class="nx">totalWidth</span> <span class="err">/ 40</span>
+    <span class="nv">width = </span><span class="nx">tally</span> <span class="o">*</span> <span class="nx">increment</span>
+    <span class="nx">@el</span><span class="p">.</span><span class="nx">tallyMeter</span><span class="p">.</span><span class="nx">css</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">width</span>
+
+
+  <span class="nv">refresh: </span><span class="o">-&gt;</span>
+    <span class="nx">@getTotalTweets</span><span class="p">()</span>
+    <span class="nx">@getTotalCrays</span><span class="p">()</span>
+    <span class="nx">@getLatest</span><span class="p">()</span>
+    <span class="nx">@getHistory</span><span class="p">()</span>
+    <span class="nx">@getQueue</span><span class="p">()</span>
+    <span class="nx">@clickMoreHistory</span><span class="p">()</span>
+
+  <span class="nv">getStats: </span><span class="nf">(url, callback) -&gt;</span>
+    <span class="nv">ajaxOptions =</span>
+      <span class="nx">url</span><span class="o">:</span><span class="s2">&quot;#{url}?callback=?&quot;</span>
+      <span class="nx">type</span><span class="o">:</span><span class="s1">&#39;jsonp&#39;</span>
+      <span class="nx">data</span><span class="o">:</span><span class="p">{}</span>
+      <span class="nx">success</span><span class="o">:</span><span class="p">(</span><span class="nx">stats</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">callback</span> <span class="nx">stats</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span> <span class="nx">ajaxOptions</span>
+
+
+  <span class="nv">getTotalTweets: </span><span class="o">-&gt;</span>
+    <span class="nx">@getStats</span> <span class="s1">&#39;/stats&#39;</span><span class="p">,</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">renderTotalTweets</span>
+
+  <span class="nv">renderTotalTweets: </span><span class="nf">(stats) -&gt;</span>
+    <span class="nx">Stats</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">totalTweets</span><span class="p">.</span><span class="nx">text</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">completeCount</span>
+    <span class="nx">Stats</span><span class="p">.</span><span class="nx">renderCrayTally</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">completeCount</span>
+
+
+  <span class="nv">getTotalCrays: </span><span class="o">-&gt;</span>
+    <span class="nx">@getStats</span> <span class="s1">&#39;/jobs/holicray/complete/0..10000/desc&#39;</span><span class="p">,</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">renderTotalCrays</span>
+
+  <span class="nv">renderTotalCrays: </span><span class="nf">(jobs) -&gt;</span>
+    <span class="nx">Stats</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">totalHolicrays</span><span class="p">.</span><span class="nx">text</span> <span class="nx">jobs</span><span class="p">.</span><span class="nx">length</span>
+
+
+  <span class="nv">getLatest: </span><span class="o">-&gt;</span>
+    <span class="nx">@getStats</span> <span class="s2">&quot;/jobs/complete/0..10000/asc&quot;</span><span class="p">,</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">renderLatest</span>
+
+  <span class="nv">renderLatest: </span><span class="nf">(jobs) -&gt;</span>
+    <span class="nv">job = </span><span class="nx">jobs</span><span class="p">.</span><span class="nx">pop</span><span class="p">()</span>
+    <span class="nv">tpl = </span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#latest-tpl&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">()</span>
+    <span class="nv">map =</span>
+      <span class="s2">&quot;event&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;handle&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+    <span class="nv">job.data.id = </span><span class="nx">job</span><span class="p">.</span><span class="nx">id</span>
+    <span class="nv">latest = </span><span class="nx">Plates</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">tpl</span><span class="p">,</span> <span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">map</span>
+    <span class="nx">Stats</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">latest</span><span class="p">.</span><span class="nx">html</span> <span class="nx">latest</span>
+
+
+  <span class="nv">getHistory: </span><span class="o">-&gt;</span>
+    <span class="nx">@getStats</span> <span class="s2">&quot;/jobs/complete/0..10000/desc&quot;</span><span class="p">,</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">renderHistory</span>
+
+  <span class="nv">renderHistory: </span><span class="nf">(jobs) -&gt;</span>
+    <span class="nv">jobs = </span><span class="nx">jobs</span><span class="p">.</span><span class="nx">slice</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">historyFrom</span><span class="p">,</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">historyTo</span>
+    <span class="nv">Stats.historyFrom = </span><span class="nx">Stats</span><span class="p">.</span><span class="nx">historyFrom</span> <span class="o">+</span> <span class="mi">10</span>
+    <span class="nv">Stats.historyTo = </span><span class="nx">Stats</span><span class="p">.</span><span class="nx">historyTo</span> <span class="o">+</span> <span class="mi">10</span>
+    <span class="k">if</span> <span class="nx">jobs</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="k">then</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#history a.load-more&quot;</span><span class="p">).</span><span class="nx">hide</span><span class="p">()</span>
+    <span class="nv">map =</span>
+      <span class="s2">&quot;event&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">,</span><span class="s2">&quot;data-bind-tweet&quot;</span><span class="p">]</span>
+      <span class="s2">&quot;handle&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+    <span class="nv">tpl = </span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#history-tpl&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">()</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">jobs</span><span class="p">,</span> <span class="p">(</span><span class="nx">job</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nv">job.data.id = </span><span class="nx">job</span><span class="p">.</span><span class="nx">id</span>
+      <span class="nv">item = </span><span class="nx">Plates</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">tpl</span><span class="p">,</span> <span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">map</span>
+      <span class="nx">Stats</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">append</span> <span class="nx">item</span>
+
+  <span class="nv">getMoreHistory: </span><span class="o">-&gt;</span>
+    <span class="nx">@getHistory</span><span class="p">()</span>
+
+
+  <span class="nv">getQueue: </span><span class="o">-&gt;</span>
+    <span class="nx">@getStats</span> <span class="s2">&quot;/jobs/delayed/0..9/asc&quot;</span><span class="p">,</span> <span class="nx">Stats</span><span class="p">.</span><span class="nx">renderQueue</span>
+
+  <span class="nv">renderQueue: </span><span class="nf">(jobs) -&gt;</span>
+    <span class="k">if</span> <span class="nx">jobs</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="k">then</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#up-next a&quot;</span><span class="p">).</span><span class="nx">hide</span><span class="p">()</span>
+    <span class="nv">map =</span>
+      <span class="s2">&quot;event&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">,</span><span class="s2">&quot;data-bind-tweet&quot;</span><span class="p">]</span>
+      <span class="s2">&quot;handle&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+      <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;class&quot;</span>
+    <span class="nv">tpl = </span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#queue-tpl&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">()</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">jobs</span><span class="p">,</span> <span class="p">(</span><span class="nx">job</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nv">job.data.id = </span><span class="nx">job</span><span class="p">.</span><span class="nx">id</span>
+      <span class="nv">item = </span><span class="nx">Plates</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">tpl</span><span class="p">,</span> <span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">map</span>
+      <span class="nx">Stats</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">append</span> <span class="nx">item</span>
+
+
+  <span class="nv">clickMoreHistory: </span><span class="nf">() -&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#history a.load-more&#39;</span><span class="p">).</span><span class="nx">bind</span> <span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span>
+      <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
+      <span class="nx">@getMoreHistory</span><span class="p">()</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

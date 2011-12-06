@@ -1,0 +1,91 @@
+div#wrapper.clearfix
+  a(href='http://designkitchen.com', class='dk-button')
+    span.left from us
+    span.right with love
+
+  div#circle.scrooge
+    span with new
+    span.large anti-scrooge
+    span features
+    span.circle
+
+  a(href='https://github.com/designkitchen/dk-holiday', id='circle', class='github')
+    span get the
+    span.large source code
+    span on github
+    span.circle
+
+
+  header
+    h1.red Holi<span class="hyphen">-</span>cra<span class="y">y</span><span class="hyphen">-</span>m<span class="a">a</span>tic</h1>
+    section#description Every 40 @ tweets we get, we’ll set off the <span class="red">Holicraymaker™</span> in one of our conference rooms.
+
+
+  section#container
+    #tweetometer
+      #full
+        #full-bar
+          #full-inner
+        #tweet-counter
+    #tweetometer-title tweets til next holicray
+
+    iframe(src="http://www.ustream.tv/embed/9865215", width="670", height="344", scrolling="no", frameborder="0", style="border: 0px none transparent;position:absolute;top:77px;left:60px;z-index:0;")
+
+    #video holi-cray-vision live from designkitchen
+
+    #tweet
+      span.red Tweet at <a href="http://www.twitter.com/designkitchen">@designkitchen</a> to set off our <span class="green">Holicraymaker&trade;</span></span>
+      #tweet-box
+
+
+  section#column-top
+    #total-tweets
+      #total-tweets-number
+      #total-tweets-title total tweets
+      #total-crays-number
+      #total-crays-title total crays
+      #current-tweet
+
+
+  section#column-mid
+      span.up-next UP NEXT
+      span.history HISTORY
+
+
+  section#column-repeat
+    article#up-next
+      ul
+      a(href='#', class='load-more') load more in the queue
+
+    article#history
+      ul
+      a(href='#', class='load-more') load more in the history
+
+
+
+
+    #latest-tpl.tpl
+      #current-tweet-number.red.id
+      #current-action.red @
+        a(href='', class='handle')
+        span &nbsp;just made&nbsp;
+        span.event
+      #current-tweet-text.green.title
+
+
+    #history-tpl.tpl
+      li(data-bind-tweet='title', class='title')
+        span.left.red.id
+        span.right @
+          a(href='', class='handle')
+          span&nbsp;made&nbsp;
+          span.event
+
+
+    #queue-tpl.tpl
+      li(data-bind-tweet='title', class='title')
+        span.left.red.id
+        span.right @
+          a(href='', class='handle')
+          span&nbsp;is about to make&nbsp;
+          span.event

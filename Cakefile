@@ -12,6 +12,9 @@ shell = (cmds, callback) ->
         error stderr.trim() if err
         callback() if callback
 
+task 'build', 'Compile the server', ->
+  shell "coffee -c --bare app/server.coffee"
+
 task 'notes', 'Print out notes from project', ->
   notes = new Notes "#{__dirname}/app"
   notes.annotate()

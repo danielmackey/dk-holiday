@@ -1,125 +1,118 @@
-Buffer = require './buffer'
-
-#
-# ###Buffer config
-#
-#   - Set tipping points in the thresholds object
-#   - Each tipping point determines the individual frequency of events
-#
-thresholds =
-  "snow":1
-  "lights":1
-  "train":3
-  "discoball":1
-  "fan":1
-
-
-module.exports = class Worker
-  constructor: (@app, @jobs, @logger) ->
-    @init()
-
-  init: ->
-    @openSocket()
-
-  openSocket: ->
-    #
-    # ####Websocket config
-    #
-    #   - Listen on the same port as the webserver app
-    #   - Reduce logging levels to low
-    #   - Expose socket handshake data for identification
-    #
-    io = require('socket.io').listen @app
-    io.set 'log level', 1
-    io.set 'authorization', (handshakeData, callback) ->
-      callback null, true
-
-    #
-    # ####Websocket connection
-    #
-    #   - Identify each client on connection
-    #   - Set rollCall to true for connecting identity
-    #   - Log the connecting identity
-    #
-    ws = io.of('/arduino').on 'connection', (@socket) =>
-      identity = @identify @socket
-      @rollCall[identity] = true
-      @logger.connect identity
-
-      #
-      # ####Websocket disconnection
-      #
-      #   - Identify each client on disconnection
-      #   - Set rollCall to false for disconnecting identity
-      #   - Log the disconnecting identity
-      #
-      @socket.on 'disconnect', =>
-        identity = @identify @socket
-        @rollCall[identity] = false
-        @logger.disconnect identity
-
-      #
-      # ####Proceed if arduino is connected
-      #
-      if @rollCall.arduino
-        @processJobs()
+module.exports = Worker =
+  listening:false
+  processing:false
+  delay:10000 # Delay between jobs being processed
+  eventTally:0 # Keep a running tally of events to compare against tippingPoin
+  tippingPoint:40 # Point at which it gets cray
+  # The list of possible events that lead up to holicray
+  events:[ #TODO: Finalize events and sync up with job processes and spec
+    'it snow'
+    'the lights on the tree blink'
+    'the stars light up'
+    'the discoball spin'
+    'the wacky man dance'
+    'the foo bar baz'
+  ]
 
 
-  processJobs: ->
-    #
-    # ##Processing
-    #
-    #   - Process each type of job and add a tally mark
-    #   - Jobs and arduino calls are not 1:1. @buffer() uses the values defined in the thresholds object to create tipping points for each action
-    #   - Call arduino with an action assignment when the tipping point is reached
-    #
+
+  # #### Setup Worker with jobs, a logger, and a restored state starting tally
+  init: (@jobs, @logger, tally) ->
+    @eventTally = tally
+
+
+
+  #
+  # #### Conditionally start Worker
+  #
+  #   - Start processing jobs if arduino is connected
+  #   - Start listening on websocket events unless already listening
+  #
+  start: (socket) ->
+    unless @processing is true then @processJobs socket
+    unless @listening is true then @listen socket
+
+
+
+  # Listen for websocket events
+  listen: (socket) ->
+    socket.on 'right now', -> socket.emit 'refresh stats'
+    @listening = true
+
+
+
+  # Assign an incoming tweet to an arduino event
+  assign: (tweet) ->
+    @tally()
+    if @eventTally is @tippingPoint then event = 'holicray'
+    else event = @random()
+    @assembleJob event, tweet
+
+
+
+  # Pick a random event
+  random: ->
+    randomize = -> return (Math.round(Math.random())-0.5)
+    randomEvent = @events.sort @randomize
+    event = randomEvent.pop()
+    return event
+
+
+
+  # Increment eventTally to reach tippingPoint
+  tally: ->
+    @eventTally++
+    return @eventTally
+
+
+
+  # Assemble jobData from the incoming tweet data
+  assembleJob: (type, data) ->
+    jobData =
+      title:data.text
+      handle:data.user.screen_name
+      avatar:data.user.profile_image_url
+      event:type
+    @createJob type, jobData
+
+
+
+  # Create a new job and log job promotion and job completion
+  createJob: (type, jobData) ->
+    job = @jobs.create(type, jobData).attempts(3).delay(@delay).save()
+    job.on 'promotion', -> console.log "10 second pause complete"
+    job.on 'complete', -> console.log "Job complete"
+
+
+
+  # Process jobs and emit assignment to arduino
+  processJobs: (socket) ->
+    @processing = true
+
     process = (job, done) =>
-      count = thresholds[job.data.hashtag]
-      if Buffer count
-        @logger.arduino "##{job.data.hashtag} by @#{job.data.handle}"
-        @socket.emit 'action assignment', job, (completedJob) =>
-          @logger.confirm 'Arduino action', 'action':completedJob.data.hashtag
-          @socket.emit 'new event', completedJob
-          done()
-      else
-        @logger.tally "#{job.data.hashtag} by #{job.data.handle}"
-        @socket.emit 'tally mark', job, (talliedJob) =>
-          @logger.confirm "Tally mark counted", 'action':talliedJob.data.hashtag
-          done()
+      @logger.arduino "##{job.data.event} by @#{job.data.handle}"
+      socket.emit 'action assignment', job
+      done()
 
-    #
-    # ####Define a job process for each hashtag
-    #
-    @jobs.process 'snow', (job, done) ->
+    @jobs.promote()
+
+    @jobs.process 'it snow', (job, done) ->
       process job, done
 
-    @jobs.process 'lights', (job, done) ->
+    @jobs.process 'the lights on the tree blink', (job, done) ->
       process job, done
 
-    @jobs.process 'train', (job, done) ->
+    @jobs.process 'the stars light up', (job, done) ->
       process job, done
 
-    @jobs.process 'discoball', (job, done) ->
+    @jobs.process 'the discoball spin', (job, done) ->
       process job, done
 
+    @jobs.process 'the wacky man dance', (job, done) ->
+      process job, done
 
-  #
-  # ###Identifier Utility
-  #
-  #   - Crude identifier that only distinguishes between node clients and browser clients
-  #   - Accepts a socket connection
-  #   - Returns the identity as arduino if the client is node.js
-  #   - Returns the identity as client if the client is a browser user agent
-  #
-  identify: (socket) ->
-    if socket.handshake.headers['user-agent'] is 'node.js'
-      identity = 'arduino'
-    else identity = 'browser'
-    return identity
+    @jobs.process 'the foo bar baz', (job, done) ->
+      process job, done
 
-  #
-  # ###Keep track of which type of client is connected
-  #
-  rollCall:
-    browser:false
-    arduino:false
+    @jobs.process 'holicray', (job, done) ->
+      process job, done
