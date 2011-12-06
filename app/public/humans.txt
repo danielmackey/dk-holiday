@@ -39,7 +39,7 @@ Decoration: Jessica Price
 /* SITE */
 Last Update: 2011/12/12
 Standards: HTML5, CSS3, JS
-Components: Node, Zepto, Socket.io, Jade, Stylus, Plate, Express, Stitch, Kue, Redis, Underscore.js, CoffeeScript
+Libraries: Node, Zepto, Socket.io, Jade, Stylus, Plate, Express, Stitch, Kue, Redis, Underscore.js, CoffeeScript
 Hardware: Arduino Uno, Powerswitch Tail II
 Software: TextMate, MacVim, Photoshop, Fritzing, Arduino IDE
 3rd Party Services: Heroku, UStream, Github
