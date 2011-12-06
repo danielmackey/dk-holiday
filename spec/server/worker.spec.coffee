@@ -26,32 +26,6 @@ describe 'Worker', ->
     Worker.assembleJob type, data, jobs
     expect(Worker.createJob).toHaveBeenCalled()
 
-
-  it 'processes jobs if arduino is connected', ->
-
-  it 'checks if the arduino client is connected', ->
-    identity = 'arduino'
-    Worker.present.arduino = true
-    present = Worker.isPresent identity
-    expect(present).toBeTruthy()
-
-  it 'identifies the arduino client', ->
-    socket =
-      handshake:
-        headers:
-          'user-agent':'node.js'
-    identity = Worker.identify socket
-    expect(identity).toMatch 'arduino'
-
-  it 'identifies a browser client', ->
-    socket =
-      handshake:
-        headers:
-          'user-agent':'browser'
-    identity = Worker.identify socket
-    expect(identity).toMatch 'browser'
-
-
   it 'contains 6 events', ->
     eventCount = Worker.events.length
     expect(eventCount).toEqual 6

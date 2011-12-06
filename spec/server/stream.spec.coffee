@@ -20,7 +20,7 @@ describe 'Stream', ->
 
   it 'opens a twitter stream on websocket connection', ->
     socket = {}
-    spyOn Stream, 'setupTwitter'
+    spyOn Stream, 'createTwitter'
     Stream.goOnline socket
-    expect(Stream.setupTwitter).toHaveBeenCalled()
+    expect(Stream.createTwitter).toHaveBeenCalled()
 
