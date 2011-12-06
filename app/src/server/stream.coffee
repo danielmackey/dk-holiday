@@ -31,7 +31,8 @@ module.exports = Stream =
 
 
   setupSocket: ->
-    ws = @io.of('/arduino').on 'connection', (socket) => @goOnline socket
+    @io.sockets.on 'connection', (socket) => @goOnline socket
+
 
 
 
@@ -44,8 +45,10 @@ module.exports = Stream =
   #   - Broadcast the 'right now' event from arduino
   #
   goOnline: (socket) ->
-    unless @twitter? then @setupTwitter socket
-    Worker.start socket
+    unless @twitter? then @setupTwitter @io.sockets
+    Worker.start @io.sockets
+
+
 
   #
   # #### Twitter Stream
@@ -73,5 +76,5 @@ module.exports = Stream =
   #
   save: (tweet, socket) ->
     @logger.save "@#{tweet.user.screen_name}: #{tweet.text}"
-    socket.broadcast.emit 'refresh stats'
+    socket.emit 'refresh stats'
     Worker.assign tweet

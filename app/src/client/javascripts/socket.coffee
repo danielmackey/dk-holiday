@@ -11,7 +11,7 @@ module.exports = class Socket
     @openSocket()
 
   openSocket: ->
-    client = io.connect '/arduino'
+    client = io.connect '/'
     client.on 'refresh stats', ->
       console.log 'refresh stats'
       Stats.newEvent()

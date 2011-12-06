@@ -5,56 +5,34 @@ module.exports = Worker =
 
 
 
-  # Log connections and disconnections
-  rollCall: (status, socket) ->
-    identity = @identify socket
-    if @present[identity] is true then @present[identity] = false
-    else @present[identity] = true
-    if @present[identity] is true then @logger.connect identity
-    else @logger.disconnect identity
-
-
-
-  # Keep tabs on which type of clients are connected
-  present:
-    browser:false
-    arduino:false
-
-
-
-  # Identify a socket as browser or arduino client
-  identify: (socket) ->
-    if socket.handshake.headers['user-agent'] is 'node.js'
-      identity = 'arduino'
-    else identity = 'browser'
-    return identity
-
-
-
-  # Check to see if a given client identity is connected
-  isPresent: (identity) ->
-    if @present[identity] is true then return true
-    else return false
-
-
-
-  # Start processing jobs if arduino is connected
+  #
+  # #### Conditionally start Worker
+  #
+  #   - Start processing jobs if arduino is connected
+  #   - Start listening on websocket events unless already listening
+  #
   start: (socket) ->
-    @rollCall 'present', socket
-    if @isPresent 'arduino' then @processJobs socket
-    @listen socket
+    unless @processing is true then @processJobs socket
+    unless @listening is true then @listen socket
+
+
+
+  # TODO: Spec out the listening/processing state
+  listening:false
+  processing:false
 
 
 
   # Listen for websocket events
   listen: (socket) ->
     socket.on 'disconnect', => @rollCall 'absent', socket
-    socket.on 'right now', -> socket.broadcast.emit 'refresh stats'
+    socket.on 'right now', -> socket.emit 'refresh stats'
+    @listening = true
 
 
 
   # Delay between jobs being processed
-  delay:10000 * 2
+  delay:10000
 
 
 
@@ -131,9 +109,11 @@ module.exports = Worker =
 
 
   processJobs: (socket) ->
+    @processing = true
+
     process = (job, done) =>
       @logger.arduino "##{job.data.event} by @#{job.data.handle}"
-      socket.broadcast.emit 'action assignment', job
+      socket.emit 'action assignment', job
       done()
 
     @jobs.promote()

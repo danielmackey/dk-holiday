@@ -40,10 +40,10 @@ port = process.env.PORT || conf.get 'app:port'
 # ### Websocket Configuration
 #
 io = require('socket.io').listen app
-io.set 'log level', 1
 io.enable 'browser client minification'
 io.set 'authorization', (handshakeData, callback) -> callback null, true
-
+io.configure 'production', ->
+  io.set 'log level', 1
 
 
 #
