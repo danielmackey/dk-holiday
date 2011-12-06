@@ -13,9 +13,7 @@ State = require './src/server/state'
 
 
 #TODO: Convert Zepto to jQuery in Parts
-#TODO: Convert jasmine specs to mocha
 #TODO: Set up Log.ly
-#TODO: Set up landing page route
 
 
 #
@@ -124,7 +122,9 @@ app.configure 'production', ->
 
 app.get '/application.js', package.createServer()
 app.get '/', (req, res) ->
-  res.render "index", viewOptions
+  res.render "landing", viewOptions
+app.get '/cray', (req, res) ->
+  res.render 'index', viewOptions
 
 app.use kue.app
 app.listen port
