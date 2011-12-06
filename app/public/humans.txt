@@ -1,0 +1,47 @@
+/* TEAM */
+Developer: Todd Larsen
+Contact: todd.larsen [at] designkitchen.com
+Twitter: @toddjlarsen
+Location: Chicago, IL USA
+
+Developer: Daniel Mackey
+Contact: daniel.mackey [at] designkitchen.com
+Twitter: @danielmackey
+Location: Chicago, IL USA
+
+ACD: Chris Stewart
+Contact: chris.stewart [at] designkitchen.com
+Twitter: @thechrisstewart
+Location: Chicago, IL USA
+
+Designer: Brandon Oxedine
+Contact: brandon.oxedine [at] designkitchen.com
+Twitter: @brandonhaslegs
+Location: Chicago, IL USA
+
+Copy: Mary Scannell
+Contact: many.scannell [at] designkitchen.com
+Location: Chicago, IL USA
+
+Director of Creative Strategy: Danielle John
+Contact: danielle.john [at] designkitchen.com
+Location: Chicago, IL USA
+
+Company: Designkitchen
+Twitter: @designkitchen
+Location: Chicago, IL USA
+
+/* THANKS */
+Technical Expertise: Taylor Brinkman
+IT Support: Edward Ke
+Decoration: Jessica Price
+
+/* SITE */
+Last Update: 2011/12/12
+Standards: HTML5, CSS3, JS
+Components: Node, Zepto, Socket.io, Jade, Stylus, Plate, Express, Stitch, Kue, Redis, Underscore.js, CoffeeScript
+Hardware: Arduino Uno, Powerswitch Tail II
+Software: TextMate, MacVim, Photoshop, Fritzing, Arduino IDE
+3rd Party Services: Heroku, UStream, Github
+
+Source code available: http://github.com/designkitchen/dk-holiday
