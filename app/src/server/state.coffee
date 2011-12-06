@@ -14,7 +14,7 @@ logger = new Logger()
 module.exports = State =
   restore: (@jobs, @io, @conf) ->
     env = process.env.NODE_ENV || 'development'
-    url = @conf.get "stats_url:#{env}" || 'http://holiday.designkitchen.com/stats'
+    url = @conf.get "stats_url:#{env}" || 'http://holiday.designkitchen.com'
     @inflate url
 
   inflate: (url) ->
