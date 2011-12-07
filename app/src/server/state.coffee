@@ -17,6 +17,7 @@ module.exports = State =
     url = @conf.get "stats_url:#{env}" || 'http://holiday.designkitchen.com'
     @inflate url
 
+#FIXME: Commented out request for testing purposes on Heroku
   inflate: (url) ->
     #request uri:url, (error, response, body) =>
       #if !error and response.statusCode is 200
