@@ -14,17 +14,17 @@ logger = new Logger()
 module.exports = State =
   restore: (@jobs, @io, @conf) ->
     env = process.env.NODE_ENV || 'development'
-    #url = @conf.get "stats_url:#{env}" || 
-    url = 'http://holiday.designkitchen.com'
+    url = @conf.get "stats_url:#{env}" || 'http://holiday.designkitchen.com'
     @inflate url
 
   inflate: (url) ->
-    request uri:url, (error, response, body) =>
-      if !error and response.statusCode is 200
-        split = body.toString().split(',')
-        number = split[1].split(':')[1]
-        tally = Util.factorForty number
-      else
-        tally = 0
+    #request uri:url, (error, response, body) =>
+      #if !error and response.statusCode is 200
+        #split = body.toString().split(',')
+        #number = split[1].split(':')[1]
+        #tally = Util.factorForty number
+      #else
+        #tally = 0
 
+      tally = 0
       Stream.init @jobs, @io, logger, tally
