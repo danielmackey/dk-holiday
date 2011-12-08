@@ -12,9 +12,9 @@ logger = new Logger()
 #   - Request the app stats to restore how cray it's been. If unavailable, reset tally to 0
 
 module.exports = State =
-  restore: (@jobs, @io, @conf) ->
+  restore: (@jobs, @io) ->
     env = process.env.NODE_ENV || 'development'
-    url = @conf.get "stats_url:#{env}" || 'http://holiday.designkitchen.com'
+    url = 'http://localhost:5000/stats'
     @inflate url
 
   inflate: (url) ->

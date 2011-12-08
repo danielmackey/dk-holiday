@@ -7,7 +7,6 @@ kue = require 'kue'
 redis = require 'kue/node_modules/redis'
 fs = require 'fs'
 path = require 'path'
-nconf = require 'nconf'
 app = express.createServer()
 State = require './src/server/state'
 
@@ -15,22 +14,7 @@ State = require './src/server/state'
 #OPTIMIZE: Convert Zepto to jQuery in Parts
 #OPTIMIZE: Set up Log.ly
 
-
-#
-# ### App Configuration
-#
-#   - Read values from config.json
-#   - Inherit the port from the foreman proc or fall back to app:port
-#
-configOptions =
-  env:true
-  argv:true
-  store:
-    type:'file'
-    file:path.join __dirname, '../../../config.json'
-
-conf = new nconf.Provider configOptions
-port = process.env.PORT || conf.get 'app:port'
+port = process.env.PORT || 5000
 
 
 
@@ -59,7 +43,7 @@ kue.redis.createClient = () ->
 
 jobs = kue.createQueue()
 kue.app.enable "jsonp callback"
-kue.app.set 'title', conf.get 'app:name'
+kue.app.set 'title', 'Queue: Holicray by Designkitchen'
 
 
 
@@ -103,7 +87,7 @@ package = stitch.createPackage javascripts
 #
 viewOptions =
   locals:
-    title:conf.get 'app:name'
+    title:'Holicray by Designkitchen'
   layout:'layout'
 
 app.configure () ->
@@ -117,7 +101,7 @@ app.configure 'development', ->
   app.use express.errorHandler dumpExceptions: true, showStack: true
 
 app.configure 'production', ->
-  app.use express.static "#{__dirname}/public", maxAge:conf.get 'app:cache'
+  app.use express.static "#{__dirname}/public", maxAge:31557600000
   app.use express.errorHandler()
 
 app.get '/application.js', package.createServer()
@@ -132,4 +116,4 @@ app.listen port
 
 
 # #### Restore the state of the app
-State.restore jobs, io, conf
+State.restore jobs, io
