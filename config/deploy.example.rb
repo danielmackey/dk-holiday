@@ -5,8 +5,8 @@ set :scm, :git
 set :repository,  "git@github.com:designkitchen/dk-holiday.git"
 
 default_run_options[:pty] = true
-set :user, "rails"
-set :domain, "50.57.133.51"
+set :user, "xxxx"
+set :domain, "xx.xx.xx.xx"
 set :normalize_asset_timestamps, false
 
 role :web, domain                          # Your HTTP server, Apache/etc
