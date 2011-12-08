@@ -1,5 +1,5 @@
 set :application, "dk-holiday"
-set :deploy_to, "/var/www"
+set :deploy_to, "/var/www/#{application}"
 
 set :scm, :git
 set :repository,  "git@github.com:designkitchen/dk-holiday.git"
