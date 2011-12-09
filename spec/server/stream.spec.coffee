@@ -12,4 +12,3 @@ describe 'Stream', ->
     spyOn Stream, 'setupSocket'
     Stream.init {}, {}, {}, 1
     expect(Stream.setupSocket).toHaveBeenCalled()
-

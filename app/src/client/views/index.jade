@@ -65,27 +65,31 @@ div#wrapper.clearfix
 
 
     #latest-tpl.tpl
-      #current-tweet-number.red.id
+      #current-tweet-number.red.id {{ id }}
       #current-action.red @
-        a(href='', class='handle')
+        a(href='', class='handle') {{ handle }}
         span &nbsp;just made&nbsp;
-        span.event
-      #current-tweet-text.green.title
+        span.event {{ event }}
+      #current-tweet-text.green.title {{ title }}
 
 
     #history-tpl.tpl
-      li(data-bind-tweet='title', class='title')
-        span.left.red.id
+      li(data-bind-tweet='{{ title }}', class='title')
+        span.left.red.id {{ id }}
         span.right @
-          a(href='', class='handle')
+          a(href='http://twitter.com/{{ handle }}', class='handle')
+            {{ handle }}
           span&nbsp;made&nbsp;
-          span.event
+          span.event {{ event }}
 
 
     #queue-tpl.tpl
-      li(data-bind-tweet='title', class='title')
-        span.left.red.id
+      li(data-bind-tweet='{{ title }}', class='title')
+        span.left.red.id {{ id }}
         span.right @
-          a(href='', class='handle')
+          a(href='http://twitter.com/{{ handle }}', class='handle')
+            {{ handle }}
           span&nbsp;is about to make&nbsp;
-          span.event
+          span.event {{ event }}
+
+

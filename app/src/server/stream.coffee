@@ -43,9 +43,20 @@ module.exports = Stream =
   #   - Start Worker
   #
   goOnline: (socket) ->
-    unless @twitter? then @createTwitter()
-    Worker.start @io.sockets
+    if @open is true
+      unless @twitter? then @createTwitter()
+      Worker.start @io.sockets
 
+
+
+  open: ->
+    open = '9'
+    close = '17'
+    date = new Date()
+    now = date.getHours()
+    if open < now < close
+      return true
+    else return false
 
 
   #

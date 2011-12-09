@@ -1,10 +1,8 @@
-###Setup
+###Local Setup
 
   `npm install`
 
   `npm install -g coffee-script`
-
-  `npm install -g jasmine-node`
 
   `brew install foreman`
 
@@ -14,38 +12,25 @@
 
   `foreman start`
 
-##App Workflow
 
-   - Stream
-     - Open and listen for @designkitchen tweets
-     - Open websocket
-     - Emit all tweets and send to Buffer
-
-   - Buffer
-     - Keep tally of each tweet
-     - Assign a random event or holicray event if tipping point is reached
-     - Create a new job with type of event and emit new job
-
-   - Worker
-     - Tick through jobs and emit current job
-     - Call arduino and wait for callback
-     - On callback, next job is processed
-     - Emit completed job/new event
+##Tests
+  `npm install -g jasmine-node`
+  `cake test`
 
 
-## Module Interfaces
+##Project Notes and To Dos
+  `cake notes`
 
-  - Stream at the front, only interfaces with Worker
-  - Worker sits between Stream and Buffer
-  - Buffer works behind the scenes and only interfaces with Worker
+
+##Offline Mode
+Restart the app before 9am and after 5pm to switch between on/offline modes
 
 
 ## Tech Inventory
 
   ### Client-side
     - Moved from jQuery to Zepto, reducing total package size from ~180k to ~70k
-    - Plates.js for clean templating
-    - Underscore.js for utility
+    - Underscore.js for utility and templating
     - Socket.io for websocket messaging
     - Jade for view rendering
     - Stylus for style preprocessing
@@ -63,6 +48,6 @@
       - State restoration with node-request /stats
       - Twitter stream with ntwitter
 
-    - Logging with winston and Loggly
+    - Logging with winston
     - Documentation with docco
     - Tests with Jasmine

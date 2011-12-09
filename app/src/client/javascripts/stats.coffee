@@ -1,5 +1,9 @@
 Util = require 'utility'
 
+_.templateSettings = {
+  interpolate : /\{\{(.+?)\}\}/g
+};
+
 module.exports = Stats =
   el:
     totalTweets:$ "#total-tweets-number"
@@ -64,14 +68,9 @@ module.exports = Stats =
 
   renderLatest: (jobs) ->
     job = jobs.pop()
-    tpl = $("#latest-tpl").html()
-    map =
-      "event":"class"
-      "title":"class"
-      "handle":"class"
-      "id":"class"
+    template = _.template $("#latest-tpl").html()
     job.data.id = job.id
-    latest = Plates.bind tpl, job.data, map
+    latest = template job.data
     Stats.el.latest.empty().html latest
 
 
@@ -82,16 +81,12 @@ module.exports = Stats =
     jobs = jobs.slice Stats.historyFrom, Stats.historyTo
     Stats.historyFrom = Stats.historyFrom + 10
     Stats.historyTo = Stats.historyTo + 10
-    if jobs.length <= 9 then $("#history a.load-more").hide()
-    map =
-      "event":"class"
-      "title":["class","data-bind-tweet"]
-      "handle":"class"
-      "id":"class"
-    tpl = $("#history-tpl").html()
+    if jobs.length < 10 then $("#history a.load-more").hide()
+    template = _.template $("#history-tpl").html()
     _.each jobs, (job) =>
-      job.data.id = job.id
-      item = Plates.bind tpl, job.data, map
+      id = job.id
+      job.data.id = id
+      item = template job.data
       Stats.el.history.append item
 
   getMoreHistory: ->
@@ -102,17 +97,12 @@ module.exports = Stats =
     @getStats "/jobs/delayed/0..9/asc", Stats.renderQueue
 
   renderQueue: (jobs) ->
-    if jobs.length <= 9 then $("#up-next a").hide()
-    map =
-      "event":"class"
-      "title":["class","data-bind-tweet"]
-      "handle":"class"
-      "id":"class"
-    tpl = $("#queue-tpl").html()
+    if jobs.length < 10 then $("#up-next a").hide()
+    template = _.template $("#queue-tpl").html()
     Stats.el.queue.empty()
     _.each jobs, (job) =>
       job.data.id = job.id
-      item = Plates.bind tpl, job.data, map
+      item = template job.data
       Stats.el.queue.append item
 
 
