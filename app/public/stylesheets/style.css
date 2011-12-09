@@ -377,7 +377,7 @@ header {
   letter-spacing: 1px;
   background: url("/images/video-overlay.png") transparent no-repeat 0 0;
 }
-#circle {
+.circle {
   width: 160px;
   height: 80px;
   display: block;
@@ -390,9 +390,13 @@ header {
   line-height: 35px;
   font-weight: bold;
   text-decoration: none;
+  cursor: pointer;
   text-align: center;
 }
-#circle span.large {
+.circle span {
+  color: #737364;
+}
+.circle span.large {
   display: block;
   position: relative;
   color: #fff;
@@ -400,7 +404,7 @@ header {
   margin-top: -3px;
   font-family: 'TommasoRegular';
 }
-#circle span.circle {
+.circle span.inner-circle {
   width: 160px;
   height: 160px;
   display: block;
@@ -417,7 +421,7 @@ header {
   -ms-transition: 0.1s ease-in-out all;
   transition: 0.1s ease-in-out all;
 }
-#circle.github {
+.circle.github {
   margin-left: 816px;
   top: 380px;
   cursor: pointer;
@@ -430,13 +434,13 @@ header {
   -ms-transition: 0.1s ease-in-out all;
   transition: 0.1s ease-in-out all;
 }
-#circle.scrooge {
+.circle.scrooge {
   -webkit-transform: rotate(8deg);
   -moz-transform: rotate(8deg);
   -ms-transform: rotate(8deg);
   transform: rotate(8deg);
 }
-#circle.github:hover {
+.circle.github:hover {
   color: #7c2413;
   cursor: pointer;
   -webkit-transform: rotate(8deg);
@@ -444,7 +448,13 @@ header {
   -ms-transform: rotate(8deg);
   transform: rotate(8deg);
 }
-#circle.github:hover span.circle {
+.circle.github:hover span {
+  color: #7c2413;
+}
+.circle.github:hover span.large {
+  color: #fff;
+}
+.circle.github:hover span.inner-circle {
   background: #d64622;
   cursor: pointer;
   -webkit-transform: scale(1.1, 1.1) rotate(8deg);
@@ -514,7 +524,7 @@ header {
   left: 21px;
 }
 #column-top #total-tweets #total-tweets-title {
-  width: 84px;
+  width: 75px;
   height: 30px;
   font-weight: bold;
   text-transform: uppercase;
@@ -667,7 +677,7 @@ a.load-more:active {
 }
 #overlay #shade {
   opacity: 0.7;
-  background: #000;
+  background: #737364;
   position: absolute;
   top: 0;
   left: 0;
@@ -676,15 +686,17 @@ a.load-more:active {
 }
 #overlay #holidays-past {
   position: relative;
-  height: 450px;
-  width: 650px;
-  background: #000;
+  height: 480px;
+  width: 690px;
+  padding: 20px;
+  background: #fffff5;
   margin: 100px auto;
   padding: 1px 0 0;
 }
 #overlay #holidays-past h2 {
   float: left;
   margin: 20px 0 0 20px;
+  font-size: 20px;
 }
 #overlay #holidays-past ul {
   float: right;
@@ -696,8 +708,14 @@ a.load-more:active {
 }
 #overlay #holidays-past ul li a {
   font-weight: bold;
+  font-size: 20px;
   cursor: pointer;
+  text-decoration: underline;
+  color: #59ab4b;
+}
+#overlay #holidays-past ul li a:hover {
+  color: #2a6130;
 }
 #overlay #holidays-past #video {
-  margin-top: 60px;
+  margin: 60px 0 0 20px;
 }
