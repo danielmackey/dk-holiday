@@ -9,6 +9,7 @@ fs = require 'fs'
 path = require 'path'
 app = express.createServer()
 State = require './src/server/state'
+port = process.env.PORT || 5000
 
 
 #OPTIMIZE: Convert Zepto to jQuery in Parts
@@ -16,11 +17,7 @@ State = require './src/server/state'
 #FIXME: Add hashtag gate so only tweets with tags get through - make this a configurable option
 #TODO: Add audio for holicray
 #TODO: Holicray stylesheet
-
-
-port = process.env.PORT || 5000
-
-
+#TODO: How to take app offline? using Date() prevent capturing tweets outside of 9-5
 #TODO: Sync events
 #
 #   - table lights
@@ -30,9 +27,7 @@ port = process.env.PORT || 5000
 #   - train
 #   - wall of lights
 #   - holicray (tube man)
-#
-#
-#
+
 
 
 #
@@ -43,6 +38,7 @@ io.enable 'browser client minification'
 io.set 'authorization', (handshakeData, callback) -> callback null, true
 io.configure 'production', ->
   io.set 'log level', 1
+
 
 
 #
