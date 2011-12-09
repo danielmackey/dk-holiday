@@ -22,7 +22,7 @@ module.exports = Stream =
   init: (@jobs, @io, @logger, @tally) ->
     @setupSocket()
     @setupWorker()
-
+    @isOpen()
 
 
   setupWorker: ->
@@ -48,15 +48,17 @@ module.exports = Stream =
       Worker.start @io.sockets
 
 
+  open:false
 
-  open: ->
+
+  isOpen: ->
     open = '9'
     close = '17'
     date = new Date()
     now = date.getHours()
     if open < now < close
-      return true
-    else return false
+      @open = true
+    else @open = false
 
 
   #
