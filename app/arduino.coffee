@@ -39,10 +39,8 @@ ledState = arduino.LOW
 
 socket = io.connect 'http://localhost:5000'
 
-socket.on 'connection', -> socket.emit 'new client', 'arduino'
-
 socket.on 'action assignment', (job) ->
-  socket.emit 'right now'
+  socket.emit 'right now', job
   #board.digitalWrite pin, ledState = arduino.HIGH # on
   #setTimeout(board.digitalWrite(pin, ledState = arduino.LOW), time) # off
 

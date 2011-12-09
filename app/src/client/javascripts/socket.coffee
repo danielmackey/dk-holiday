@@ -12,6 +12,6 @@ module.exports = class Socket
 
   openSocket: ->
     client = io.connect '/'
-    client.on 'refresh stats', ->
-      console.log 'refresh stats'
+    client.on 'refresh stats', (currentJob) ->
+      console.log 'refresh stats', currentJob
       Stats.newEvent()

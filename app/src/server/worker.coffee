@@ -1,5 +1,4 @@
 module.exports = Worker =
-  listening:false
   processing:false
   delay:10000 # Delay between jobs being processed
   eventTally:0 # Keep a running tally of events to compare against tippingPoin
@@ -30,14 +29,6 @@ module.exports = Worker =
   #
   start: (socket) ->
     unless @processing is true then @processJobs socket
-    unless @listening is true then @listen socket
-
-
-
-  # Listen for websocket events
-  listen: (socket) ->
-    socket.on 'right now', -> socket.emit 'refresh stats'
-    @listening = true
 
 
 
