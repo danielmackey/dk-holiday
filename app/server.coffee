@@ -13,9 +13,26 @@ State = require './src/server/state'
 
 #OPTIMIZE: Convert Zepto to jQuery in Parts
 #OPTIMIZE: Set up Log.ly
+#FIXME: Add hashtag gate so only tweets with tags get through - make this a configurable option
+#TODO: Add audio for holicray
+#TODO: Holicray stylesheet
+
 
 port = process.env.PORT || 5000
 
+
+#TODO: Sync events
+#
+#   - table lights
+#   - sirens
+#   - snow machine
+#   - snow flake lights
+#   - train
+#   - wall of lights
+#   - holicray (tube man)
+#
+#
+#
 
 
 #
@@ -106,8 +123,6 @@ app.configure 'production', ->
 
 app.get '/application.js', package.createServer()
 app.get '/', (req, res) ->
-  res.render "landing", viewOptions
-app.get '/cray', (req, res) ->
   res.render 'index', viewOptions
 
 app.use kue.app
