@@ -19,7 +19,7 @@ module.exports = Client =
       });
     });
     `
-    new Socket()
+    window.socket = new Socket()
     Stats.refresh()
     @holidaysPast()
 
@@ -43,3 +43,29 @@ module.exports = Client =
 
   tenEmbed: ->
     return '<iframe width="650" height="400" src="http://www.youtube.com/embed/2Z4m4lnjxkY?rel=0" frameborder="0" allowfullscreen></iframe>'
+
+  crayTally:0
+
+  goCray: ->
+    #TODO: Add more holicray styles
+    crayStyles = '
+      <style type="text/css" id="cray-styles">
+        a.dk-button { background-position:center -51px; }
+        .red { color:#59AB4B!important; }
+        .green { color #D64622!important; }
+      </style>
+    '
+    $("body").css 'background-image','url(/images/bg2.gif)'
+    $("body").append crayStyles
+    Client.crayTally++
+
+    again = () ->
+      unless Client.crayTally is 5
+        Client.goCray()
+      else $("body").css 'background-image', 'url(/images/bg.gif)'
+
+    timer = () ->
+      $('#cray-styles').remove()
+      setTimeout again, 500
+
+    setTimeout timer, 500

@@ -1,10 +1,11 @@
 Stats = require './stats'
+Client = require './client'
 
 #
 # ####Client Websocket
 #
-#   - Listen for the 'new event' message
-#   - Listen for the 'tally mark' message and confirm reception
+#   - Listen for the 'refresh stats' message
+#   - Listen for the holicray events and then go cray
 #
 module.exports = class Socket
   constructor: () ->
@@ -13,8 +14,6 @@ module.exports = class Socket
   openSocket: ->
     client = io.connect '/'
     client.on 'refresh stats', (currentJob) ->
-      #TODO: Add more holicray styles
-      if currentJob?
-        if currentJob.type is 'holicray'
-          $("body").css 'background', '#000!important'
       Stats.newEvent()
+      if currentJob?
+        if currentJob.type is 'holicray' then Client.goCray()
