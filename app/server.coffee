@@ -15,7 +15,6 @@ port = process.env.PORT || 5000
 #OPTIMIZE: Convert Zepto to jQuery in Parts
 #OPTIMIZE: Set up Log.ly
 #FIXME: Add hashtag gate so only tweets with tags get through - make this a configurable option
-#TODO: How to take app offline? using Date() prevent capturing tweets outside of 9-5
 #TODO: Add audio for holicray
 #TODO: Holicray stylesheet
 #

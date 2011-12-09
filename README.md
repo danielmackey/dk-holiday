@@ -1,25 +1,29 @@
 ###Local Setup
 
-  `npm install`
+  `$ npm install`
 
-  `npm install -g coffee-script`
+  `$ npm install -g coffee-script`
 
-  `brew install foreman`
+  `$ npm install -g supervisor`
 
-  `brew install redis`
+  `$ brew install redis`
+
 
 ##Development
 
-  `foreman start`
+  `$ /path/to/redis/redis-server`
+
+  `$ supervisor app/server.coffee`
 
 
 ##Tests
-  `npm install -g jasmine-node`
-  `cake test`
+  `$ npm install -g jasmine-node`
+
+  `$ cake test`
 
 
 ##Project Notes and To Dos
-  `cake notes`
+  `$ cake notes`
 
 
 ##Offline Mode
