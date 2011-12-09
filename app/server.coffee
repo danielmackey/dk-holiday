@@ -33,7 +33,7 @@ io = require('socket.io').listen app
 io.enable 'browser client minification'
 io.set 'authorization', (handshakeData, callback) -> callback null, true
 io.configure 'production', ->
-  io.set 'log level', 1
+  #io.set 'log level', 1
 
 
 

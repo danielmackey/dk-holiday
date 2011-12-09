@@ -32,7 +32,7 @@ socket = io.connect 'http://50.57.133.51:5000'
 
 socket.on 'action assignment', (job) ->
   socket.emit 'right now', job
-  
+
   time = 9000
 
   switch job.data.event
