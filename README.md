@@ -32,7 +32,7 @@ Restart the app before 9am and after 5pm to switch between on/offline modes
 
 ## Tech Inventory
 
-  ### Client-side
+  ###Client-side
     - Moved from jQuery to Zepto, reducing total package size from ~180k to ~70k
     - Underscore.js for utility and templating
     - Socket.io for websocket messaging
@@ -41,7 +41,7 @@ Restart the app before 9am and after 5pm to switch between on/offline modes
     - CoffeeScript
 
 
-  ### Server-side
+  ###Server-side
     - Express Web Server
       - Stitch middleware for javascript bundling
       - Stylus middleware for stylesheet bundling

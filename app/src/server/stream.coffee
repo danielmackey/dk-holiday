@@ -11,7 +11,7 @@ module.exports = Stream =
 
 
 
-  keys: # TODO: Get production keys with @designkitchen account
+  keys:
     consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
     consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
     access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
