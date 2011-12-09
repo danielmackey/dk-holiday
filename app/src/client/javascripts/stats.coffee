@@ -72,7 +72,7 @@ module.exports = Stats =
       "id":"class"
     job.data.id = job.id
     latest = Plates.bind tpl, job.data, map
-    Stats.el.latest.html latest
+    Stats.el.latest.empty().html latest
 
 
   getHistory: ->
@@ -109,6 +109,7 @@ module.exports = Stats =
       "handle":"class"
       "id":"class"
     tpl = $("#queue-tpl").html()
+    Stats.el.queue.empty()
     _.each jobs, (job) =>
       job.data.id = job.id
       item = Plates.bind tpl, job.data, map

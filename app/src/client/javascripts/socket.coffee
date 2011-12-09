@@ -13,5 +13,8 @@ module.exports = class Socket
   openSocket: ->
     client = io.connect '/'
     client.on 'refresh stats', (currentJob) ->
-      console.log 'refresh stats', currentJob
+      #OPTIMIZE: Add more holicray styles
+      if currentJob?
+        if currentJob.type is 'holicray'
+          $("body").css 'background', '#000!important'
       Stats.newEvent()
