@@ -9,12 +9,24 @@ fs = require 'fs'
 path = require 'path'
 app = express.createServer()
 State = require './src/server/state'
+port = process.env.PORT || 5000
 
 
 #OPTIMIZE: Convert Zepto to jQuery in Parts
 #OPTIMIZE: Set up Log.ly
-
-port = process.env.PORT || 5000
+#FIXME: Add hashtag gate so only tweets with tags get through - make this a configurable option
+#TODO: Add audio for holicray
+#TODO: Holicray stylesheet
+#TODO: How to take app offline? using Date() prevent capturing tweets outside of 9-5
+#TODO: Sync events
+#
+#   - table lights
+#   - sirens
+#   - snow machine
+#   - snow flake lights
+#   - train
+#   - wall of lights
+#   - holicray (tube man)
 
 
 
@@ -26,6 +38,7 @@ io.enable 'browser client minification'
 io.set 'authorization', (handshakeData, callback) -> callback null, true
 io.configure 'production', ->
   io.set 'log level', 1
+
 
 
 #
@@ -106,8 +119,6 @@ app.configure 'production', ->
 
 app.get '/application.js', package.createServer()
 app.get '/', (req, res) ->
-  res.render "landing", viewOptions
-app.get '/cray', (req, res) ->
   res.render 'index', viewOptions
 
 app.use kue.app
