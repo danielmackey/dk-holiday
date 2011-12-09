@@ -23,6 +23,6 @@
     "arduino":"0.2.3",
     "request":"2.2.9",
     "redis-url":"0.0.1",
-    "control":""
+    "forever":"0.7.x"
   }
 }
