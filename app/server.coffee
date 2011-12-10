@@ -11,7 +11,9 @@ app = express.createServer()
 State = require './src/server/state'
 port = process.env.PORT || 5000
 
-#OPTIMIZE: Convert Zepto to jQuery in Parts
+#TODO: Test Twitter widget
+#TODO: Video frame siderails
+#TODO: Confirm 'current' event from Arduino
 #
 #   - table lights
 #   - sirens
