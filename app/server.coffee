@@ -12,7 +12,6 @@ State = require './src/server/state'
 port = process.env.PORT || 5000
 
 #TODO: Test Twitter widget
-#TODO: Video frame siderails
 #TODO: Confirm 'current' event from Arduino
 #
 #   - table lights

@@ -10,7 +10,7 @@ Client = require './client'
 module.exports = class Socket
   constructor: () ->
     @openSocket()
-    Client.goCray()
+    #Client.goCray()
 
   openSocket: ->
     client = io.connect '/'
