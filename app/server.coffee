@@ -11,6 +11,7 @@ port = process.env.PORT || 5000
 
 #TODO: Nginx proxy port 80
 #TODO: Test Twitter widget
+#TODO: Figure out Redis dump.rdb
 
 
 #

@@ -35,9 +35,9 @@ module.exports = Worker =
     tubeman = @tubemanTrigger
     hashtags = @getHashtags tweet
     @tally()
-    if @eventTally is @tippingPoint then event = 'holicray'
+    if @eventTally is @tippingPoint then event = 'it Holicray!'
     else if hashtags.indexOf(tubeman) is -1 then event = @random()
-    else event = 'tubeman'
+    else event = 'the wacky tube man dance.'
     @assembleJob event, tweet
 
 
