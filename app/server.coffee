@@ -5,13 +5,13 @@ stitch = require 'stitch'
 kue = require 'kue'
 fs = require 'fs'
 path = require 'path'
-app = express.createServer()
 State = require './src/server/state'
-port = process.env.PORT || 5000
+app = express.createServer()
+port = 5000
 
+#FIXME: Load more bug vs. refresh. getting dupes in queue
 #TODO: Nginx proxy port 80
 #TODO: Test Twitter widget
-#TODO: Figure out Redis dump.rdb
 
 
 #

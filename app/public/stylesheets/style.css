@@ -643,7 +643,8 @@ header {
 }
 #column-top #total-tweets #current-tweet #current-action {
   width: 520px;
-  height: 30px;
+  height: auto;
+  padding-bottom: 5px;
   font-size: 20px;
   font-weight: bold;
   text-align: left;

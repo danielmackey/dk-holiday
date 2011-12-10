@@ -83,6 +83,7 @@ module.exports = Stats =
     Stats.historyTo = Stats.historyTo + 10
     if jobs.length < 10 then $("#history a.load-more").hide()
     template = _.template $("#history-tpl").html()
+    Stats.el.history.empty()
     _.each jobs, (job) =>
       id = job.id
       job.data.id = id
@@ -90,8 +91,19 @@ module.exports = Stats =
       Stats.el.history.append item
 
   getMoreHistory: ->
-    @getHistory()
+    @getStats "/jobs/complete/0..10000/desc", Stats.renderMoreHistory
 
+  renderMoreHistory: (jobs) ->
+    jobs = jobs.slice Stats.historyFrom, Stats.historyTo
+    Stats.historyFrom = Stats.historyFrom + 10
+    Stats.historyTo = Stats.historyTo + 10
+    if jobs.length < 10 then $("#history a.load-more").hide()
+    template = _.template $("#history-tpl").html()
+    _.each jobs, (job) =>
+      id = job.id
+      job.data.id = id
+      item = template job.data
+      Stats.el.history.append item
 
   getQueue: ->
     @getStats "/jobs/delayed/0..9/asc", Stats.renderQueue
