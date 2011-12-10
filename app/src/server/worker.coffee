@@ -3,24 +3,12 @@ module.exports = Worker =
   delay:10000 # Delay between jobs being processed
   eventTally:0 # Keep a running tally of events to compare against tippingPoin
   tippingPoint:40 # Point at which it gets cray
-  #TODO: Finalize events and sync up with job processes and spec
-  # The list of possible events that lead up to holicray:
-  #
-  #   - table lights
-  #   - sirens
-  #   - snow machine
-  #   - snow flake lights
-  #   - train
-  #   - wall of lights
-  #   - holicray (tube man)
-  #
   events:[
-    'it snow'
-    'the lights on the tree blink'
-    'the stars light up'
-    'the discoball spin'
-    'the wacky man dance'
-    'the foo bar baz'
+    'the conference table lights dance.'
+    'the sirens go to town.'
+    'the wall lights turn on.'
+    'the choochoo train run.'
+    'it snow up in here.'
   ]
 
 
@@ -112,26 +100,24 @@ module.exports = Worker =
 
     @jobs.promote()
 
-    @jobs.process 'it snow', (job, done) ->
+    @jobs.process 'the conference table lights dance.', (job, done) ->
       process job, done
 
-    @jobs.process 'tubeman', (job, done) ->
+    @jobs.process 'the sirens go to town.', (job, done) ->
       process job, done
 
-    @jobs.process 'the lights on the tree blink', (job, done) ->
+    @jobs.process 'the wall lights turn on.', (job, done) ->
       process job, done
 
-    @jobs.process 'the stars light up', (job, done) ->
+    @jobs.process 'the choochoo train run.', (job, done) ->
       process job, done
 
-    @jobs.process 'the discoball spin', (job, done) ->
+    @jobs.process 'it snow up in here.', (job, done) ->
       process job, done
 
-    @jobs.process 'the wacky man dance', (job, done) ->
+    @jobs.process 'it Holicray!', (job, done) ->
       process job, done
 
-    @jobs.process 'the foo bar baz', (job, done) ->
+    @jobs.process 'the wacky tube man dance.', (job, done) ->
       process job, done
 
-    @jobs.process 'holicray', (job, done) ->
-      process job, done

@@ -33,18 +33,17 @@ describe 'Worker', ->
     Worker.assembleJob type, data, jobs
     expect(Worker.createJob).toHaveBeenCalled()
 
-  it 'contains 6 events', ->
+  it 'contains 5 events', ->
     eventCount = Worker.events.length
-    expect(eventCount).toEqual 6
+    expect(eventCount).toEqual 5
 
   it 'contains the correct events', ->
     events = [
-      'it snow'
-      'the lights on the tree blink'
-      'the stars light up'
-      'the discoball spin'
-      'the wacky man dance'
-      'the foo bar baz'
+      'the conference table lights dance.'
+      'the sirens go to town.'
+      'the wall lights turn on.'
+      'the choochoo train run.'
+      'it snow up in here.'
     ]
 
     events.forEach (event, i) ->

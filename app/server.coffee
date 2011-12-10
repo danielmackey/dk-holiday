@@ -2,15 +2,14 @@ express = require 'express'
 stylus = require 'stylus'
 connect = require 'connect'
 stitch = require 'stitch'
-url = require 'url'
 kue = require 'kue'
-redis = require 'kue/node_modules/redis'
 fs = require 'fs'
 path = require 'path'
 app = express.createServer()
 State = require './src/server/state'
 port = process.env.PORT || 5000
 
+#TODO: Nginx proxy port 80
 #TODO: Test Twitter widget
 
 

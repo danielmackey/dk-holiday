@@ -29,7 +29,7 @@ board.pinMode 7, arduino.OUTPUT
 board.pinMode 7, ledState
 
 socket = io.connect 'http://50.57.133.51:5000'
-
+#FIXME: Sync up cases with events
 socket.on 'action assignment', (job) ->
   socket.emit 'right now', job
 
