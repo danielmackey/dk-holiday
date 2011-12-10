@@ -14,8 +14,8 @@ module.exports = Stats =
     tallyCount: $ "#tweet-counter"
     tallyMeter:$ "#full-inner"
 
-  historyFrom:1
-  historyTo:11
+  historyFrom:11
+  historyTo:21
 
   newEvent: ->
     @refresh()
@@ -41,9 +41,11 @@ module.exports = Stats =
 
   getStats: (url, callback) ->
     ajaxOptions =
-      url:"#{url}?callback=?"
-      type:'jsonp'
+      url:"#{url}"
+      dataType:'jsonp'
       data:{}
+      cache:false
+      crossDomain:true
       success:(stats) => callback stats
     $.ajax ajaxOptions
 
@@ -78,11 +80,11 @@ module.exports = Stats =
     @getStats "/jobs/complete/0..10000/desc", Stats.renderHistory
 
   renderHistory: (jobs) ->
-    jobs = jobs.slice Stats.historyFrom, Stats.historyTo
-    Stats.historyFrom = Stats.historyFrom + 10
-    Stats.historyTo = Stats.historyTo + 10
+    console.log jobs
+    jobs = jobs.slice 1, 11
     if jobs.length < 10 then $("#history a.load-more").hide()
     template = _.template $("#history-tpl").html()
+    console.log jobs
     Stats.el.history.empty()
     _.each jobs, (job) =>
       id = job.id

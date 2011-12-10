@@ -9,7 +9,7 @@ State = require './src/server/state'
 app = express.createServer()
 port = 5000
 
-#FIXME: Load more bug vs. refresh. getting dupes in queue
+#FIXME: undefined bug - job is created with undefined type (event), gets caught in queue and throws off count
 #TODO: Nginx proxy port 80
 #TODO: Test Twitter widget
 

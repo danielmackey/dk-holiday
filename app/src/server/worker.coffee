@@ -38,6 +38,7 @@ module.exports = Worker =
     if @eventTally is @tippingPoint then event = 'it Holicray!'
     else if hashtags.indexOf(tubeman) is -1 then event = @random()
     else event = 'the wacky tube man dance.'
+    console.log "Event Assignment: #{event}"
     @assembleJob event, tweet
 
 
