@@ -247,6 +247,16 @@ header
   -moz-transform rotate(8deg)
   -ms-transform rotate(8deg)
   transform rotate(8deg)
+  -webkit-transition .1s ease-in-out all
+  -moz-transition .1s ease-in-out all
+  -ms-transition .1s ease-in-out all
+  transition .1s ease-in-out all
+
+.circle.scrooge:hover
+  -webkit-transform rotate(-8deg)
+  -moz-transform rotate(-8deg)
+  -ms-transform rotate(-8deg)
+  transform rotate(-8deg)
 
 .circle.github:hover
   color #7C2413
@@ -256,11 +266,25 @@ header
   -ms-transform rotate(8deg)
   transform rotate(8deg)
 
+.circle.scrooge:hover span
+  color #2A6130
+
+.circle.scrooge:hover span.large
+  color #fff
+
 .circle.github:hover span
   color #7C2413
 
 .circle.github:hover span.large
   color #fff
+
+.circle.scrooge:hover span.inner-circle
+  background #59AB4B
+  cursor pointer
+  -webkit-transform scale(1.1,1.1) rotate(8deg)
+  -moz-transform scale(1.1,1.1) rotate(8deg)
+  -ms-transform scale(1.1,1.1) rotate(8deg)
+  transform scale(1.1,1.1) rotate(8deg)
 
 .circle.github:hover span.inner-circle
   background #D64622
@@ -470,3 +494,79 @@ a.load-more:hover
 a.load-more:active
   color #59AB4B
 
+
+
+#hidden-animations
+  position: relative
+
+#hidden-animations .northstar
+  width: 32px
+  height: 44px
+  position: absolute
+  top: 145px
+  left: 56px
+  background: url('/images/north-star.gif') no-repeat 0 -100px
+
+#hidden-animations .northstar:hover,
+#hidden-animations .northstar.animate
+  background-position: 0 0
+
+#hidden-animations .kinara
+  width: 42px
+  height: 44px
+  position: absolute
+  top: 103px
+  left: 94px
+  background: url('/images/kinara.gif') no-repeat 0 -100px
+
+#hidden-animations .kinara:hover,
+#hidden-animations .kinara.animate
+  background-position: 0 0
+
+#hidden-animations .snowman
+  width: 21px
+  height: 45px
+  position: absolute
+  top: 82px
+  left: 150px
+  background: url('/images/snowman.gif') no-repeat 0 -100px
+
+#hidden-animations .snowman:hover,
+#hidden-animations .snowman.animate
+  background-position: 0 0
+
+#hidden-animations .star
+  width: 40px
+  height: 40px
+  position: absolute
+  top: 87px
+  left: 607px
+  background: url('/images/star.gif') no-repeat 0 -100px
+
+#hidden-animations .star:hover,
+#hidden-animations .star.animate
+  background-position: 0 0
+
+#hidden-animations .ornament
+  width: 29px
+  height: 42px
+  position: absolute
+  top: 106px
+  left: 658px
+  background: url('/images/ornament.gif') no-repeat 0 -100px
+
+#hidden-animations .ornament:hover,
+#hidden-animations .ornament.animate
+  background-position: 0 0
+
+#hidden-animations .tree
+  width: 30px
+  height: 38px
+  position: absolute
+  top: 149px
+  left: 697px
+  background: url('/images/tree.gif') no-repeat 0 -100px
+
+#hidden-animations .tree:hover,
+#hidden-animations .tree.animate
+  background-position: 0 0

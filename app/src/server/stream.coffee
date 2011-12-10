@@ -53,7 +53,8 @@ module.exports = Stream =
 
   isOpen: ->
     open = '9'
-    close = '17'
+    #close = '17'
+    close = '20'
     date = new Date()
     now = date.getHours()
     if open < now < close

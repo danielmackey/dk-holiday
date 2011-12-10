@@ -34,10 +34,25 @@ module.exports = Worker =
 
   # Assign an incoming tweet to an arduino event
   assign: (tweet) ->
+    tubeman = @tubemanTrigger
+    hashtags = @getHashtags tweet
     @tally()
     if @eventTally is @tippingPoint then event = 'holicray'
-    else event = @random()
+    else if hashtags.indexOf(tubeman) is -1 then event = @random()
+    else event = 'tubeman'
     @assembleJob event, tweet
+
+
+
+  tubemanTrigger:'tubeman'
+
+
+
+  getHashtags: (tweet) ->
+    hashtags = []
+    tweet.entities.hashtags.forEach (tag, i) ->
+      hashtags.push tag.text
+    return hashtags
 
 
 
@@ -88,6 +103,9 @@ module.exports = Worker =
     @jobs.promote()
 
     @jobs.process 'it snow', (job, done) ->
+      process job, done
+
+    @jobs.process 'tubeman', (job, done) ->
       process job, done
 
     @jobs.process 'the lights on the tree blink', (job, done) ->

@@ -47,22 +47,25 @@ module.exports = Client =
   crayTally:0
 
   goCray: ->
-    #TODO: Add more holicray styles
     crayStyles = '
       <style type="text/css" id="cray-styles">
-        a.dk-button { background-position:center -51px; }
         .red { color:#59AB4B!important; }
         .green { color #D64622!important; }
       </style>
     '
+    $("#hidden-animations > div").addClass 'animate'
+    $("a.dk-button").css 'background-image', 'url(/images/from-us.gif)'
     $("body").css 'background-image','url(/images/bg2.gif)'
     $("body").append crayStyles
     Client.crayTally++
 
     again = () ->
-      unless Client.crayTally is 5
+      unless Client.crayTally is 10
         Client.goCray()
-      else $("body").css 'background-image', 'url(/images/bg.gif)'
+      else
+        $("#hidden-animations > div").removeClass 'animate'
+        $("a.dk-button").css 'background-image', 'url(/images/dk-button.png)'
+        $("body").css 'background-image', 'url(/images/bg.gif)'
 
     timer = () ->
       $('#cray-styles').remove()

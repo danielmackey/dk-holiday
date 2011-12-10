@@ -11,10 +11,7 @@ app = express.createServer()
 State = require './src/server/state'
 port = process.env.PORT || 5000
 
-
-#FIXME: Add hashtag gate so only tweets with tags get through - make this a configurable option
 #OPTIMIZE: Convert Zepto to jQuery in Parts
-#TODO: Add audio for holicray
 #
 #   - table lights
 #   - sirens
