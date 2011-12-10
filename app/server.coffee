@@ -30,25 +30,15 @@ io = require('socket.io').listen app
 io.enable 'browser client minification'
 io.set 'authorization', (handshakeData, callback) -> callback null, true
 io.configure 'production', ->
-  #FIXME: reset log level to low for prod
-  #io.set 'log level', 1
+  io.set 'log level', 1
 
 
 
 #
 # ### Job Queue
-  # FIXME: Remove RedisToGo info
 #
-#   - Use redisToGo on Heroku
 #   - Enable CORS with the job queue db for clientside stats
 #
-kue.redis.createClient = () ->
-  process.env.REDISTOGO_URL = process.env.REDISTOGO_URL || "redis://localhost:6379"
-  redisUrl = url.parse(process.env.REDISTOGO_URL)
-  client = redis.createClient(redisUrl.port, redisUrl.hostname)
-  if redisUrl.auth then client.auth(redisUrl.auth.split(":")[1])
-  return client
-
 jobs = kue.createQueue()
 kue.app.enable "jsonp callback"
 kue.app.set 'title', 'Queue: Holicray by Designkitchen'
