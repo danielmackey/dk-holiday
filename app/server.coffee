@@ -12,7 +12,6 @@ State = require './src/server/state'
 port = process.env.PORT || 5000
 
 #TODO: Test Twitter widget
-#TODO: Confirm 'current' event from Arduino
 #
 #   - table lights
 #   - sirens
@@ -31,12 +30,14 @@ io = require('socket.io').listen app
 io.enable 'browser client minification'
 io.set 'authorization', (handshakeData, callback) -> callback null, true
 io.configure 'production', ->
+  #FIXME: reset log level to low for prod
   #io.set 'log level', 1
 
 
 
 #
 # ### Job Queue
+  # FIXME: Remove RedisToGo info
 #
 #   - Use redisToGo on Heroku
 #   - Enable CORS with the job queue db for clientside stats
