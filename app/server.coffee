@@ -13,14 +13,6 @@ port = process.env.PORT || 5000
 
 #TODO: Test Twitter widget
 #
-#   - table lights
-#   - sirens
-#   - snow machine
-#   - snow flake lights
-#   - train
-#   - wall of lights
-#   - holicray (tube man)
-
 
 
 #
