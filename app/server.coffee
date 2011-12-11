@@ -9,8 +9,6 @@ State = require './src/server/state'
 app = express.createServer()
 port = 5000
 
-#TODO: Nginx proxy port 80
-#TODO: Test Twitter widget
 
 
 #

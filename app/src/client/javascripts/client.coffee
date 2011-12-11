@@ -21,7 +21,8 @@ module.exports = Client =
     `
     window.socket = new Socket()
     Stats.refresh()
-    @holidaysPast()
+    #FIXME: Uncomment after we've uploaded videos to Vimeo
+    #@holidaysPast()
 
   holidaysPast: ->
     $("a#see-past-holidays").bind 'click', (e) ->

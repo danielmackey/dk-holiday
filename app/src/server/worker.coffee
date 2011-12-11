@@ -8,7 +8,7 @@ module.exports = Worker =
     'the conference table lights dance.'
     'the sirens go to town.'
     'the wall lights turn on.'
-    'the stars light up'
+    'the stars light up.'
     'it snow up in here.'
   ]
 
@@ -100,7 +100,7 @@ module.exports = Worker =
     @jobs.process 'the conference table lights dance.', (job, done) -> process job, done
     @jobs.process 'the sirens go to town.', (job, done) -> process job, done
     @jobs.process 'the wall lights turn on.', (job, done) -> process job, done
-    @jobs.process 'the choochoo train run.', (job, done) -> process job, done
+    @jobs.process 'the stars light up.', (job, done) -> process job, done
     @jobs.process 'it snow up in here.', (job, done) -> process job, done
     @jobs.process 'it Holicray!', (job, done) -> process job, done
     @jobs.process 'the wacky tube man dance.', (job, done) -> process job, done

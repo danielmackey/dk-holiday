@@ -368,7 +368,8 @@ header {
   width: 670px;
   position: relative;
   z-index: 1;
-  height: 340px;
+  height: 343px;
+  overflow: hidden;
 }
 #container #video iframe {
   position: absolute;
@@ -398,7 +399,7 @@ header {
   height: 30px;
   width: 100%;
   position: absolute;
-  bottom: -16px;
+  bottom: -13px;
   right: -15px;
   z-index: 2;
   background: url("/images/bottom-rail.png") no-repeat;

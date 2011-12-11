@@ -73,7 +73,9 @@ module.exports = Stream =
     @twitter = new twitter @keys
     @twitter.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
-      stream.on 'data', (tweet) => unless tweet.friends? then @save tweet
+      stream.on 'data', (tweet) =>
+        console.log 'new tweet' #FIXME: pull out console.log after stream is back up
+        unless tweet.friends? then @save tweet
 
 
 

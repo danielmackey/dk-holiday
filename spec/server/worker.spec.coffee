@@ -62,7 +62,7 @@ describe 'Worker', ->
       'the conference table lights dance.'
       'the sirens go to town.'
       'the wall lights turn on.'
-      'the choochoo train run.'
+      'the stars light up.'
       'it snow up in here.'
     ]
 
