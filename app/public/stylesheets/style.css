@@ -879,9 +879,13 @@ a.load-more:active {
 }
 .ui-tooltip-default .ui-tooltip-titlebar,
 .ui-tooltip-default .ui-tooltip-content {
-  border-color: #f1d031;
-  background-color: #ffffa3;
-  color: #555;
+  border-color: #59ab4b;
+  border-width: 2px;
+  padding: 10px;
+  background-color: #fffff5;
+  color: #59ab4b;
+  font-size: 1.4em;
+  line-height: 1.2;
 }
 .ui-tooltip-default .ui-tooltip-titlebar {
   background-color: #ffef93;
