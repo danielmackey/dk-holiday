@@ -3,6 +3,7 @@ module.exports = Worker =
   delay:10000 # Delay between jobs being processed
   eventTally:0 # Keep a running tally of events to compare against tippingPoin
   tippingPoint:40 # Point at which it gets cray
+  tubemanTrigger:'tubeman' # Secret hashtag to trigger the tubeman
   events:[
     'the conference table lights dance.'
     'the sirens go to town.'
@@ -14,8 +15,7 @@ module.exports = Worker =
 
 
   # #### Setup Worker with jobs, a logger, and a restored state starting tally
-  init: (@jobs, @logger, tally) ->
-    @eventTally = tally
+  init: (@jobs, @logger, tally) -> @eventTally = tally
 
 
 
@@ -25,8 +25,7 @@ module.exports = Worker =
   #   - Start processing jobs if arduino is connected
   #   - Start listening on websocket events unless already listening
   #
-  start: (socket) ->
-    unless @processing is true then @processJobs socket
+  start: (socket) -> unless @processing is true then @processJobs socket
 
 
 
@@ -35,22 +34,20 @@ module.exports = Worker =
     tubeman = @tubemanTrigger
     hashtags = @getHashtags tweet
     @tally()
-    if @eventTally is @tippingPoint then event = 'it Holicray!'
-    else if hashtags.indexOf(tubeman) is -1 then event = @random()
-    else event = 'the wacky tube man dance.'
-    console.log "Event Assignment: #{event}"
+    if @eventTally is @tippingPoint
+      event = 'it Holicray!'
+    else if hashtags.indexOf(tubeman) is -1
+      event = @random()
+      if event is undefined then event = @events.shift()
+    else
+      event = 'the wacky tube man dance.'
     @assembleJob event, tweet
 
 
-
-  tubemanTrigger:'tubeman'
-
-
-
+  #TODO: Spec out getHashtags()
   getHashtags: (tweet) ->
     hashtags = []
-    tweet.entities.hashtags.forEach (tag, i) ->
-      hashtags.push tag.text
+    tweet.entities.hashtags.forEach (tag, i) -> hashtags.push tag.text
     return hashtags
 
 
@@ -93,6 +90,7 @@ module.exports = Worker =
   # Process jobs and emit assignment to arduino
   processJobs: (socket) ->
     @processing = true
+    @logger.info 'Processing jobs...'
 
     process = (job, done) =>
       @logger.arduino "##{job.data.event} by @#{job.data.handle}"
@@ -100,25 +98,10 @@ module.exports = Worker =
       done()
 
     @jobs.promote()
-
-    @jobs.process 'the conference table lights dance.', (job, done) ->
-      process job, done
-
-    @jobs.process 'the sirens go to town.', (job, done) ->
-      process job, done
-
-    @jobs.process 'the wall lights turn on.', (job, done) ->
-      process job, done
-
-    @jobs.process 'the choochoo train run.', (job, done) ->
-      process job, done
-
-    @jobs.process 'it snow up in here.', (job, done) ->
-      process job, done
-
-    @jobs.process 'it Holicray!', (job, done) ->
-      process job, done
-
-    @jobs.process 'the wacky tube man dance.', (job, done) ->
-      process job, done
-
+    @jobs.process 'the conference table lights dance.', (job, done) -> process job, done
+    @jobs.process 'the sirens go to town.', (job, done) -> process job, done
+    @jobs.process 'the wall lights turn on.', (job, done) -> process job, done
+    @jobs.process 'the choochoo train run.', (job, done) -> process job, done
+    @jobs.process 'it snow up in here.', (job, done) -> process job, done
+    @jobs.process 'it Holicray!', (job, done) -> process job, done
+    @jobs.process 'the wacky tube man dance.', (job, done) -> process job, done

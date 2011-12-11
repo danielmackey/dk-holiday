@@ -11,7 +11,7 @@ module.exports = Stream =
 
 
 
-  keys:
+  keys: #TODO: @Designkitchen app keys
     consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
     consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
     access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
@@ -25,8 +25,7 @@ module.exports = Stream =
     @isOpen()
 
 
-  setupWorker: ->
-    Worker.init @jobs, @logger, @tally
+  setupWorker: -> Worker.init @jobs, @logger, @tally
 
 
 
@@ -54,7 +53,7 @@ module.exports = Stream =
   isOpen: ->
     open = '9'
     #close = '17'
-    close = '20'
+    close = '24'
     date = new Date()
     now = date.getHours()
     if open < now < close
@@ -74,8 +73,7 @@ module.exports = Stream =
     @twitter = new twitter @keys
     @twitter.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
-      stream.on 'data', (tweet) =>
-        unless tweet.friends? then @save tweet
+      stream.on 'data', (tweet) => unless tweet.friends? then @save tweet
 
 
 

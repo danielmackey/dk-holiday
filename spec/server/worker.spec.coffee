@@ -11,6 +11,26 @@ tweet =
   entities:
     hashtags:[]
 
+tweetWithHashtag =
+  text:'Lorem ipsum dolor sit amet'
+  user:
+    screen_name:'ConanObrien'
+    profile_image_url:'http://placehold.it/90x90'
+  entities:
+    hashtags:[
+      text:'holidays'
+    ]
+
+tweetWithTubemanHashtag =
+  text:'Lorem ipsum dolor sit amet'
+  user:
+    screen_name:'ConanObrien'
+    profile_image_url:'http://placehold.it/90x90'
+  entities:
+    hashtags:[
+      text:'tubeman'
+    ]
+
 
 describe 'Worker', ->
   it 'has a queue', ->
@@ -49,8 +69,7 @@ describe 'Worker', ->
     events.forEach (event, i) ->
       expect(Worker.events).toContain event
 
-
-  it 'processes an incoming tweet', ->
+  it 'processes an incoming tweet without a hashtag', ->
     spyOn Worker, 'tally'
     spyOn Worker, 'random'
     spyOn Worker, 'assembleJob'
@@ -58,7 +77,6 @@ describe 'Worker', ->
     expect(Worker.tally).toHaveBeenCalled()
     expect(Worker.random).toHaveBeenCalled()
     expect(Worker.assembleJob).toHaveBeenCalled()
-
 
   it 'randomly assigns an event', ->
     event = Worker.random()
@@ -77,4 +95,7 @@ describe 'Worker', ->
     Worker.assign tweet
     expect(Worker.assembleJob).toHaveBeenCalled()
 
-
+  it 'captures hashtags from a tweet', ->
+    tag = 'holidays'
+    hashtags = Worker.getHashtags tweetWithHashtag
+    expect(hashtags.indexOf(tag)).toNotBe -1
