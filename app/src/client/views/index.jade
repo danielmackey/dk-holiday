@@ -1,5 +1,5 @@
 div#wrapper.clearfix
-  a(href='http://designkitchen.com', class='dk-button')
+  a(href='http://designkitchen.com', class='dk-button', target='_blank')
     span.left from us
     span.right with love
 
@@ -9,7 +9,7 @@ div#wrapper.clearfix
     span Past
     span.inner-circle
 
-  a(href='https://github.com/designkitchen/dk-holiday', class='github circle')
+  a(href='https://github.com/designkitchen/dk-holiday', class='github circle', target='_blank')
     span get the
     span.large source code
     span on github
@@ -45,7 +45,7 @@ div#wrapper.clearfix
       #right-rail
 
     #tweet
-      span.red Tweet at <a href="http://www.twitter.com/designkitchen">@designkitchen</a> to set off our <span class="green">Holicraymaker&trade;</span></span>
+      span.red Tweet at <a href="http://www.twitter.com/designkitchen" target="_blank">@designkitchen</a> to set off our <span class="green">Holicraymaker&trade;</span></span>
       #tweet-box
 
 
@@ -78,7 +78,7 @@ div#wrapper.clearfix
     #latest-tpl.tpl
       #current-tweet-number.red.id {{ id }}
       #current-action.red @
-        a(href='', class='handle') {{ handle }}
+        a(href='http://twitter.com/{{ handle }}', class='handle', target='_blank') {{ handle }}
         span &nbsp;just made&nbsp;
         span.event {{ event }}
       #current-tweet-text.green.title {{ title }}
@@ -88,7 +88,7 @@ div#wrapper.clearfix
       li(data-bind-tweet='{{ title }}', class='title')
         span.left.red.id {{ id }}
         span.right @
-          a(href='http://twitter.com/{{ handle }}', class='handle')
+          a(href='http://twitter.com/{{ handle }}', class='handle', target='_blank')
             {{ handle }}
           span&nbsp;made&nbsp;
           span.event {{ event }}
@@ -98,7 +98,7 @@ div#wrapper.clearfix
       li(data-bind-tweet='{{ title }}', class='title')
         span.left.red.id {{ id }}
         span.right @
-          a(href='http://twitter.com/{{ handle }}', class='handle')
+          a(href='http://twitter.com/{{ handle }}', class='handle', target='blank')
             {{ handle }}
           span&nbsp;is about to make&nbsp;
           span.event {{ event }}

@@ -44,7 +44,6 @@ module.exports = Worker =
     @assembleJob event, tweet
 
 
-  #TODO: Spec out getHashtags()
   getHashtags: (tweet) ->
     hashtags = []
     tweet.entities.hashtags.forEach (tag, i) -> hashtags.push tag.text

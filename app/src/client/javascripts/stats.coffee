@@ -1,8 +1,7 @@
 Util = require 'utility'
 
-_.templateSettings = {
-  interpolate : /\{\{(.+?)\}\}/g
-};
+_.templateSettings =
+  interpolate:/\{\{(.+?)\}\}/g
 
 module.exports = Stats =
   el:
@@ -80,17 +79,16 @@ module.exports = Stats =
     @getStats "/jobs/complete/0..10000/desc", Stats.renderHistory
 
   renderHistory: (jobs) ->
-    console.log jobs
     jobs = jobs.slice 1, 11
     if jobs.length < 10 then $("#history a.load-more").hide()
     template = _.template $("#history-tpl").html()
-    console.log jobs
     Stats.el.history.empty()
     _.each jobs, (job) =>
       id = job.id
       job.data.id = id
       item = template job.data
       Stats.el.history.append item
+      Stats.tweetTooltips()
 
   getMoreHistory: ->
     @getStats "/jobs/complete/0..10000/desc", Stats.renderMoreHistory
@@ -106,6 +104,7 @@ module.exports = Stats =
       job.data.id = id
       item = template job.data
       Stats.el.history.append item
+      Stats.tweetTooltips()
 
   getQueue: ->
     @getStats "/jobs/delayed/0..9/asc", Stats.renderQueue
@@ -118,6 +117,7 @@ module.exports = Stats =
       job.data.id = job.id
       item = template job.data
       Stats.el.queue.append item
+      Stats.tweetTooltips()
 
 
   clickMoreHistory: () ->
@@ -125,3 +125,12 @@ module.exports = Stats =
       e.preventDefault()
       @getMoreHistory()
 
+
+  tweetTooltips: ->
+    options =
+      content:
+        attr:'data-bind-tweet'
+      position:
+        my:'left center'
+        at:'right center'
+    $("li.title").qtip options
