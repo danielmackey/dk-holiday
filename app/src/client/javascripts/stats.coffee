@@ -131,6 +131,8 @@ module.exports = Stats =
       content:
         attr:'data-bind-tweet'
       position:
-        my:'left center'
-        at:'right center'
+        my:'right center'
+        at:'left center'
+        adjust:
+          x:45
     $("li.title").qtip options
