@@ -30,7 +30,7 @@ module.exports = Client =
       fbOptions =
         method: 'feed',
         message: 'getting educated about Facebook Connect',
-        name: 'Holicraymatic by Designkitchen',
+        name: 'Holi-Cray-Matic™ by Designkitchen',
         link: 'http://holiday.designkitchen.com',
         picture: 'http://holiday.designkitchen.com/images/share.jpg',
         description: 'Every tweet @ designkitchen sets off the Holi-Cray-Matic™ in one of our conference rooms. Watch it live at http://holiday.designkitchen.com'
