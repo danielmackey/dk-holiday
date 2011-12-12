@@ -51,10 +51,10 @@ module.exports = Client =
       else video = Client.tenEmbed()
       $("#holidays-past #video").html video
 
-  eightEmbed: ->
+  tenEmbed: ->
     return '<iframe width="650" height="400" src="http://player.vimeo.com/video/33534497?title=0&amp;byline=0&amp;portrait=0" frameborder="0" allowfullscreen></iframe>'
 
-  tenEmbed: ->
+  eightEmbed: ->
     return '<iframe width="650" height="400" src="http://player.vimeo.com/video/33538059?title=0&amp;byline=0&amp;portrait=0" frameborder="0" allowfullscreen></iframe>'
 
   crayTally:0
