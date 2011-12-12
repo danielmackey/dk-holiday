@@ -35,7 +35,7 @@ compile = function(str, path) {
 package = stitch.createPackage(javascripts);
 viewOptions = {
   locals: {
-    title: 'Holicray by Designkitchen'
+    title: 'Holicraymaker™ by Designkitchen'
   },
   layout: 'layout'
 };
