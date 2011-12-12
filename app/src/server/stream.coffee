@@ -84,7 +84,9 @@ module.exports = Stream =
       @logger.twitter '', 'following':@users
       stream.on 'data', (tweet) => @filter tweet
       stream.on 'end', (res) => @logger.twitter 'stream disconnected'
-      stream.on 'destroy', (res) => @logger.twitter 'stream closed silently'
+      stream.on 'destroy', (res) =>
+        @createTwitter()
+        @logger.twitter 'stream closed silently'
 
 
 

@@ -12,6 +12,7 @@ html
     meta(property='og:url', content='http://holiday.designkitchen.com')
     meta(property='og:image', content='http://holiday.designkitchen.com/images/share.jpg')
     script(src='http://platform.twitter.com/anywhere.js?id=hy0r9Q5TqWZjbGHGPfwPjg&v=1')
+    script(src='//connect.facebook.net/en_US/all.js')
     script(src='http://use.typekit.com/rfa4hxl.js')
     script
       try{Typekit.load();}catch(e){}
@@ -51,11 +52,3 @@ html
 
       // Additional initialization code here
     };
-
-    // Load the SDK Asynchronously
-    (function(d){
-      var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-      js = d.createElement('script'); js.id = id; js.async = true;
-      js.src = "//connect.facebook.net/en_US/all.js";
-      d.getElementsByTagName('head')[0].appendChild(js);
-    }(document));
