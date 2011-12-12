@@ -33,7 +33,6 @@ module.exports = Stats =
   refresh: ->
     @getTotalTweets()
     @getTotalCrays()
-    @getLatest()
     @getHistory()
     @getQueue()
     @clickMoreHistory()
@@ -55,6 +54,7 @@ module.exports = Stats =
   renderTotalTweets: (stats) ->
     Stats.el.totalTweets.text stats.completeCount
     Stats.renderCrayTally stats.completeCount
+    Stats.getLatest stats.completeCount
 
 
   getTotalCrays: ->
@@ -64,11 +64,10 @@ module.exports = Stats =
     Stats.el.totalHolicrays.text jobs.length
 
 
-  getLatest: ->
-    @getStats "/jobs/complete/0..10000/asc", Stats.renderLatest
+  getLatest: (latest) ->
+    @getStats "/job/#{latest}", Stats.renderLatest
 
-  renderLatest: (jobs) ->
-    job = jobs.pop()
+  renderLatest: (job) ->
     template = _.template $("#latest-tpl").html()
     job.data.id = job.id
     latest = template job.data
