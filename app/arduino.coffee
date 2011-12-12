@@ -28,7 +28,7 @@ board.pinMode 6, ledState
 board.pinMode 7, arduino.OUTPUT
 board.pinMode 7, ledState
 
-socket = io.connect 'http://50.57.133.51:5000'
+socket = io.connect 'http://50.57.133.51'
 
 socket.on 'disconnect', -> socket.reconnect()
 
