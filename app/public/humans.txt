@@ -34,7 +34,7 @@ Location: Chicago, IL USA
 /* THANKS */
 Technical Expertise: Taylor Brinkman
 IT Support: Edward Ke
-Decoration: Jessica Price, Michael Grandy
+Decoration: Jessica Price, Michael Grandy, Sylvia Krzysztofek, Billy O'Neal, Aaron Stoddart
 
 /* SITE */
 Last Update: 2011/12/12
