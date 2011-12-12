@@ -62,18 +62,16 @@ div#wrapper.clearfix
 
 
   section#column-mid
-      span.up-next UP NEXT
-      span.history HISTORY
+      span.up-next NEXT
+      span.history LAST
 
 
   section#column-repeat
     article#up-next
       ul
-      a(href='#', class='load-more') load more in the queue
 
     article#history
       ul
-      a(href='#', class='load-more') load more in the history
 
 
 
@@ -114,8 +112,10 @@ div#wrapper.clearfix
         h2 Gifts of DK Holidays Past
         ul.playlist
           li
-            a#2008 2008
+            a#2008.active 2008
           li
             a#2010 2010
+          li
+            a.close Close
 
         #video

@@ -583,7 +583,7 @@ header {
   margin-left: 160px;
 }
 #column-mid .history {
-  margin-left: 240px;
+  margin-left: 290px;
 }
 #column-top #total-tweets {
   text-align: center;
@@ -1236,6 +1236,10 @@ a.load-more:active {
 }
 #overlay #holidays-past ul li a:hover {
   color: #2a6130;
+}
+#overlay #holidays-past ul li a.active {
+  color: #2a6130;
+  text-decoration: none;
 }
 #overlay #holidays-past #video {
   margin: 60px 0 0 20px;

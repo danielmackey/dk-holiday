@@ -42,11 +42,13 @@ module.exports = Client =
       $("#overlay").show()
       $("#holidays-past #video").html Client.eightEmbed()
 
-    $("#shade").bind 'click', ->
+    $("#shade, a.close").bind 'click', ->
       $("#overlay").hide()
 
-    $("#holidays-past ul.playlist li a").bind 'click', ->
+    $("#holidays-past ul.playlist li a:not(.close)").bind 'click', ->
       year = $(this).attr 'id'
+      $("ul.playlist li a").removeClass 'active'
+      $(this).addClass 'active'
       if year is '2008' then video = Client.eightEmbed()
       else video = Client.tenEmbed()
       $("#holidays-past #video").html video

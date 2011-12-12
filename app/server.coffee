@@ -9,8 +9,6 @@ State = require './src/server/state'
 app = express.createServer()
 port = 5000
 
-#TODO: Add video overlay selected state
-#TODO: Add close button to video overlay
 
 #
 # ### Websocket Configuration

@@ -18,15 +18,15 @@ module.exports = Stream =
     #access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
     #access_token_secret:'cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI'
     # New app
-    #consumer_key:'TAyL1gwREECOg7byrIDjLA'
-    #consumer_secret:'YiyKxhMDxNxmAYz2XSwwxqiXFwYHlv6D3uGBYvg'
-    #access_token_key:'21787469-cCDu4PpWNhkoYg96CTJZvr3va4KwwC66eSmnDB3w'
-    #access_token_secret:'mIk8LJXokBQjfW2Yl3kSiqgoc4JZO5FRKRuf9XMBY'
+    consumer_key:'TAyL1gwREECOg7byrIDjLA'
+    consumer_secret:'YiyKxhMDxNxmAYz2XSwwxqiXFwYHlv6D3uGBYvg'
+    access_token_key:'21787469-cCDu4PpWNhkoYg96CTJZvr3va4KwwC66eSmnDB3w'
+    access_token_secret:'mIk8LJXokBQjfW2Yl3kSiqgoc4JZO5FRKRuf9XMBY'
     #Production app
-    consumer_key:'2vaJc8GKN1V0D8H70eQi9Q'
-    consumer_secret:'FYJ6wUaKMqRgS09yCU8aGyMZpiEwbqznXjqgi09jNs'
-    access_token_key:'19734547-xbfVhOwWed3l09ukwqXlwyR6qImbVhA6GpcAlSsE'
-    access_token_secret:'Z6DrTr9JqNoigl03S33Nace4EP7BaJ5THS1qtBM'
+    #consumer_key:'2vaJc8GKN1V0D8H70eQi9Q'
+    #consumer_secret:'FYJ6wUaKMqRgS09yCU8aGyMZpiEwbqznXjqgi09jNs'
+    #access_token_key:'19734547-xbfVhOwWed3l09ukwqXlwyR6qImbVhA6GpcAlSsE'
+    #access_token_secret:'Z6DrTr9JqNoigl03S33Nace4EP7BaJ5THS1qtBM'
 
   init: (@jobs, @io, @logger, @tally) ->
     @setupSocket()
