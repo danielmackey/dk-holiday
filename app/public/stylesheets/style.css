@@ -253,6 +253,9 @@ h1 span.hyphen {
   color: #d64622 !important;
   text-decoration: none;
 }
+.red a {
+  color: #d64622 !important;
+}
 .green {
   color: #59ab4b !important;
   text-decoration: none;

@@ -12,11 +12,15 @@ module.exports = Stream =
 
 
   keys: #TODO: @Designkitchen app keys
-    consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
-    consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
-    access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
-    access_token_secret:'cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI'
-
+    #consumer_key:'hy0r9Q5TqWZjbGHGPfwPjg'
+    #consumer_secret:'EVFMzimXk1TTDGFYnbEmfiAdUe0uFDt7YrzTujc7w'
+    #access_token_key:'384683488-xxmO6GV7lNpL5Z0U76djVh3BrFm1msb9yOHG3Vfq'
+    #access_token_secret:'cL6y4QIU8e1lwmZNq89I324lDwA62FJ8q2q5aKtM8NI'
+    # New app
+    consumer_key:'TAyL1gwREECOg7byrIDjLA'
+    consumer_secret:'YiyKxhMDxNxmAYz2XSwwxqiXFwYHlv6D3uGBYvg'
+    access_token_key:'21787469-cCDu4PpWNhkoYg96CTJZvr3va4KwwC66eSmnDB3w'
+    access_token_secret:'mIk8LJXokBQjfW2Yl3kSiqgoc4JZO5FRKRuf9XMBY'
 
 
   init: (@jobs, @io, @logger, @tally) ->
@@ -73,9 +77,9 @@ module.exports = Stream =
     @twitter = new twitter @keys
     @twitter.stream 'user', track:@users, (stream) =>
       @logger.twitter '', 'following':@users
-      stream.on 'data', (tweet) =>
-        console.log 'new tweet' #FIXME: pull out console.log after stream is back up
-        unless tweet.friends? then @save tweet
+      stream.on 'data', (tweet) => unless tweet.friends? then @save tweet
+      stream.on 'end', (res) => @logger.twitter 'stream disconnected'
+      stream.on 'destroy', (res) => @logger.twitter 'stream closed silently'
 
 
 

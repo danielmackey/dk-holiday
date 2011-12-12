@@ -17,4 +17,4 @@ module.exports = class Socket
     client.on 'refresh stats', (currentJob) ->
       Stats.newEvent()
       if currentJob?
-        if currentJob.type is 'holicray' then Client.goCray()
+        if currentJob.type is 'it Holicray!' then Client.goCray()

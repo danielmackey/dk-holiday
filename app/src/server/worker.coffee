@@ -38,7 +38,6 @@ module.exports = Worker =
       event = 'it Holicray!'
     else if hashtags.indexOf(tubeman) is -1
       event = @random()
-      if event is undefined then event = @events.shift()
     else
       event = 'the wacky tube man dance.'
     @assembleJob event, tweet
@@ -53,9 +52,7 @@ module.exports = Worker =
 
   # Pick a random event
   random: ->
-    randomize = -> return (Math.round(Math.random())-0.5)
-    randomEvent = @events.sort @randomize
-    event = randomEvent.pop()
+    event = @events[Math.floor(Math.random() * @events.length)]
     return event
 
 
