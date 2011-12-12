@@ -43,7 +43,7 @@ socket.on 'action assignment', (job) ->
   # A = holicray
 
   switch job.data.event
-    when 'the conference table lights dance.'
+    when 'the table lights dance.'
       board.digitalWrite 2, ledState = arduino.HIGH #on
       setTimeout( 'board.digitalWrite( 2, arduino.LOW)', time) # off
     when 'the wall lights turn on.'

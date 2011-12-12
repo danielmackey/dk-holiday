@@ -5,7 +5,7 @@ module.exports = Worker =
   tippingPoint:40 # Point at which it gets cray
   tubemanTrigger:'tubeman' # Secret hashtag to trigger the tubeman
   events:[
-    'the conference table lights dance.'
+    'the table lights dance.'
     'the sirens go to town.'
     'the wall lights turn on.'
     'the stars light up.'
@@ -94,7 +94,7 @@ module.exports = Worker =
       done()
 
     @jobs.promote()
-    @jobs.process 'the conference table lights dance.', (job, done) -> process job, done
+    @jobs.process 'the table lights dance.', (job, done) -> process job, done
     @jobs.process 'the sirens go to town.', (job, done) -> process job, done
     @jobs.process 'the wall lights turn on.', (job, done) -> process job, done
     @jobs.process 'the stars light up.', (job, done) -> process job, done

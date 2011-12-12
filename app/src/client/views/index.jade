@@ -79,7 +79,7 @@ div#wrapper.clearfix
 
 
     #latest-tpl.tpl
-      #current-tweet-number.red.id {{ id }}
+      #current-tweet-number.red.id MOST<br>RECENT
       #current-action.red @
         a(href='http://twitter.com/{{ handle }}', class='handle', target='_blank') {{ handle }}
         span &nbsp;just made&nbsp;
@@ -89,7 +89,7 @@ div#wrapper.clearfix
 
     #history-tpl.tpl
       li(data-bind-tweet='{{ title }}', class='title')
-        span.left.red.id {{ id }}
+        span.left.red.id
         span.right @
           a(href='http://twitter.com/{{ handle }}', class='handle', target='_blank')
             {{ handle }}
@@ -99,7 +99,7 @@ div#wrapper.clearfix
 
     #queue-tpl.tpl
       li(data-bind-tweet='{{ title }}', class='title')
-        span.left.red.id {{ id }}
+        span.left.red.id
         span.right @
           a(href='http://twitter.com/{{ handle }}', class='handle', target='blank')
             {{ handle }}
