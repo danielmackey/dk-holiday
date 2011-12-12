@@ -56,6 +56,7 @@ socket.on 'action assignment', (job) ->
       board.digitalWrite 4, ledState = arduino.HIGH #on
       setTimeout( 'board.digitalWrite( 4, arduino.LOW)', time ) #off
     when 'it snow up in here.'
+      time = 5000
       board.digitalWrite 5, ledState = arduino.HIGH #on
       setTimeout( 'board.digitalWrite( 5, arduino.LOW)', time ) #off
     when 'the sirens go to town.'
