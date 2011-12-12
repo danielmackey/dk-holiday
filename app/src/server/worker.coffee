@@ -49,7 +49,7 @@ module.exports = Worker =
     return hashtags
 
 
-
+  #TODO: Instead of randomly assigning an event, assign each and then start at beginning of list
   # Pick a random event
   random: ->
     event = @events[Math.floor(Math.random() * @events.length)]

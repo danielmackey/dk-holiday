@@ -69,7 +69,6 @@ module.exports = Stats =
 
   renderLatest: (job) ->
     template = _.template $("#latest-tpl").html()
-    job.data.id = job.id
     latest = template job.data
     Stats.el.latest.empty().html latest
 
