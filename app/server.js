@@ -8,7 +8,7 @@ fs = require('fs');
 path = require('path');
 State = require('./src/server/state');
 app = express.createServer();
-port = 5000;
+port = 80;
 io = require('socket.io').listen(app);
 io.enable('browser client minification');
 io.set('authorization', function(handshakeData, callback) {
