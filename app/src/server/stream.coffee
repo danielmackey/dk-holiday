@@ -6,7 +6,6 @@ Worker = require "#{__dirname}/worker"
 module.exports = Stream =
   users: [
     'designkitchen'
-    'holiduino'
   ]
 
 
@@ -56,8 +55,8 @@ module.exports = Stream =
 
   isOpen: ->
     open = '9'
-    #close = '17'
-    close = '24'
+    close = '17'
+    #close = '24'
     date = new Date()
     now = date.getHours()
     if open < now < close
