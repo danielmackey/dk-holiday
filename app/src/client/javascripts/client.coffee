@@ -15,7 +15,7 @@ module.exports = Client =
         height:75,
         label:'',
         width:630,
-        defaultContent:""
+        defaultContent:"@designkitchen"
       });
     });
     `

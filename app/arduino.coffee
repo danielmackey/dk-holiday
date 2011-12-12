@@ -49,7 +49,7 @@ socket.on 'action assignment', (job) ->
     when 'the wall lights turn on.'
       board.digitalWrite 3, ledState = arduino.HIGH #on
       setTimeout( 'board.digitalWrite( 3, arduino.LOW)', time ) #off
-    when 'the stars light up'
+    when 'the stars light up.'
       board.digitalWrite 4, ledState = arduino.HIGH #on
       setTimeout( 'board.digitalWrite( 4, arduino.LOW)', time ) #off
     when 'it snow up in here.'
