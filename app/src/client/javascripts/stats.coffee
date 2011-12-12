@@ -58,7 +58,7 @@ module.exports = Stats =
 
 
   getTotalCrays: ->
-    @getStats '/jobs/holicray/complete/0..10000/desc', Stats.renderTotalCrays
+    @getStats '/jobs/it%20Holicray!/complete/0..10000/desc', Stats.renderTotalCrays
 
   renderTotalCrays: (jobs) ->
     Stats.el.totalHolicrays.text jobs.length
