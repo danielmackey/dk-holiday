@@ -28,7 +28,7 @@ io.configure 'production', -> io.set 'log level', 1
 #
 jobs = kue.createQueue()
 kue.app.enable "jsonp callback"
-kue.app.set 'title', 'Queue: Holicray by Designkitchen'
+kue.app.set 'title', 'Queue: Holicraymaker™ by Designkitchen'
 
 
 

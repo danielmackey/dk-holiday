@@ -19,7 +19,7 @@ io.configure('production', function() {
 });
 jobs = kue.createQueue();
 kue.app.enable("jsonp callback");
-kue.app.set('title', 'Queue: Holicray by Designkitchen');
+kue.app.set('title', 'Queue: Holicraymaker™ by Designkitchen');
 javascripts = {
   paths: ["" + __dirname + "/src/client/javascripts", "" + __dirname + "/src/shared"],
   dependencies: []
