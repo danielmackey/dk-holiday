@@ -22,6 +22,19 @@ module.exports = Client =
     window.socket = new Socket()
     Stats.refresh()
     @holidaysPast()
+    @shareFacebook()
+
+  shareFacebook: ->
+    $("a.share.facebook").bind 'click', (e) ->
+      e.preventDefault()
+      fbOptions =
+        method: 'feed',
+        message: 'getting educated about Facebook Connect',
+        name: 'Holicraymatic by Designkitchen',
+        link: 'http://holiday.designkitchen.com',
+        picture: 'http://holiday.designkitchen.com/images/share.jpg',
+        description: 'Every tweet @ designkitchen sets off the Holi-Cray-Matic™ in one of our conference rooms. Watch it live at http://holiday.designkitchen.com'
+      FB.ui fbOptions
 
   holidaysPast: ->
     $("a#see-past-holidays").bind 'click', (e) ->

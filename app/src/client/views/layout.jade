@@ -16,6 +16,7 @@ html
     script
       try{Typekit.load();}catch(e){}
   body
+    div#fb-root
     != body
   script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
   script(src='/socket.io/socket.io.js')
@@ -37,3 +38,24 @@ html
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '127939557320271', // App ID
+        channelUrl : '//holiday.designkitchen.com/channel.html', // Channel File
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        oauth      : true, // enable OAuth 2.0
+        xfbml      : true  // parse XFBML
+      });
+
+      // Additional initialization code here
+    };
+
+    // Load the SDK Asynchronously
+    (function(d){
+      var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+      js = d.createElement('script'); js.id = id; js.async = true;
+      js.src = "//connect.facebook.net/en_US/all.js";
+      d.getElementsByTagName('head')[0].appendChild(js);
+    }(document));
