@@ -41,7 +41,7 @@ module.exports = Stream =
   setupSocket: ->
     @io.sockets.on 'connection', (socket) =>
       @goOnline socket
-      socket.on 'right now', (job) => socket.emit 'refresh stats', job
+      socket.on 'right now', (job) => socket.broadcast.emit 'refresh stats', job
 
 
 
