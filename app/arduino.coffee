@@ -61,7 +61,7 @@ socket.on 'action assignment', (job) ->
     when 'the wacky tube man dance.'
       board.digitalWrite 7, ledState = arduino.HIGH #on
       setTimeout( 'board.digitalWrite( 7, arduino.LOW)', time ) #off
-    when 'holicray'
+    when 'it Holicray!'
       board.digitalWrite 2, arduino.HIGH # on
       board.digitalWrite 3, arduino.HIGH # on
       board.digitalWrite 4, arduino.HIGH # on
