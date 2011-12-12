@@ -6,7 +6,6 @@ Worker = require "#{__dirname}/worker"
 module.exports = Stream =
   users: [
     'designkitchen'
-    'holiduino'
   ]
 
 
