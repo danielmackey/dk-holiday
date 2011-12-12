@@ -21,8 +21,7 @@ module.exports = Client =
     `
     window.socket = new Socket()
     Stats.refresh()
-    #FIXME: Uncomment after we've uploaded videos to Vimeo
-    #@holidaysPast()
+    @holidaysPast()
 
   holidaysPast: ->
     $("a#see-past-holidays").bind 'click', (e) ->
@@ -40,10 +39,10 @@ module.exports = Client =
       $("#holidays-past #video").html video
 
   eightEmbed: ->
-    return '<iframe width="650" height="400" src="http://www.youtube.com/embed/z2XUgE6g7XU?rel=0" frameborder="0" allowfullscreen></iframe>'
+    return '<iframe width="650" height="400" src="http://player.vimeo.com/video/33534497?title=0&amp;byline=0&amp;portrait=0" frameborder="0" allowfullscreen></iframe>'
 
   tenEmbed: ->
-    return '<iframe width="650" height="400" src="http://www.youtube.com/embed/2Z4m4lnjxkY?rel=0" frameborder="0" allowfullscreen></iframe>'
+    return '<iframe width="650" height="400" src="http://player.vimeo.com/video/33538059?title=0&amp;byline=0&amp;portrait=0" frameborder="0" allowfullscreen></iframe>'
 
   crayTally:0
 
