@@ -28,7 +28,7 @@ io.configure 'production', -> io.set 'log level', 1
 #
 jobs = kue.createQueue()
 kue.app.enable "jsonp callback"
-kue.app.set 'title', 'Queue: Holicraymaker™ by Designkitchen'
+kue.app.set 'title', 'Queue: Holi-Cray-Matic™ by Designkitchen'
 
 
 
@@ -71,7 +71,7 @@ package = stitch.createPackage javascripts
 #
 viewOptions =
   locals:
-    title:'Holicraymaker™ by Designkitchen'
+    title:'Holi-Cray-Matic™ by Designkitchen'
   layout:'layout'
 
 app.configure () ->
