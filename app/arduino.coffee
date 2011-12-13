@@ -28,9 +28,36 @@ board.pinMode 6, ledState
 board.pinMode 7, arduino.OUTPUT
 board.pinMode 7, ledState
 
+connected = false
+timeout = null
+
 socket = io.connect 'http://50.57.133.51'
 
-socket.on 'disconnect', -> socket.reconnect()
+socket.on 'connect', -> 
+  connected = true
+  console.log 'connected'
+  clearTimeout timeout
+
+socket.on 'disconnect', -> 
+  connected = false
+  console.log 'disconnected, reconnecting...'
+  retryConnectOnFailure(10000)
+
+socket.on 'connect_failed', ->
+  connected = false
+  console.log 'connection failed, reconnecting...'
+  retryConnectOnFailure(10000)
+
+retryConnectOnFailure(retryInMilliseconds) ->
+  timeout = setTimeout letsConnect, retryInMilliseconds
+
+letsConnect = () ->
+  unless connected then socket.reconnect()
+  retryConnectOnFailure()
+
+# actually connect
+retryConnectOnFailure()
+
 
 socket.on 'action assignment', (job) ->
   socket.emit 'right now', job
