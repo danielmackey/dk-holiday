@@ -28,6 +28,16 @@ html
     $(document).ready(function() {
       var Client = require('client');
       window.App = Client.init();
+
+      FB.init({
+        appId      : '127939557320271', // App ID
+        channelUrl : '//holiday.designkitchen.com/channel.html', // Channel File
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        oauth      : true, // enable OAuth 2.0
+        xfbml      : true  // parse XFBML
+      });
+
     });
 
     var _gaq = _gaq || [];
@@ -40,15 +50,3 @@ html
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
 
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '127939557320271', // App ID
-        channelUrl : '//holiday.designkitchen.com/channel.html', // Channel File
-        status     : true, // check login status
-        cookie     : true, // enable cookies to allow the server to access the session
-        oauth      : true, // enable OAuth 2.0
-        xfbml      : true  // parse XFBML
-      });
-
-      // Additional initialization code here
-    };
