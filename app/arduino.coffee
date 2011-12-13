@@ -48,7 +48,7 @@ socket.on 'connect_failed', ->
   console.log 'connection failed, reconnecting...'
   retryConnectOnFailure(10000)
 
-retryConnectOnFailure (retryInMilliseconds) ->
+retryConnectOnFailure = (retryInMilliseconds) ->
   timeout = setTimeout letsConnect, retryInMilliseconds
 
 letsConnect = () ->
