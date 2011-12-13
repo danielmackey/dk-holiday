@@ -88,13 +88,9 @@ module.exports = Worker =
     @logger.info 'Processing jobs...'
 
     process = (job, done) =>
-      logger = @logger
-      nextJob = () ->
-        logger.arduino "##{job.data.event} by @#{job.data.handle}"
-        socket.emit 'action assignment', job
-        done()
-
-      setTimeout nextJob, 10000
+      @logger.arduino "##{job.data.event} by @#{job.data.handle}"
+      socket.emit 'action assignment', job
+      done()
 
     @jobs.promote()
     @jobs.process 'the table lights dance.', (job, done) -> process job, done

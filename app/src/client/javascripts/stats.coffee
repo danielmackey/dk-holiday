@@ -65,7 +65,7 @@ module.exports = Stats =
 
 
   getLatest: (latest) ->
-    @getStats "/job/#{latest}", Stats.renderLatest
+    @getStats "/job/#{latest - 5}", Stats.renderLatest
 
   renderLatest: (job) ->
     template = _.template $("#latest-tpl").html()
@@ -75,7 +75,7 @@ module.exports = Stats =
 
 
   getHistory: (count) ->
-    @getStats "/job/#{count - 1}", Stats.renderHistory
+    @getStats "/job/#{count - 6}", Stats.renderHistory
 
   renderHistory: (job) ->
     template = _.template $("#history-tpl").html()
