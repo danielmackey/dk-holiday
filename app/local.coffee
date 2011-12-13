@@ -1,6 +1,6 @@
 colors = require 'colors'
 io = require 'socket.io-client'
-socket = io.connect 'http://localhost:5000'
+socket = io.connect 'http://localhost'
 
 socket.on 'disconnect', -> socket.reconnect()
 

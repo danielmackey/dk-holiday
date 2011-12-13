@@ -227,10 +227,10 @@ hr {
   border-bottom: 2px solid #59ab4b;
 }
 h1 {
-  margin: 0 5px;
+  margin: 17px 0 0;
   font-family: 'TommasoRegular';
   text-rendering: optimizeLegibility;
-  font-size: 85px;
+  font-size: 76px;
   font-weight: normal;
   text-align: center;
 }
@@ -358,7 +358,7 @@ header {
   position: absolute;
   top: 20px;
   left: 260px;
-  padding: 5px 6px 0 5px;
+  padding: 4px 5px 1px 6px;
   display: inline-block;
   font-size: 12px;
   letter-spacing: 1px;
@@ -421,11 +421,11 @@ header {
   display: block;
   position: relative;
   z-index: 10;
-  padding-top: 16px;
+  padding-top: 14px;
   text-align: center;
   text-transform: uppercase;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 1px;
 }
 .circle {
@@ -595,7 +595,7 @@ header {
   font-size: 50px;
   font-family: 'TommasoRegular';
   position: relative;
-  top: 55px;
+  top: 53px;
   left: 21px;
 }
 #column-top #total-tweets #total-tweets-title {
@@ -617,7 +617,7 @@ header {
   font-size: 50px;
   font-family: 'TommasoRegular';
   position: relative;
-  top: -35px;
+  top: -37px;
   left: 819px;
   margin-right: 890px;
 }
@@ -640,9 +640,9 @@ header {
 #column-top #total-tweets #current-tweet #current-tweet-number {
   width: 125px;
   height: 90px;
-  margin-top: 17px;
+  margin-top: 10px;
   font-family: 'TommasoRegular';
-  font-size: 40px;
+  font-size: 50px;
   text-align: center;
   float: left;
 }
@@ -1276,4 +1276,5 @@ a.twitter:hover {
   top: 13px;
   left: 13px;
   z-index: 1;
+  display: none;
 }
