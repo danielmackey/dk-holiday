@@ -3,7 +3,7 @@ module.exports = Worker =
   delay:10000 # Delay between jobs being processed
   eventTally:0 # Keep a running tally of events to compare against tippingPoin
   tippingPoint:40 # Point at which it gets cray
-  tubemanTrigger:'tubeman' # Secret hashtag to trigger the tubeman
+  tubemanTrigger:'wreathsandgarland' # FIXME: Change up secret hashtag to trigger the tubeman each day
   events:[
     'the table lights dance.'
     'the sirens go to town.'
@@ -45,11 +45,10 @@ module.exports = Worker =
 
   getHashtags: (tweet) ->
     hashtags = []
-    tweet.entities.hashtags.forEach (tag, i) -> hashtags.push tag.text
+    tweet.entities.hashtags.forEach (tag, i) -> hashtags.push tag.text.toLowerCase()
     return hashtags
 
 
-  #TODO: Instead of randomly assigning an event, assign each and then start at beginning of list
   # Pick a random event
   random: ->
     event = @events[Math.floor(Math.random() * @events.length)]
