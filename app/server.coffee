@@ -7,7 +7,7 @@ fs = require 'fs'
 path = require 'path'
 State = require './src/server/state'
 app = express.createServer()
-port = 80
+port = 5000
 
 
 #
