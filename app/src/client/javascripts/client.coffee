@@ -23,6 +23,14 @@ module.exports = Client =
     Stats.refresh()
     @holidaysPast()
     @shareFacebook()
+    @shareTwitter()
+
+  shareTwitter: ->
+    status = 'Every%20tweet%20at%20%40designkitchen%20sets%20off%20the%20Holi-Cray-Matic%E2%84%A2%20in%20one%20of%20our%20conference%20rooms.%20Watch%20it%20live%20at%20http%3A%2F%2Fholiday.designkitchen.com'
+    $("a.share.twitter").bind 'click', (e) ->
+      e.preventDefault()
+      window.open "http://twitter.com/intent/tweet?source=holicraymaker&text=#{status}",'twitter','status=1,toolbar=0,location=0,resizable=1,scrollbars=1,height=300,width=400'
+
 
   shareFacebook: ->
     $("a.share.facebook").bind 'click', (e) ->
