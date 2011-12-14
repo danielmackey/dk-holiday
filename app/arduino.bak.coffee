@@ -8,6 +8,7 @@ io = require 'socket.io-client'
 # Arduino config
 ledState = arduino.LOW
 
+#initialize the digital pins as an output.
 # initilaze the digital pins as an output
 board.pinMode 2, arduino.OUTPUT
 board.pinMode 2, ledState
@@ -58,11 +59,18 @@ letsConnect = () ->
 retryConnectOnFailure()
 
 
+socket.on 'action assignment', (job) ->
+  socket.emit 'right now', job
 
-
-# Send a job message to arduino
-arduino = (job) ->
   time = 9000
+
+  # 2 = table
+  # 3 = wall
+  # 4 = snowflakes
+  # 5 = snow
+  # 6 = beacons
+  # 7 = tube
+  # A = holicray
 
   switch job.data.event
     when 'the table lights dance.'
@@ -101,19 +109,3 @@ arduino = (job) ->
   console.log "@#{job.data.handle.cyan} just made #{job.data.event.rainbow}"
 
 
-
-# Collect jobs as they come in and assign to arduino if there are any queued up in the array
-buffer = []
-process = -> if buffer.length > 0 then arduino buffer.shift()
-
-
-
-# Receive a new job assignment from the server and push to the buffer array
-socket.on 'action assignment', (job) ->
-  socket.emit 'right now', job
-  buffer.push job
-
-
-
-# Process the buffer, one at a time every 10 seconds
-setInterval process, 10000
