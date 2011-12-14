@@ -60,7 +60,7 @@ module.exports = Stream =
 
 
   isOpen: ->
-    open = '8'
+    open = '7'
     close = '17'
     #close = '24'
     date = new Date()
