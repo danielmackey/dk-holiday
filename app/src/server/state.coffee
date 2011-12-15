@@ -22,7 +22,7 @@ module.exports = State =
       if !error and response.statusCode is 200
         split = body.toString().split(',')
         number = split[1].split(':')[1]
-        tally = Util.factorForty number - 4
+        tally = Util.factorForty number
       else
         tally = 0
 
