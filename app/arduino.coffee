@@ -57,33 +57,36 @@ letsConnect = () ->
 # actually connect
 retryConnectOnFailure()
 
+arduinoOff = (pin) -> 
+  console.log "arduinOff #{pin}"
+  board.writeDigital pin, arduino.LOW
 
+# Receive a new job assignment from the server and push to the buffer array
+socket.on 'action assignment', (job) ->
+  socket.emit 'right now', job
 
-
-# Send a job message to arduino
-arduino = (job) ->
   time = 9000
 
   switch job.data.event
     when 'the table lights dance.'
       board.digitalWrite 2, ledState = arduino.HIGH #on
-      setTimeout( 'board.digitalWrite( 2, arduino.LOW)', time) # off
+      setTimeout(arduinoOff, time, 2) # off
     when 'the wall lights turn on.'
       board.digitalWrite 3, ledState = arduino.HIGH #on
-      setTimeout( 'board.digitalWrite( 3, arduino.LOW)', time ) #off
+      setTimeout(arduinoOff, time, 3)
     when 'the stars light up.'
       board.digitalWrite 4, ledState = arduino.HIGH #on
-      setTimeout( 'board.digitalWrite( 4, arduino.LOW)', time ) #off
+      setTimeout(arduinoOff, time, 4) #off
     when 'it snow up in here.'
       time = 5000
       board.digitalWrite 5, ledState = arduino.HIGH #on
-      setTimeout( 'board.digitalWrite( 5, arduino.LOW)', time ) #off
+      setTimeout(arduinoOff, time, 5) #off
     when 'the sirens go to town.'
       board.digitalWrite 6, ledState = arduino.HIGH #on
-      setTimeout( 'board.digitalWrite( 6, arduino.LOW)', time ) #off
+      setTimeout(arduinoOff, time, 6) #off
     when 'the wacky tube man dance.'
       board.digitalWrite 7, ledState = arduino.HIGH #on
-      setTimeout( 'board.digitalWrite( 7, arduino.LOW)', time ) #off
+      setTimeout(arduinoOff, time, 7) #off
     when 'it Holicray!'
       board.digitalWrite 2, arduino.HIGH # on
       board.digitalWrite 3, arduino.HIGH # on
@@ -91,29 +94,11 @@ arduino = (job) ->
       board.digitalWrite 5, arduino.HIGH # on
       board.digitalWrite 6, arduino.HIGH # on
       board.digitalWrite 7, arduino.HIGH # on
-      setTimeout( 'board.digitalWrite( 2, arduino.LOW)', time ) #off
-      setTimeout( 'board.digitalWrite( 3, arduino.LOW)', time ) #off
-      setTimeout( 'board.digitalWrite( 4, arduino.LOW)', time ) #off
-      setTimeout( 'board.digitalWrite( 5, arduino.LOW)', time ) #off
-      setTimeout( 'board.digitalWrite( 6, arduino.LOW)', time ) #off
-      setTimeout( 'board.digitalWrite( 7, arduino.LOW)', time ) #off
+      setTimeout(arduinoOff, time, 2) #off
+      setTimeout(arduinoOff, time, 3) #off
+      setTimeout(arduinoOff, time, 4) #off
+      setTimeout(arduinoOff, time, 5) #off
+      setTimeout(arduinoOff, time, 6) #off
+      setTimeout(arduinoOff, time, 7) #off
 
   console.log "@#{job.data.handle.cyan} just made #{job.data.event.rainbow}"
-
-
-
-# Collect jobs as they come in and assign to arduino if there are any queued up in the array
-buffer = []
-process = -> if buffer.length > 0 then arduino buffer.shift()
-
-
-
-# Receive a new job assignment from the server and push to the buffer array
-socket.on 'action assignment', (job) ->
-  socket.emit 'right now', job
-  buffer.push job
-
-
-
-# Process the buffer, one at a time every 10 seconds
-setInterval process, 10000
