@@ -22,8 +22,9 @@ module.exports = State =
       if !error and response.statusCode is 200
         split = body.toString().split(',')
         number = split[1].split(':')[1]
-        tally = Util.factorForty number
+        tally = Util.factorForty number - 4
       else
         tally = 0
 
+      console.log 'restored cray tally count: ', tally
       Stream.init @jobs, @io, logger, tally
