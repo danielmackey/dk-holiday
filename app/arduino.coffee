@@ -60,7 +60,7 @@ retryConnectOnFailure()
 arduinoOff = (pin) -> 
   console.log "arduinOff #{pin}"
   unless board then board = arduino.connect('/dev/tty.usbmodem1d11')
-  board.writeDigital pin, arduino.LOW
+  board.digitalWrite pin, arduino.LOW
   true
 
 # Receive a new job assignment from the server and push to the buffer array
