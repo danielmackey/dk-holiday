@@ -61,7 +61,7 @@ module.exports = Stream =
 
   isOpen: ->
     open = '7'
-    close = '16'
+    close = '13'
     #close = '24'
     date = new Date()
     now = date.getHours()
