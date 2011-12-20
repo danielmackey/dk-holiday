@@ -3,7 +3,7 @@ module.exports = Worker =
   delay:10000 # Delay between jobs being processed
   eventTally:0 # Keep a running tally of events to compare against tippingPoin
   tippingPoint:40 # Point at which it gets cray
-  tubemanTrigger:'frosty' # FIXME: Change up secret hashtag to trigger the tubeman each day
+  tubemanTrigger:'bertandernie' # FIXME: Change up secret hashtag to trigger the tubeman each day
   events:[
     'the table lights dance.'
     'the sirens go to town.'
